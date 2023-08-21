@@ -1,8 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { RiImageAddFill } from "react-icons/ri";
 import { mediumPurple } from "../../../utils/colors";
-
 interface Props {
   image: null | Blob;
   setImage: (img: null | Blob) => void;
@@ -19,13 +18,7 @@ export default function PhotoUpload(props: Props) {
     [setImage]
   );
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    fileRejections,
-    acceptedFiles,
-  } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       "image/png": [".png"],
@@ -33,6 +26,7 @@ export default function PhotoUpload(props: Props) {
       "image/jpg": [".jpg"],
     },
   });
+
   return (
     <>
       <div

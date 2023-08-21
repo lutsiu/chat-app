@@ -3,9 +3,11 @@ import * as Yup from "yup";
 import SubmitButton from "../../Widgets/Buttons/Submit";
 import { useState, useEffect } from "react";
 import useSetColor from "../../../hooks/useSetColor";
+import { UserModel } from "../../../interfaces/models";
 export default function LoginForm() {
   const [initialDisabled, setInitialDisabled] = useState(true);
   const [formError, setFormError] = useState(false);
+
   const initialValues = {
     email: "",
     password: "",
@@ -29,7 +31,25 @@ export default function LoginForm() {
     password: string;
   }): Promise<void> {
     try {
-      console.log("function");
+      const body = JSON.stringify(values);
+      const res = await fetch(`http://localhost:3000/auth/login`, {
+        headers: { "Content-Type": "application/json" },
+        body,
+        method: "POST",
+      });
+      if (res.status === 404) {
+        const error = (await res.json()) as {
+          error: "email" | "password";
+          message: string;
+        };
+        error.error === "email"
+          ? formik.setErrors({ email: error.message })
+          : formik.setErrors({ password: error.message });
+      }
+      if (res.ok) {
+        const data = (await res.json()) as { user: UserModel; token: string };
+        console.log(data);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -95,6 +115,7 @@ export default function LoginForm() {
           <p className="mt-[0.5rem] ml-[0.3rem]">{formik.errors.password}</p>
         )}
       </div>
+
       <div className="w-fit">
         <SubmitButton disabled={formError || initialDisabled}>
           Login
