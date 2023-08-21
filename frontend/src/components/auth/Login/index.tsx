@@ -4,10 +4,14 @@ import SubmitButton from "../../Widgets/Buttons/Submit";
 import { useState, useEffect } from "react";
 import useSetColor from "../../../hooks/useSetColor";
 import { UserModel } from "../../../interfaces/models";
+import { useDispatch } from "react-redux/";
+import { setLogin } from "../../../state/user";
+import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
   const [initialDisabled, setInitialDisabled] = useState(true);
   const [formError, setFormError] = useState(false);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const initialValues = {
     email: "",
     password: "",
@@ -48,7 +52,9 @@ export default function LoginForm() {
       }
       if (res.ok) {
         const data = (await res.json()) as { user: UserModel; token: string };
-        console.log(data);
+        const {user, token} = data;
+        dispatch(setLogin({user, token}));
+        navigate('/home')
       }
     } catch (err) {
       console.log(err);
