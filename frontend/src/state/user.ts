@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { InitialState, LoginState } from "../interfaces/redux";
+import { UserInitialState, LoginState } from "../interfaces/redux";
 
-const initialState: InitialState = {
+const initialState: UserInitialState = {
   user: null,
   token: null,
 };

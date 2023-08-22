@@ -1,8 +1,18 @@
 import { UserModel } from "./models";
 
-export interface InitialState {
+export interface UserInitialState {
   user: null | UserModel
   token: null | string
+}
+
+export interface UiInitialState {
+  showOverlay: boolean,
+  showLeftMenu: boolean,
+  showCreateGroupStep1: boolean,
+  showCreateGroupStep2: boolean,
+  showContacts: boolean,
+  showSettings: boolean,
+  showMyAccountSettings: boolean,
 }
 
 export interface LoginState {
@@ -13,5 +23,6 @@ export interface LoginState {
 }
 
 export interface ReduxState {
-  user: InitialState
+  user: UserInitialState,
+  ui: UiInitialState
 }

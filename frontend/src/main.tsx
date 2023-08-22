@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.scss'
 import userReducer from './state/user.ts';
+import uiReducer from './state/ui.ts';
 import {configureStore, combineReducers} from '@reduxjs/toolkit'
 import { Provider } from 'react-redux';
 import {persistReducer, persistStore} from 'redux-persist'
@@ -13,7 +14,8 @@ import thunk from 'redux-thunk';
 const persistConfig = { key: "root", storage, version: 1 };
 
 const rootReducer = combineReducers({
-  user: userReducer
+  user: userReducer,
+  ui: uiReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
