@@ -7,14 +7,18 @@ import { PiUsers } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import Overlay from "../Overlay";
-import { hideEverything, setShowCreateGroupStep1, setShowLeftMenu, setShowOverlay } from "../../../state/ui";
+import {
+  hideEverything,
+  setShowContacts,
+  setShowCreateGroupStep1,
+  setShowLeftMenu,
+  setShowOverlay,
+} from "../../../state/ui";
 export default function DesktopMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
   const dispatch = useDispatch();
   return (
-    <Overlay
-      
-    >
+    <Overlay>
       <motion.div
         initial={{ x: -1000 }}
         animate={{ x: ui.showLeftMenu ? 0 : -1000 }}
@@ -48,7 +52,13 @@ export default function DesktopMenu() {
             <HiSpeakerphone className="w-[2.2rem] h-[2.2rem]" />
             <p className="text-xl font-normal">New Channel</p>
           </li>
-          <li className="w-full flex items-center gap-[1.3rem] text-zinc-200 hover:bg-slate-700 py-[0.8rem] pl-[1.7rem] cursor-pointer">
+          <li
+            onClick={() => {
+              dispatch(setShowLeftMenu());
+              dispatch(setShowContacts());
+            }}
+            className="w-full flex items-center gap-[1.3rem] text-zinc-200 hover:bg-slate-700 py-[0.8rem] pl-[1.7rem] cursor-pointer"
+          >
             <HiOutlineUserCircle className="w-[2.2rem] h-[2.2rem]" />
             <p className="text-xl font-normal">Contacts</p>
           </li>

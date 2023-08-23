@@ -1,5 +1,5 @@
 import { IoMenuSharp } from "react-icons/io5";
-import SearchBar from "../Widgets/SearchBar";
+import SearchBar from "../Widgets/SearchBars/MainSearchBar";
 import ChatListItem from "../ChatListItem";
 import styles from "./styles.module.scss";
 import { setShowLeftMenu, setShowOverlay } from "../../state/ui";

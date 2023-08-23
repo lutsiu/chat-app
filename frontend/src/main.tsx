@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.scss'
 import userReducer from './state/user.ts';
 import uiReducer from './state/ui.ts';
+import createGroupReducer from './state/createGroup.ts';
 import {configureStore, combineReducers} from '@reduxjs/toolkit'
 import { Provider } from 'react-redux';
 import {persistReducer, persistStore} from 'redux-persist'
@@ -15,7 +16,8 @@ const persistConfig = { key: "root", storage, version: 1 };
 
 const rootReducer = combineReducers({
   user: userReducer,
-  ui: uiReducer
+  ui: uiReducer,
+  createGroup: createGroupReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

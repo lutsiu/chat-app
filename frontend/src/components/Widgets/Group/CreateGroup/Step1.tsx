@@ -3,13 +3,14 @@ import { BsCameraFill } from "react-icons/bs";
 import { FiMoreVertical } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
-import { ReduxState } from "../../../interfaces/redux";
+import { ReduxState } from "../../../../interfaces/redux";
 import styles from "./styles.module.scss";
 import { useDropzone } from "react-dropzone";
-import { hideEverything } from "../../../state/ui";
+import { hideEverything, setShowCreateGroupStep1, setShowCreateGroupStep2 } from "../../../../state/ui";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { mediumPurple, pink } from "../../../utils/colors";
+import { mediumPurple, pink } from "../../../../utils/colors";
+import { setGroup } from "../../../../state/createGroup";
 export default function CreateGroupStep1() {
   const dispatch = useDispatch();
   const { ui } = useSelector((state: ReduxState) => state);
@@ -42,7 +43,11 @@ export default function CreateGroupStep1() {
   });
 
   function onSubmit(values: { groupName: string }) {
-    console.log('submit');
+    const {groupName} = values;
+    dispatch(setGroup({groupName, groupImg: image ? image: null}))
+    dispatch(setShowCreateGroupStep1());
+    dispatch(setShowCreateGroupStep2());
+
   }
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });

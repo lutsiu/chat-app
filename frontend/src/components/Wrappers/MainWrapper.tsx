@@ -2,10 +2,15 @@ import { Outlet } from "react-router-dom";
 import LeftSide from "../LeftSide";
 import {createPortal} from 'react-dom';
 import DesktopMenu from "../Widgets/Menus/DesktopMenu";
-import CreateGroupStep1 from "../Widgets/CreateGroup/Step1";
+import CreateGroupStep1 from "../Widgets/Group/CreateGroup/Step1";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../interfaces/redux";
+import CreateGroupStep2 from "../Widgets/Group/CreateGroup/Step2";
+import ContactsPopup from "../Widgets/Contacts/ContactsPopup";
+import CreateContact from "../Widgets/Contacts/CreateContact";
 export default function MainWrapper() {
 
-
+  const {ui} = useSelector((state: ReduxState) => state);
 
 
   return (
@@ -20,6 +25,9 @@ export default function MainWrapper() {
       </main>
       {createPortal(<DesktopMenu/>, document.getElementById('overlay') as HTMLElement)}
       {createPortal(<CreateGroupStep1/>, document.getElementById('overlay') as HTMLElement)}
+      {ui.showCreateGroupStep2 && createPortal(<CreateGroupStep2/>, document.getElementById('overlay') as HTMLElement)}
+      {createPortal(<ContactsPopup/>, document.getElementById('overlay') as HTMLElement)}
+      {ui.showCreateContact && createPortal(<CreateContact/>, document.getElementById('overlay') as HTMLElement)}
     </>
   );
 }
