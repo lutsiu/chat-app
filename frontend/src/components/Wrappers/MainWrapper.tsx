@@ -8,6 +8,7 @@ import { ReduxState } from "../../interfaces/redux";
 import CreateGroupStep2 from "../Widgets/Group/CreateGroup/Step2";
 import ContactsPopup from "../Widgets/Contacts/ContactsPopup";
 import CreateContact from "../Widgets/Contacts/CreateContact";
+import MainSettings from "../Widgets/Settings/MainSettings";
 export default function MainWrapper() {
 
   const {ui} = useSelector((state: ReduxState) => state);
@@ -28,6 +29,7 @@ export default function MainWrapper() {
       {ui.showCreateGroupStep2 && createPortal(<CreateGroupStep2/>, document.getElementById('overlay') as HTMLElement)}
       {createPortal(<ContactsPopup/>, document.getElementById('overlay') as HTMLElement)}
       {ui.showCreateContact && createPortal(<CreateContact/>, document.getElementById('overlay') as HTMLElement)}
+      {createPortal(<MainSettings/>, document.getElementById('overlay') as HTMLElement)}
     </>
   );
 }

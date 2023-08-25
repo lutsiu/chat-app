@@ -13,6 +13,7 @@ import {
   setShowCreateGroupStep1,
   setShowLeftMenu,
   setShowOverlay,
+  setShowSettings,
 } from "../../../state/ui";
 export default function DesktopMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
@@ -70,7 +71,13 @@ export default function DesktopMenu() {
             <BsBookmark className="w-[2.2rem] h-[2.2rem]" />
             <p className="text-xl font-normal">Saved messages</p>
           </li>
-          <li className="w-full flex items-center gap-[1.3rem] text-zinc-200 hover:bg-slate-700 py-[0.8rem] pl-[1.7rem] cursor-pointer">
+          <li
+            onClick={() => {
+              dispatch(setShowLeftMenu());
+              dispatch(setShowSettings());
+            }}
+            className="w-full flex items-center gap-[1.3rem] text-zinc-200 hover:bg-slate-700 py-[0.8rem] pl-[1.7rem] cursor-pointer"
+          >
             <AiOutlineSetting className="w-[2.2rem] h-[2.2rem]" />
             <p className="text-xl font-normal">Settings</p>
           </li>

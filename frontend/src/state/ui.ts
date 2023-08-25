@@ -10,6 +10,7 @@ const initialState: UiInitialState = {
   showCreateContact: false,
   showSettings: false,
   showMyAccountSettings: false,
+
 };
 
 const uiSlice = createSlice({
@@ -40,16 +41,18 @@ const uiSlice = createSlice({
     setShowMyAccountSettings: (state) => {
       state.showMyAccountSettings = state.showMyAccountSettings ? false : true;
     },
+
     hideEverything: (state) => {
-      state.showOverlay = false
-      state.showContacts = false
-      state.showCreateGroupStep1 = false
-      state.showCreateGroupStep2 = false
-      state.showLeftMenu = false
-      state.showCreateContact = false
-      state.showMyAccountSettings = false
-      state.showSettings = false
-    }
+      state.showOverlay = false;
+      state.showContacts = false;
+      state.showCreateGroupStep1 = false;
+      state.showCreateGroupStep2 = false;
+      state.showLeftMenu = false;
+      state.showCreateContact = false;
+      state.showMyAccountSettings = false;
+      state.showSettings = false;
+
+    },
   },
 });
 
@@ -63,5 +66,6 @@ export const {
   setShowCreateContact,
   setShowSettings,
   setShowMyAccountSettings,
-  hideEverything
+  hideEverything,
+
 } = uiSlice.actions;

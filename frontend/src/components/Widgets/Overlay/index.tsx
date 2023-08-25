@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { hideEverything } from "../../../state/ui";
 interface Props {
@@ -19,7 +19,9 @@ export default function Overlay(props: Props) {
         opacity: ui.showOverlay ? 1 : 0,
       }}
       transition={{ duration: 0.2 }}
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      style={{
+        backgroundColor: "rgba(0,0,0,0.5)",
+      }}
       onClick={(e) => {
         const target = e.target as HTMLElement;
         target.classList.contains("left-menu-overlay")
