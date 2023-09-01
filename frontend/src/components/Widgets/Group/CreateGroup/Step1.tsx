@@ -4,13 +4,13 @@ import { FiMoreVertical } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
 import { ReduxState } from "../../../../interfaces/redux";
-import styles from "./styles.module.scss";
 import { useDropzone } from "react-dropzone";
 import { hideEverything, setShowCreateGroupStep1, setShowCreateGroupStep2 } from "../../../../state/ui";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { mediumPurple, pink } from "../../../../utils/colors";
 import { setGroup } from "../../../../state/createGroup";
+import CancelAndNext from "../../Buttons/CancelAndNext";
 export default function CreateGroupStep1() {
   const dispatch = useDispatch();
   const { ui } = useSelector((state: ReduxState) => state);
@@ -118,25 +118,11 @@ export default function CreateGroupStep1() {
             initial={{ borderBottomColor: mediumPurple }}
             animate={{ borderBottomColor: formik.errors.groupName ? pink : mediumPurple }}
             className="outline-none bg-transparent border-b-[0.1rem] w-[20rem] pb-[0.3rem] text-xl "
-            /* style={{color: 'white'}} */
+
           />
         </div>
-        <div className="mt-[3.5rem] flex gap-[1rem] text-purple-500 text-xl font-medium">
-          <button
-            className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(hideEverything());
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
-          >
-            Next
-          </button>
+        <div className="mt-[3.5rem]">
+          <CancelAndNext/>
         </div>
       </div>
     </motion.form>

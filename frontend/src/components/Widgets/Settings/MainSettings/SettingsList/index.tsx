@@ -6,11 +6,22 @@ import { VscSettings } from "react-icons/vsc";
 import { IoCallOutline } from "react-icons/io5";
 import { CiBatteryCharging } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
-
+import { useDispatch } from "react-redux";
+import {
+  setShowSettings,
+  setShowMyAccountSettings,
+} from "../../../../../state/ui";
 export default function SettingsList() {
+  const dispatch = useDispatch();
   return (
     <ul className="bg-gray-900 pt-[0.5rem] pb-[1rem]">
-      <li className="flex px-[1.5rem] py-[0.8rem] cursor-pointer gap-[1.5rem] items-center hover:bg-gray-800 duration-200">
+      <li
+        onClick={() => {
+          dispatch(setShowSettings());
+          dispatch(setShowMyAccountSettings());
+        }}
+        className="flex px-[1.5rem] py-[0.8rem] cursor-pointer gap-[1.5rem] items-center hover:bg-gray-800 duration-200"
+      >
         <HiOutlineUserCircle className="text-4xl" />
         <span className="text-xl">My Account</span>
       </li>

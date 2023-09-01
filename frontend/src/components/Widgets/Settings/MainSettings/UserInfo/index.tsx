@@ -30,6 +30,11 @@ export default function UserInfo() {
   useEffect(() => {
     const handleClosePopup = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      if (target.closest('.infoPopupItem') || target.classList.contains('infoPopupItem')) {
+        console.log(target);
+        console.log('yews');
+        return
+      }
       setShowPopup(false);
     };
     document.addEventListener("mousedown", handleClosePopup);

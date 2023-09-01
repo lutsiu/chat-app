@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import {  motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
 import { ReduxState } from "../../../../interfaces/redux";
@@ -17,8 +17,8 @@ export default function MainSettings() {
         pointerEvents: showSettings ? "auto" : "none",
       }}
     >
-      <UserInfo/>
-      <SettingsList/>
+      <UserInfo />
+      <SettingsList />
     </motion.div>
   );
 }
