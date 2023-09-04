@@ -1,4 +1,4 @@
-import {mediumPurple, black, white, gray, darkGray, blackPurple} from '../../../utils/colors';
+import {mediumPurple, black, white, gray, darkGray, blackPurple} from '../../../../utils/colors';
 
 interface Props {
   children: React.ReactNode;

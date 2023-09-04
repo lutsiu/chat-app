@@ -1,13 +1,16 @@
 import styles from '../styles.module.scss';
 import ContactsSearchBar from "../../SearchBars/ContactsSearchBar";
 import ContactListItem from '../ContactListItem';
+import useResponsive from '../../../../hooks/useResponsive';
 export default function Contacts() {
+
+  const width = useResponsive();
 
   return (
     <div>
-      <ContactsSearchBar/>
-      <ul className={`${styles.contactsList} overflow-y-scroll max-h-[35rem] mt-[0.5rem]`}>
-        {Array.from({'length': 8}, (_, i) => {
+      {width >= 768 && <ContactsSearchBar/>}
+      <ul className={`${styles.contactsList} `}>
+        {Array.from({'length': 33}, (_, i) => {
           return <ContactListItem key={i} id={i.toString()} />
         })}
       </ul>

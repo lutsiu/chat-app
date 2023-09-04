@@ -27,10 +27,10 @@ export default function GroupAddContactListItem(props: { id: string }) {
 
   return (
     <li
-      className="2xl:w-[35rem] h-full flex gap-[1rem] hover:bg-slate-800 pl-[1.5rem] py-[0.4rem]"
+      className="2xl:w-[35rem] h-full flex gap-[1rem] lg:gap-[2rem] hover:bg-slate-800 active:bg-slate-800 duration-200 pl-[1.5rem] py-[0.4rem]"
       onClick={() => dispatch(setGroupUsers({ userId: props.id }))}
     >
-      <div className="flex-[1]">
+      <div className="">
         <motion.div
           className="w-[4rem] h-[4rem] rounded-full relative"
           animate={{
@@ -54,7 +54,7 @@ export default function GroupAddContactListItem(props: { id: string }) {
           </motion.div>
         </motion.div>
       </div>
-      <div className="flex flex-[9] flex-col justify-between py-[0.2rem]">
+      <div className="flex flex-1 flex-col justify-between py-[0.2rem]">
         <div className="flex justify-between items-start ">
           <h2 className="text-xl font-medium">{user.fullName}</h2>
         </div>

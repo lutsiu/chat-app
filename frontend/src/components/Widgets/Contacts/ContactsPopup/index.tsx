@@ -8,14 +8,18 @@ import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
 } from "react-icons/ai";
-import { hideEverything, setShowContacts, setShowCreateContact } from "../../../../state/ui";
+import {
+  hideEverything,
+  setShowContacts,
+  setShowCreateContact,
+} from "../../../../state/ui";
 export default function ContactsPopup() {
   const dispatch = useDispatch();
   const { showContacts } = useSelector((state: ReduxState) => state.ui);
   const [sortDescending, setSortDescending] = useState(true);
   return (
     <motion.form
-      className="absolute top-[20%] left-[40%] bg-gray-900 py-[1rem]  rounded-xl flex flex-col "
+      className="absolute md:top-[15%] 2xl:top-[20%] left-[40%] bg-gray-900 py-[1rem]  rounded-xl flex flex-col "
       initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
       animate={{
         opacity: showContacts ? 1 : 0,
@@ -25,10 +29,22 @@ export default function ContactsPopup() {
     >
       <div className="pl-[2rem] pr-[1.5rem] pt-[1rem] flex justify-between items-center mb-[1.2rem]">
         <span className="text-2xl font-medium">Contacts</span>
-        {!sortDescending && <AiOutlineSortDescending onClick={() => setSortDescending(true)} className="text-4xl text-zinc-400 hover:text-white duration-200 cursor-pointer" />}
-        {sortDescending && <AiOutlineSortAscending onClick={() => setSortDescending(false)}  className="text-4xl text-zinc-400 hover:text-white duration-200 cursor-pointer" />}
+        {!sortDescending && (
+          <AiOutlineSortDescending
+            onClick={() => setSortDescending(true)}
+            className="text-4xl text-zinc-400 hover:text-white duration-200 cursor-pointer"
+          />
+        )}
+        {sortDescending && (
+          <AiOutlineSortAscending
+            onClick={() => setSortDescending(false)}
+            className="text-4xl text-zinc-400 hover:text-white duration-200 cursor-pointer"
+          />
+        )}
       </div>
-      <Contacts />
+      <div className="max-h-[35rem] overflow-y-scroll">
+        <Contacts />
+      </div>
       <div className="flex justify-between  text-purple-500 text-xl font-medium mt-[1.4rem] px-[1rem]">
         <button
           type="button"

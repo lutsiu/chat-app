@@ -23,7 +23,7 @@ export default function AccountSettings() {
   return (
     <>
       <motion.div
-        className="absolute top-[5%] w-[36rem] left-[40%] bg-gray-900  pt-[1.5rem] rounded-3xl overflow-x-hidden flex flex-col gap-[1rem]"
+        className="absolute top-[5%] w-[36rem] md:left-[30%] lg:left-[35%] 2xl:left-[40%] bg-gray-900  pt-[1.5rem] rounded-3xl overflow-x-hidden flex flex-col gap-[1rem]"
         initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
         animate={{
           opacity: showMyAccountSettings ? 1 : 0,

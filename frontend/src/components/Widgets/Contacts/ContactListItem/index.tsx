@@ -34,7 +34,7 @@ export default function ContactListItem(props: { id: string }) {
         to={`/${user.userName}`}
         className="w-full h-full flex gap-[1rem] hover:bg-slate-800 pl-[1.5rem] py-[0.4rem]"
       >
-        <div className="flex-[1]">
+        <div>
           <div className="w-[4rem] h-[4rem] rounded-full relative">
             <img
               src="https://static1.srcdn.com/wordpress/wp-content/uploads/2019/09/Sasuke-Feature.jpg"
@@ -43,7 +43,7 @@ export default function ContactListItem(props: { id: string }) {
             />
           </div>
         </div>
-        <div className="flex flex-[9] flex-col justify-between py-[0.2rem]">
+        <div className="flex flex-1 flex-col justify-between py-[0.2rem]">
           <div className="flex justify-between items-start ">
             <h2 className="text-xl font-medium">{user.fullName}</h2>
           </div>
