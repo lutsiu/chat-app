@@ -132,7 +132,7 @@ export default function ResponsiveCreateGroupStep2() {
               onBlur={formik.handleBlur}
               initial={{ borderBottomColor: mediumPurple }}
               animate={{
-                borderBottomColor: formik.errors.groupName
+                borderBottomColor: formik.errors.groupName && formik.touched.groupName
                   ? pink
                   : mediumPurple,
               }}

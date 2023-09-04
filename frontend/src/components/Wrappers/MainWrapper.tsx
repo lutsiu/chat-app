@@ -15,6 +15,7 @@ import DeviceMenu from "../Widgets/Menus/DeviceMenu";
 import ResponsiveCreateGroupStep1 from "../Widgets/Group/CreateGroupResponsive/Step1";
 import ResponsiveCreateGroupStep2 from "../Widgets/Group/CreateGroupResponsive/Step2";
 import ContactsResponsive from "../Widgets/Contacts/ContactsResponsive";
+import ResponsiveSettings from "../Widgets/Settings/ResponsiveSettings";
 
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
@@ -87,6 +88,10 @@ export default function MainWrapper() {
           )}
           {createPortal(
             <ContactsResponsive/>,
+            document.getElementById("overlay") as HTMLElement
+          )}
+          {createPortal(
+            <ResponsiveSettings/>,
             document.getElementById("overlay") as HTMLElement
           )}
           {/* {ui.showCreateGroupStep2 &&
