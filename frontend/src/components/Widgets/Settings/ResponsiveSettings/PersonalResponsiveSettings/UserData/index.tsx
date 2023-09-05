@@ -45,7 +45,6 @@ export default function UserData() {
     formik.errors.bio,
     formik.touched.bio
   );
-  console.log(formik.touched.fullName, formik.errors.fullName);
   return (
     <form
       className="pt-[2rem] bg-gray-800 flex flex-col"

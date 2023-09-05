@@ -24,7 +24,7 @@ export default function SearchBar() {
           setInputValue(e.target.value);
         }}
         value={inputValue}
-        className="py-[0.7rem] px-[1.2rem] w-full bg-slate-700 text-2xl rounded-3xl outline-none"
+        className="py-[0.7rem] pl-[1.2rem] pr-[4rem] w-full bg-slate-700 text-2xl rounded-3xl outline-none"
       />
       <motion.div
         className=" flex absolute top-[0.8rem] right-[1rem]"
