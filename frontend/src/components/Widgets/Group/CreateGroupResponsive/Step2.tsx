@@ -55,7 +55,6 @@ export default function ResponsiveCreateGroupStep2() {
   }
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
 
-  console.log(formik.errors.groupName);
   return (
     <motion.form
       onSubmit={formik.handleSubmit}
@@ -66,6 +65,7 @@ export default function ResponsiveCreateGroupStep2() {
         x: ui.showCreateGroupStep2 ? 0 : 100,
         pointerEvents: ui.showCreateGroupStep2 ? "auto" : "none",
       }}
+      transition={{duration: 0.3, ease: 'easeOut'}}
     >
       <div className="flex pl-[1.3rem] py-[0.5rem] gap-[1.5rem]  mb-[1rem] items-center bg-gray-800">
         <div

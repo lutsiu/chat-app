@@ -27,6 +27,7 @@ export default function ContactsResponsive() {
           x: showContacts ? 0 : 100,
           pointerEvents: showContacts ? "auto" : "none",
         }}
+        transition={{duration: 0.3, ease: 'easeOut'}}
       >
         <Header
           sort={{ sortDescending, setSortDescending }}

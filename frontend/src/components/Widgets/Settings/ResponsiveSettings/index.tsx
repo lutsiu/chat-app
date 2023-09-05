@@ -14,12 +14,13 @@ export default function ResponsiveSettings() {
   return (
     <motion.div
       className="fixed top-0 bottom-0 w-full h-full bg-black rounded-xl overflow-y-scroll"
-      initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
+      initial={{ opacity: 0, x: 50, pointerEvents: "none" }}
       animate={{
         opacity: ui.showSettings ? 1 : 0,
-        x: ui.showSettings ? 0 : 100,
+        x: ui.showSettings ? 0 : 50,
         pointerEvents: ui.showSettings ? "auto" : "none",
       }}
+      transition={{ease: 'easeOut'}}
     >
       <Header />
       <div className="w-full h-[30rem] relative">

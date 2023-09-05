@@ -32,6 +32,7 @@ export default function ResponsiveCreateGroupStep1() {
         x: ui.showCreateGroupStep1 ? 0 : 100,
         pointerEvents: ui.showCreateGroupStep1 ? "auto" : "none",
       }}
+      transition={{duration: 0.4, ease: 'easeOut'}}
     >
       <div className="flex pl-[1.3rem] py-[0.5rem] gap-[1.5rem]  mb-[1rem] items-center bg-gray-800">
         <div

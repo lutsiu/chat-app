@@ -24,7 +24,7 @@ export default function DeviceMenu() {
       <motion.div
         initial={{ x: -1000 }}
         animate={{ x: ui.showLeftMenu ? 0 : -1000 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
         className="w-[80%] md:w-[70%] bg-slate-900 h-full flex flex-col gap-[0.07rem]"
       >
         <div className="flex-[1.5] bg-slate-800 pt-[2rem] pl-[1.7rem]">

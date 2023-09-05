@@ -16,6 +16,7 @@ import ResponsiveCreateGroupStep1 from "../Widgets/Group/CreateGroupResponsive/S
 import ResponsiveCreateGroupStep2 from "../Widgets/Group/CreateGroupResponsive/Step2";
 import ContactsResponsive from "../Widgets/Contacts/ContactsResponsive";
 import ResponsiveSettings from "../Widgets/Settings/ResponsiveSettings";
+import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/PersonalResponsiveSettings";
 
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
@@ -94,29 +95,11 @@ export default function MainWrapper() {
             <ResponsiveSettings/>,
             document.getElementById("overlay") as HTMLElement
           )}
-          {/* {ui.showCreateGroupStep2 &&
-            createPortal(
-              <CreateGroupStep2 />,
-              document.getElementById("overlay") as HTMLElement
-            )}
           {createPortal(
-            <ContactsPopup />,
+            <PersonalResponsiveSettings/>,
             document.getElementById("overlay") as HTMLElement
           )}
-          {ui.showCreateContact &&
-            createPortal(
-              <CreateContact />,
-              document.getElementById("overlay") as HTMLElement
-            )}
-          {createPortal(
-            <MainSettings />,
-            document.getElementById("overlay") as HTMLElement
-          )}
-          {ui.showMyAccountSettings &&
-            createPortal(
-              <AccountSettings />,
-              document.getElementById("overlay") as HTMLElement
-            )} */}
+          
         </>
       )}
 
