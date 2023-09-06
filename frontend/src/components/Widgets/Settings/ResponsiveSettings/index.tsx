@@ -5,6 +5,7 @@ import { ReduxState } from "../../../../interfaces/redux";
 import Header from "./Header";
 import UserInfo from "./UserInfo";
 import SettingsList from "./SettingsList";
+import UserPhotos from "../../UserPhotos";
 
 
 export default function ResponsiveSettings() {
@@ -23,17 +24,7 @@ export default function ResponsiveSettings() {
       transition={{ease: 'easeOut'}}
     >
       <Header />
-      <div className="w-full h-[30rem] relative">
-        <img
-          src="https://sklepotaku.pl/userdata/public/news/images/4.jpg"
-          alt="User's avatar"
-          className="w-full h-full object-cover"
-        />
-        <div className="flex flex-col absolute bottom-[0.6rem] left-[1rem]">
-          <span className="text-xl font-medium">{"Username"}</span>
-          <span className="text-gray-300">{"User status"}</span>
-        </div>
-      </div>
+      <UserPhotos/>
       <UserInfo email={`yasv229@gmail.com`} userName={`lutsiu`} bio={`creator of this app`}/>
       <div className="mt-[1rem]">
         <SettingsList/>

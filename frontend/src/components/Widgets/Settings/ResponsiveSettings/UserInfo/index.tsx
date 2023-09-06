@@ -6,11 +6,11 @@ interface Props {
   email: string;
   bio: string;
 }
-export default function UserInfo(props: Props) {
+export default function UserInformation(props: Props) {
   const { userName, email, bio } = props;
   return (
     <div className="flex-col bg-gray-800">
-      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center">
+      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center hover:bg-gray-700 duration-200 rounded-xl cursor-pointer">
         <div>
           <AiOutlineMail className="text-3xl text-gray-400" />
         </div>
@@ -19,7 +19,7 @@ export default function UserInfo(props: Props) {
           <span className="text-gray-300 text-lg">Email</span>
         </div>
       </div>
-      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center">
+      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center hover:bg-gray-700 duration-200 rounded-xl cursor-pointer">
         <div>
           <HiAtSymbol className="text-3xl text-gray-400" />
         </div>
@@ -28,7 +28,7 @@ export default function UserInfo(props: Props) {
           <span className="text-gray-300 text-lg">Username</span>
         </div>
       </div>
-      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center">
+      <div className="flex gap-[2rem] py-[1rem] px-[1rem] items-center hover:bg-gray-700 duration-200 rounded-xl cursor-pointer">
         <div>
           <MdInfoOutline className="text-3xl text-gray-400" />
         </div>

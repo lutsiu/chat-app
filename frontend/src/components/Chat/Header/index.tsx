@@ -2,6 +2,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
 import MenuOverlay from "../Overlays/MenuOverlay";
+import ProfileOverlay from "../Overlays/ProfileOverlay";
 export default function Header() {
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -37,6 +38,7 @@ export default function Header() {
         </div>
       </nav>
       <MenuOverlay showOverlay={showMenuOverlay} setShowOverlay={setShowMenuOverlay}/>
+      <ProfileOverlay/>
     </>
   );
 }
