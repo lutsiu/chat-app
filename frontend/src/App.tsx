@@ -11,6 +11,7 @@ import { ReduxState } from "./interfaces/redux";
 import MainWrapper from "./components/Wrappers/MainWrapper";
 import { useEffect } from "react";
 import { hideEverything } from "./state/ui";
+import ChatPage from "./pages/Chat";
 function App() {
   const dispatch = useDispatch();
   const isAuthenticated = Boolean(
@@ -21,10 +22,13 @@ function App() {
     { path: "/sign-up", element: <SignupPage /> },
     {
       path: "/home",
-      element: isAuthenticated ? <MainWrapper/> : <Navigate to="/" />,
-      children: [
-        {index: true, element: <MainPage/>}
-      ]
+      element: isAuthenticated ? <MainWrapper /> : <Navigate to="/" />,
+      children: [{ index: true, element: <MainPage /> }],
+    },
+    {
+      path: "/:chat",
+      element: isAuthenticated ? <MainWrapper /> : <Navigate to="/" />,
+      children: [{index: true, element: <ChatPage/>}]
     },
   ]);
 

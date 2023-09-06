@@ -3,7 +3,7 @@ import { BsFillPinFill, BsBellSlash } from "react-icons/bs";
 import { BiArchiveIn } from "react-icons/bi";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useResponsive from "../../../hooks/useResponsive";
 interface Props {
   showContextMenu: boolean;
@@ -19,10 +19,21 @@ export default function ContextMenu(props: Props) {
     contextMenuTop,
   } = props;
   const [deleteIsActive, setDeleteIsActive] = useState(false);
+  const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const width = useResponsive();
+
+  useEffect(() => {
+    if (width < 768 && contextMenuLeft > width / 2) {
+      setShowMenuBeforeCursor(false);
+    }
+    if (width < 768 && contextMenuLeft < width / 2) {
+      setShowMenuBeforeCursor(true);
+    }
+  }, [width, contextMenuLeft]);
+
   return (
     <motion.div
-      className="context-menu-overlay fixed w-full h-full top-0 right-0 bottom-0 left-0 "
+      className="context-menu-overlay fixed z-[30] w-full h-full top-0 right-0 bottom-0 left-0 "
       animate={{
         opacity: showContextMenu ? 1 : 0,
         pointerEvents: showContextMenu ? "auto" : "none",
@@ -38,7 +49,10 @@ export default function ContextMenu(props: Props) {
     >
       <motion.div
         className="flex flex-col origin-top-left absolute bg-slate-800 p-[0.5rem] rounded-xl w-[16.5rem]"
-        style={{ top: contextMenuTop, left: contextMenuLeft - 165 }}
+        style={{
+          top: contextMenuTop,
+          left: showMenuBeforeCursor ? contextMenuLeft : contextMenuLeft - 160,
+        }}
         animate={{
           transform: showContextMenu ? "scale(100%)" : "scale(0)",
           opacity: showContextMenu ? 1 : 0,
@@ -67,7 +81,9 @@ export default function ContextMenu(props: Props) {
           onTouchStart={() => setDeleteIsActive(true)}
           onTouchEnd={() => setDeleteIsActive(false)}
           className="flex gap-[1rem] items-center pr-[1rem] py-[0.4rem] text-red-600 cursor-pointer rounded-lg px-[0.5rem]"
-          style={{ backgroundColor: deleteIsActive ? "rgba(220, 38, 38,0.3)":'' }}
+          style={{
+            backgroundColor: deleteIsActive ? "rgba(220, 38, 38,0.3)" : "",
+          }}
         >
           <AiTwotoneDelete className="min-h-[2.5rem] min-w-[2.5rem]" />
           <span className="font-semibold text-xl">Delete</span>
