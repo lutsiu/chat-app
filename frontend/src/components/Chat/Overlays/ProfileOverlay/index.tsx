@@ -4,6 +4,7 @@ import MainHeader from "./Headers/MainHeader";
 import ShareMediaHeader from "./Headers/ShareMediaHeader";
 import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";
+import SharedMedia from "./SharedMedia";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
@@ -11,7 +12,9 @@ interface Props {
 export default function ProfileOverlay(props: Props) {
   const { showOverlay, setShowOverlay } = props;
   const [initialHeader, setInitialHeader] = useState(true);
-
+  const [showMedia, setShowMedia] = useState(true);
+  const [showFiles, setShowFiles] = useState(false);
+  const [showGroups, setShowGroups] = useState(false);
   return (
     <motion.div
       className="md:w-[42rem] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0"
@@ -27,8 +30,17 @@ export default function ProfileOverlay(props: Props) {
         {/* <ShareMediaHeader/> */}
       </div>
       <UserInfo />
-      <BottomNavigationBar />
+      <BottomNavigationBar
+        setShowFiles={setShowFiles}
+        setShowGroups={setShowGroups}
+        setShowMedia={setShowMedia}
+      />
       <div className="h-[0.1rem] bg-black"></div>
+      <SharedMedia
+        showMedia={showMedia}
+        showFiles={showFiles}
+        showGroups={showGroups}
+      />
     </motion.div>
   );
 }
