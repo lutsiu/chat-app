@@ -4,6 +4,7 @@ import { useState } from "react";
 import MenuOverlay from "../Overlays/MenuOverlay";
 import ProfileOverlay from "../Overlays/ProfileOverlay";
 import EditProfile from "../Overlays/ProfileOverlay/EditProfile";
+import SearchOverlay from "../Overlays/SearchOverlay";
 export default function Header() {
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -29,7 +30,8 @@ export default function Header() {
             </span>
           </div>
           <div className="flex items-center gap-[2rem] text-gray-400">
-            <div>
+            <div onClick={() => setShowSearch(true)}>
+              
               <HiMagnifyingGlass className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer" />
             </div>
             <div onClick={() => setShowMenuOverlay(true)}>
@@ -42,6 +44,7 @@ export default function Header() {
         showOverlay={showMenuOverlay}
         setShowOverlay={setShowMenuOverlay}
       />
+      <SearchOverlay showSearch={showSearch} setShowSearch={setShowSearch}/>
       <ProfileOverlay
         setShowOverlay={setShowProfile}
         showOverlay={showProfile}

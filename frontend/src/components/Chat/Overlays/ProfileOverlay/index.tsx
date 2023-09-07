@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import MainHeader from "./Headers/MainHeader";
-import ShareMediaHeader from "./Headers/ShareMediaHeader";
 import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";
 import SharedMedia from "./SharedMedia";
@@ -11,7 +10,6 @@ interface Props {
 }
 export default function ProfileOverlay(props: Props) {
   const { showOverlay, setShowOverlay } = props;
-  const [initialHeader, setInitialHeader] = useState(true);
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -24,10 +22,9 @@ export default function ProfileOverlay(props: Props) {
     >
       <div className="sticky top-0 z-20 py-[0.8rem] bg-slate-800 px-[2rem]">
         <MainHeader
-          showHeader={initialHeader}
           setShowOverlay={setShowOverlay}
         />
-        {/* <ShareMediaHeader/> */}
+
       </div>
       <UserInfo />
       <BottomNavigationBar
