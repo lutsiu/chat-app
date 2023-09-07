@@ -19,7 +19,7 @@ export default function ContactsPopup() {
   const [sortDescending, setSortDescending] = useState(true);
   return (
     <motion.form
-      className="absolute md:top-[15%] 2xl:top-[20%] left-[40%] bg-gray-900 py-[1rem]  rounded-xl flex flex-col "
+      className="absolute md:top-[15%] 2xl:top-[20%] left-[40%] bg-gray-900 py-[1rem]  rounded-xl flex flex-col z-[50]"
       initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
       animate={{
         opacity: showContacts ? 1 : 0,

@@ -9,7 +9,7 @@ export default function MainSettings() {
 
   return (
     <motion.div
-      className="absolute top-[5%] md:left-[30%] lg:left-[35%] 2xl:left-[40%] bg-gray-800 rounded-3xl overflow-x-hidden flex flex-col gap-[1rem]"
+      className="absolute top-[5%] md:left-[30%] lg:left-[35%] 2xl:left-[40%] bg-gray-800 rounded-3xl overflow-x-hidden flex flex-col gap-[1rem] z-[50]"
       initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
       animate={{
         opacity: showSettings ? 1 : 0,

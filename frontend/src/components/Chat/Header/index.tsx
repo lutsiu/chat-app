@@ -3,11 +3,11 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
 import MenuOverlay from "../Overlays/MenuOverlay";
 import ProfileOverlay from "../Overlays/ProfileOverlay";
+import EditProfile from "../Overlays/ProfileOverlay/EditProfile";
 export default function Header() {
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-
   return (
     <>
       <nav className="flex sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[2rem] gap-[1.4rem]">
@@ -15,7 +15,8 @@ export default function Header() {
           <img
             src="https://sklepotaku.pl/userdata/public/news/images/4.jpg"
             alt="Avatar"
-            className="w-full h-full object-cover "
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setShowProfile((prev) => !prev)}
           />
         </div>
         <div className="flex-1 flex justify-between">
@@ -37,8 +38,15 @@ export default function Header() {
           </div>
         </div>
       </nav>
-      <MenuOverlay showOverlay={showMenuOverlay} setShowOverlay={setShowMenuOverlay}/>
-      <ProfileOverlay/>
+      <MenuOverlay
+        showOverlay={showMenuOverlay}
+        setShowOverlay={setShowMenuOverlay}
+      />
+      <ProfileOverlay
+        setShowOverlay={setShowProfile}
+        showOverlay={showProfile}
+      />
+      <EditProfile setShowProfile={setShowProfile} />
     </>
   );
 }

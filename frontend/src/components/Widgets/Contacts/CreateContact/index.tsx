@@ -61,7 +61,7 @@ export default function CreateContact() {
 
   return (
     <form
-      className="absolute top-[50%] left-[50%] bg-gray-900 pt-[1.5rem] pb-[1rem] pl-[2rem] rounded-2xl 2xl:w-[35rem]"
+      className="absolute top-[50%] left-[50%] bg-gray-900 pt-[1.5rem] pb-[1rem] pl-[2rem] rounded-2xl 2xl:w-[35rem] z-[50]"
       style={{ transform: "translate(-50%, -50%)" }}
     >
       <h3 className="text-2xl font-medium">New Contact</h3>

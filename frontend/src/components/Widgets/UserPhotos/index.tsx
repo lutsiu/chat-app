@@ -4,6 +4,7 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import styles from "./styles.module.scss";
 export default function UserPhotos() {
   const [activePhoto, setActivePhoto] = useState(0);
+  const [photoIsHovered, setPhotoIsHovered] = useState(false);
   const photos = [
     "https://sklepotaku.pl/userdata/public/news/images/4.jpg",
     "https://otakusnotes.com/wp-content/uploads/2021/03/Dr.-Stone-Chapter-189-Spoilers-and-Release-Date.jpg",
@@ -12,8 +13,8 @@ export default function UserPhotos() {
 
   function scrollPhotoForward() {
     if (activePhoto !== photos.length) {
-      setActivePhoto(prev => prev + 1)
-    } 
+      setActivePhoto((prev) => prev + 1);
+    }
     if (activePhoto === photos.length - 1) {
       setActivePhoto(0);
     }
@@ -21,14 +22,25 @@ export default function UserPhotos() {
 
   function scrollPhotoBackwards() {
     if (activePhoto !== 0) {
-      setActivePhoto(prev => prev - 1)
-    } if (activePhoto === 0) {
-      setActivePhoto(photos.length  -1)
+      setActivePhoto((prev) => prev - 1);
+    }
+    if (activePhoto === 0) {
+      setActivePhoto(photos.length - 1);
     }
   }
   return (
-    <div className="w-full h-[30rem] sm:h-[35rem] md:h-[42rem] relative">
-      <img src={photos[activePhoto]} className="w-full h-full object-cover" alt="Avatar" />
+    <div
+      className="w-full h-[30rem] sm:h-[35rem] md:h-[42rem] relative"
+      onMouseEnter={() => setPhotoIsHovered(true)}
+      onMouseLeave={() => setPhotoIsHovered(false)}
+      onTouchStart={() => setPhotoIsHovered(true)}
+      onTouchEnd={() => setPhotoIsHovered(false)}
+    >
+      <img
+        src={photos[activePhoto]}
+        className="w-full h-full object-cover"
+        alt="Avatar"
+      />
       <div className="absolute bottom-[1rem] left-[1rem] flex flex-col gap-[0.2rem]">
         <span className="text-3xl font-medium">{`Username`}</span>
         <span className="text-xl font-medium text-gray-300">{`User status`}</span>
@@ -50,7 +62,7 @@ export default function UserPhotos() {
           );
         })}
       </div>
-      {photos.length > 1 && (
+      {photos.length > 1 && photoIsHovered && (
         <div className="absolute  w-full h-full top-0 flex justify-between">
           <div
             className={`${styles.chevronParent} h-full w-[20%] flex items-center pl-[1rem] cursor-pointer`}

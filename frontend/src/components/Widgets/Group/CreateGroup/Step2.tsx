@@ -12,7 +12,7 @@ export default function CreateGroupStep2() {
 
   return (
     <form
-      className="absolute top-[50%] left-[50%] bg-gray-900 py-[1rem] rounded-xl 2xl:max-w-[35rem]"
+      className="absolute top-[50%] left-[50%] bg-gray-900 py-[1rem] rounded-xl 2xl:max-w-[35rem] z-[50]"
       style={{ transform: "translate(-50%, -50%)" }}
     >
       <p className="text-2xl font-medium pl-[2rem] pt-[0.5rem] mb-[1rem]">

@@ -55,7 +55,7 @@ export default function CreateGroupStep1() {
   return (
     <motion.form
     onSubmit={formik.handleSubmit}
-      className="absolute md:top-[30%] 2xl:top-[40%] md:left-[35%] lg:left-[40%] 2xl:left-[40%] bg-gray-800 py-[1rem] pl-[2rem] pr-[1rem] rounded-xl flex gap-[2rem]"
+      className="absolute md:top-[30%] 2xl:top-[40%] md:left-[35%] lg:left-[40%] 2xl:left-[40%] bg-gray-800 py-[1rem] pl-[2rem] pr-[1rem] rounded-xl flex gap-[2rem] z-[50]"
       initial={{ opacity: 0, x: 100, pointerEvents: "none" }}
       animate={{
         opacity: ui.showCreateGroupStep1 ? 1 : 0,

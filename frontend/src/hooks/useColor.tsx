@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { gray, pink, mediumPurple } from "../utils/colors";
+import { lightGray, pink, mediumPurple } from "../utils/colors";
 
 export default function useColor(
   error: string | undefined,
   touched: boolean | undefined
 ) {
-  const [color, setColor] = useState(gray);
+  const [color, setColor] = useState(lightGray);
 
   useEffect(() => {
     if (!touched && !error) {
-      setColor(gray);
+      setColor(lightGray);
     }
     if (touched && !error) {
       setColor(mediumPurple)

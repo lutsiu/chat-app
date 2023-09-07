@@ -21,7 +21,7 @@ export interface UiInitialState {
   showCreateContact: boolean,
   showSettings: boolean;
   showMyAccountSettings: boolean;
-
+  showEditContactProfile: boolean
 }
 
 export interface CreateGroupInitial {

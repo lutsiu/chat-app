@@ -12,7 +12,7 @@ export default function Overlay(props: Props) {
   const { ui } = useSelector((state: ReduxState) => state);
   return (
     <motion.div
-      className="left-menu-overlay absolute w-full h-full top-0 right-0 bottom-0 left-0"
+      className="left-menu-overlay absolute w-full h-full top-0 right-0 bottom-0 left-0 z-[20]"
       initial={{ opacity: 0, pointerEvents: "none" }}
       animate={{
         pointerEvents: ui.showOverlay ? "auto" : "none",

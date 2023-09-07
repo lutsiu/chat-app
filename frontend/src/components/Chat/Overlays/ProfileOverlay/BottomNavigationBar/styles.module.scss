@@ -1,5 +1,5 @@
 .span {
-  @apply text-purple-600 relative;
+  @apply text-purple-600 relative duration-500;
   &::after {
     content: "";
     @apply absolute w-full h-[0.3rem] bg-purple-600 bottom-[-1.5rem] left-0 rounded-t-lg;
