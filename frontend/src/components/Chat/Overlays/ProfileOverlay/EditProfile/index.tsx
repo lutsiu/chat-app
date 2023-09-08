@@ -46,7 +46,7 @@ export default function EditProfile(props: Props) {
   return (
     <motion.form
       onSubmit={formik.handleSubmit}
-      className="md:w-[42rem] h-full overflow-y-scroll bg-gray-900 absolute top-0 right-0"
+      className="w-full md:w-[42rem] h-full overflow-y-scroll bg-gray-900 absolute top-0 right-0"
       initial={{ x: 1000 }}
       animate={{ x: showEditContactProfile ? 0 : 1000 }}
       transition={{ duration: 0.25 }}

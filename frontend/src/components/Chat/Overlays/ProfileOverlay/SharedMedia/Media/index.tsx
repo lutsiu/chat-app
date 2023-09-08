@@ -15,9 +15,8 @@ export default function Media(props: Props) {
             </h3>
             <ul className="mt-[1rem] grid grid-cols-3 gap-[0.2rem]">
               {mediaObj.media.map((media, i) => {
-                console.log(100 / mediaObj.media.length);
                 return (
-                  <li key={i} className="h-[12rem]">
+                  <li key={i} className="h-[16rem] md:h-[12rem]">
                     <img
                       src={media}
                       alt="img"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import styles from "./styles.module.scss";
 export default function UserPhotos() {
@@ -30,17 +30,27 @@ export default function UserPhotos() {
   }
   return (
     <div
-      className="w-full h-[30rem] sm:h-[35rem] md:h-[42rem] relative"
+      className="w-full h-[50rem] md:h-[42rem] relative flex "
       onMouseEnter={() => setPhotoIsHovered(true)}
       onMouseLeave={() => setPhotoIsHovered(false)}
       onTouchStart={() => setPhotoIsHovered(true)}
       onTouchEnd={() => setPhotoIsHovered(false)}
     >
-      <img
-        src={photos[activePhoto]}
-        className="w-full h-full object-cover"
-        alt="Avatar"
-      />
+      <div
+        className="flex w-full h-full ease-in-out duration-300"
+        style={{ transform: `translateX(-${activePhoto * 100}%)` }}
+      >
+        {photos.map((photo, i) => {
+          return (
+            <img
+              key={i}
+              src={photo}
+              loading="lazy"
+              className="h-full object-cover block min-w-full max-w-full"
+            />
+          );
+        })}
+      </div>
       <div className="absolute bottom-[1rem] left-[1rem] flex flex-col gap-[0.2rem]">
         <span className="text-3xl font-medium">{`Username`}</span>
         <span className="text-xl font-medium text-gray-300">{`User status`}</span>

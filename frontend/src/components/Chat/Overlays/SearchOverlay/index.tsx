@@ -5,11 +5,12 @@ import Header from "./Header";
 interface Props {
   showSearch: boolean;
   setShowSearch: (show: boolean) => void;
+  query: string, 
+  setQuery: (query: string) => void
 }
 export default function SearchOverlay(props: Props) {
-  const { showSearch, setShowSearch } = props;
+  const { showSearch, setShowSearch, query, setQuery } = props;
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [query, setQuery] = useState("");
 
   const messages: {
     sender: string;

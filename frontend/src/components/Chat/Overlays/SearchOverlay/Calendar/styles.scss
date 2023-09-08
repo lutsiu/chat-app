@@ -1,6 +1,7 @@
 .react-calendar {
-  @apply bg-gray-800 border-none rounded-t-xl;
+  @apply bg-gray-800 border-none rounded-t-xl font-medium text-xl sm:max-w-[35rem] max-w-[30rem];
   &__navigation {
+    @apply text-2xl;
     button {
       border-radius: 0 !important; 
       &:disabled {
@@ -10,8 +11,9 @@
     &__prev-button {
       &:disabled {
         @apply text-gray-500;
+        @apply text-4xl
       }
-    @apply text-4xl
+      @apply text-4xl
     }
     &__next-button {
       @apply text-4xl

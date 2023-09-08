@@ -1,19 +1,22 @@
 import { motion } from "framer-motion";
 import { PiBellSlashLight, PiShareFat } from "react-icons/pi";
-import { HiMiniGift } from "react-icons/hi2";
+import { HiMiniGift, HiMagnifyingGlass } from "react-icons/hi2";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { BiSolidLockAlt } from "react-icons/bi";
 import { BsUnlockFill } from "react-icons/bs";
 import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useState } from "react";
+import useResponsive from "../../../../hooks/useResponsive";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
+  setShowSearch: (show: boolean) => void;
 }
 
 export default function MenuOverlay(props: Props) {
-  const { showOverlay, setShowOverlay } = props;
+  const { showOverlay, setShowOverlay, setShowSearch } = props;
   const [deleteIsActive, setDeleteIsActive] = useState(false);
+  const width = useResponsive();
   return (
     <motion.div
       className="menu-overlay fixed  w-full h-full top-0 right-0 bottom-0 left-0"
@@ -34,8 +37,20 @@ export default function MenuOverlay(props: Props) {
           transform: showOverlay ? "scale(100%)" : "scale(0)",
           opacity: showOverlay ? 1 : 0,
         }}
-        transition={{duration: 0.25}}
+        transition={{ duration: 0.25 }}
       >
+        {width < 768 && (
+          <div
+            className="py-[0.6rem] px-[1rem] flex items-center gap-[1rem] rounded-lg hover:bg-gray-700 duration-200 cursor-pointer"
+            onClick={() => {
+              setShowSearch(true);
+              setShowOverlay(false);
+            }}
+          >
+            <HiMagnifyingGlass className="text-3xl" />
+            <span className="font-bold text-xl">Search</span>
+          </div>
+        )}
         <div className="py-[0.6rem] px-[1rem] flex items-center gap-[1rem] rounded-lg hover:bg-gray-700 duration-200 cursor-pointer">
           <PiBellSlashLight className="text-3xl" />
           <span className="font-bold text-xl">Mute</span>
