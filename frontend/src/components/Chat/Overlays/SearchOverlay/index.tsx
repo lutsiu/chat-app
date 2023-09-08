@@ -8,7 +8,7 @@ interface Props {
 }
 export default function SearchOverlay(props: Props) {
   const { showSearch, setShowSearch } = props;
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [query, setQuery] = useState("");
 
   const messages: {
@@ -54,10 +54,16 @@ export default function SearchOverlay(props: Props) {
       animate={{ x: showSearch ? 0 : 1000 }}
       transition={{ duration: 0.25 }}
     >
-      <Header query={query} setQuery={setQuery} setShowSearch={setShowSearch} />
+      <Header
+        query={query}
+        setQuery={setQuery}
+        setShowSearch={setShowSearch}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
       <div className="pt-[2rem]">
         <h3 className="text-xl text-gray-300 font-medium  pl-[3rem]">{`${"200"} messages found`}</h3>
-        <ul className="overflow-y-scroll w-full px-[1rem] mt-[1.5rem]">
+        <ul className="w-full px-[1rem] mt-[1.5rem] ">
           {messages.map((msg, i) => {
             return (
               <li

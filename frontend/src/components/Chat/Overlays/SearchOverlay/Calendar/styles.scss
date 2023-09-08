@@ -1,0 +1,47 @@
+.react-calendar {
+  @apply bg-gray-800 border-none rounded-t-xl;
+  &__navigation {
+    button {
+      border-radius: 0 !important; 
+      &:disabled {
+        @apply bg-gray-800;
+      }
+    }
+    &__prev-button {
+      &:disabled {
+        @apply text-gray-500;
+      }
+    @apply text-4xl
+    }
+    &__next-button {
+      @apply text-4xl
+    }
+  }
+  button:enabled {
+    @apply rounded-2xl;
+  }
+  button:enabled:hover {
+    @apply bg-gray-700;
+  }
+  button:enabled:focus {
+    @apply bg-gray-700
+  }
+  button:enabled:disabled {
+    @apply bg-gray-700
+  }
+  &__tile:disabled {
+    @apply bg-gray-800 text-gray-500;
+  }
+  &__month-view__weekdays__weekday {
+    @apply border-none;
+    abbr {
+      text-decoration: none;
+    }
+  }
+}
+
+.form-button {
+  &:hover {
+    background-color: rgba(55, 65, 81, .3) ;
+  }
+}
