@@ -12,6 +12,7 @@ export default function Groups(props: Props) {
           <Link
             to={`/${group.title}`}
             className="px-[1rem] py-[0.7rem] flex gap-[2rem] hover:bg-gray-700 rounded-xl duration-200 cursor-pointer"
+            key={i}
           >
             <div className="w-[4rem] h-[4rem] overflow-hidden rounded-full">
               <img

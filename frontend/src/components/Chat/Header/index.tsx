@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ResponsiveSearch from "../Overlays/SearchOverlay/Responsive";
 export default function Header() {
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
-  const [showSearch, setShowSearch] = useState(true);
+  const [showSearch, setShowSearch] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [query, setQuery] = useState("");
   const width = useResponsive();
