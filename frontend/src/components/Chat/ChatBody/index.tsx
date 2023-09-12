@@ -6,11 +6,12 @@ import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
 import { motion } from "framer-motion";
 import SendFilesPopup from "./Popups/SendFilesPopup";
 import SendFile from "./Overlays/SendFile";
+import MediaFilesPopup from "./Overlays/SendMedia";
 export default function ChatBody() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [showFilesPopup, setShowFilesPopup] = useState(false);
-  const [showSendFile, setShowSendFile] = useState(false);
-  const [showSendMedia, setShowSendMedia] = useState(false);
+  const [showFileOverlay, setShowFileOverlay] = useState(false);
+  const [showMediaOverlay, setShowMediaOverlay] = useState(false);
   const [media, setMedia] = useState<null | Blob[]>(null);
   const [file, setFile] = useState<null | File>(null);
   const inputRef = useRef<null | HTMLInputElement>(null);
@@ -52,11 +53,12 @@ export default function ChatBody() {
 
   useEffect(() => {
     if (file) {
-      setShowSendFile(true);
+      setShowFileOverlay(true);
     }
-  }, [file]);
-
-  
+    if (media) {
+      setShowMediaOverlay(true);
+    }
+  }, [file, media]);
 
   return (
     <>
@@ -104,7 +106,18 @@ export default function ChatBody() {
           </div>
         </form>
       </div>
-      <SendFile showOverlay={showSendFile} setShowOverlay={setShowSendFile} fileName={file?.name || ''} size={file?.size || 0}/>
+      <SendFile
+        showOverlay={showFileOverlay}
+        setShowOverlay={setShowFileOverlay}
+        fileName={file?.name || ""}
+        size={file?.size || 0}
+      />
+      <MediaFilesPopup
+        showOverlay={showMediaOverlay}
+        setShowOverlay={setShowMediaOverlay}
+        media={media}
+        setMedia={setMedia}
+      />
     </>
   );
 }

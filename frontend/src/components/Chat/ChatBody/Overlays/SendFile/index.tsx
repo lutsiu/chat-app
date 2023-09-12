@@ -9,9 +9,9 @@ interface Props {
 }
 export default function SendFile(props: Props) {
   const { showOverlay, setShowOverlay, fileName, size } = props;
-
+  const MILLION = 1000000;
   const indexOfLastDot = fileName.lastIndexOf('.');
-
+  const unitOfMeasure = size <  MILLION ? 'KB' : 'MB';
   const properFilename = fileName.length >= 40 ? fileName.slice(0, 20) + '...' + fileName.slice(indexOfLastDot, -1) : fileName; 
 
   function handleCloseOverlay(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -52,7 +52,7 @@ export default function SendFile(props: Props) {
           </div>
           <div>
             <p className="text-2xl font-medium">{properFilename}</p>
-            <p className="text-xl text-gray-300">{(size / 1000000).toFixed(2)}MB</p>
+            <p className="text-xl text-gray-300">{(size < MILLION ? size /  10000 : size / MILLION).toFixed(2)}{unitOfMeasure}</p>
           </div>
         </div>
         <div className="flex gap-[1rem]">
