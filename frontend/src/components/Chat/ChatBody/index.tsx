@@ -7,25 +7,18 @@ import { motion } from "framer-motion";
 import SendFilesPopup from "./Popups/SendFilesPopup";
 import SendFile from "./Overlays/SendFile";
 import MediaFilesPopup from "./Overlays/SendMedia";
+import socket from "../../../utils/socketIo";
+import { IoMdSend } from "react-icons/io";
 export default function ChatBody() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [showFilesPopup, setShowFilesPopup] = useState(false);
   const [showFileOverlay, setShowFileOverlay] = useState(false);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
   const [media, setMedia] = useState<null | Blob[]>(null);
+  const [inputValue, setInputValue] = useState("");
   const [file, setFile] = useState<null | File>(null);
   const inputRef = useRef<null | HTMLInputElement>(null);
   const width = useResponsive();
-  const handlePickEmoji = (emoji: EmojiClickData, e: MouseEvent) => {
-    const pickedEmoji = emoji.emoji;
-    if (inputRef.current) {
-      inputRef.current.value = `${inputRef.current.value}${pickedEmoji}`;
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-  };
 
   useEffect(() => {
     function handleClosePickerAndSendFiles(e: MouseEvent) {
@@ -60,49 +53,59 @@ export default function ChatBody() {
     }
   }, [file, media]);
 
+  async function sendMessage(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      console.log(inputValue);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <>
-      <div className="flex-1 w-full bg-green-400 ">
-        <form className="fixed w-[100%] md:w-[60%] bottom-[1.5rem] md:ml-[2.5%] bg-gray-700 flex py-[1.5rem] px-[1.5rem] items-center rounded-2xl">
-          <div>
-            <FaRegSmile
-              className="smile-picker p-[0.3rem] min-w-[2.8rem] min-h-[2.8rem] text-gray-400 cursor-pointer rounded-full duration-200 hover:text-purple-500 relative"
-              onClick={() => setShowEmojis((prev) => !prev)}
-            />
-            <motion.div
-              className="absolute top-[-45.5rem] left-[-0.1rem] origin-bottom-left"
-              initial={{ transform: "scale(0)" }}
-              animate={{
-                transform: showEmojis ? "scale(100%)" : "scale(0%)",
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <EmojiPicker
-                lazyLoadEmojis={true}
-                skinTonesDisabled={true}
-                theme={Theme.DARK}
-                onEmojiClick={handlePickEmoji}
+      <div className="flex-1 w-full">
+        <form
+          className="fixed bottom-[2rem] flex gap-[1rem] px-[1rem] md:w-[65%] w-full "
+          onSubmit={sendMessage}
+        >
+          <div className="flex-1 max-w-full flex items-center rounded-2xl bg-gray-700 px-[1rem] py-[1rem]">
+            <div>
+              <FaRegSmile className="p-[0.3rem] min-w-[2.8rem] min-h-[2.8rem] text-gray-400 cursor-pointer rounded-full duration-200 hover:text-purple-500 relative" />
+            </div>
+            <div className="flex-1">
+              <input
+                placeholder="Message"
+                onChange={(e) => setInputValue(e.currentTarget.value)}
+                value={inputValue}
+                name="message"
+                className="message-input w-full outline-none bg-transparent sm:text-2xl text-2xl font-normal px-[1rem] box-border"
               />
-            </motion.div>
-          </div>
-          <input
-            className="h-full flex-1 px-[2rem] bg-transparent outline-none text-2xl font-normal message-input"
-            placeholder="Message"
-            onChange={handleInputChange}
-            ref={inputRef}
-            name="message"
-          />
-          <div className="relative">
-            <AiOutlinePaperClip
-              className="open-files-popup p-[0.3rem] min-w-[3.2rem] min-h-[3.2rem] text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
-              style={{ transform: "rotateZ(180deg)" }}
-              onClick={() => setShowFilesPopup((prev) => !prev)}
-            />
-            <SendFilesPopup
-              showPopup={showFilesPopup}
-              setFile={setFile}
-              setMedia={setMedia}
-            />
+            </div>
+            <div  className="relative min-w-[3.2rem] min-h-[3.2rem] max-w-[3.2rem] max-h-[3.2rem]">
+              {!inputValue && (
+                <>
+                  <AiOutlinePaperClip
+                    className="open-files-popup p-[0.3rem] w-full h-full text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
+                    style={{ transform: "rotateZ(180deg)" }}
+                    onClick={() => setShowFilesPopup((prev) => !prev)}
+                  />
+                  <SendFilesPopup
+                    showPopup={showFilesPopup}
+                    setFile={setFile}
+                    setMedia={setMedia}
+                  />
+                </>
+              )}
+              {inputValue && (
+                <button type="submit" className="w-full h-full">
+                  <IoMdSend
+                    className="open-files-popup p-[0.3rem] w-full h-full text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
+                    onClick={() => setShowFilesPopup((prev) => !prev)}
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </form>
       </div>
@@ -121,3 +124,54 @@ export default function ChatBody() {
     </>
   );
 }
+
+/* <form className="fixed bottom-[2rem] flex gap-[1rem] px-[1rem] md:w-[65%] w-full max-w-full">
+          <div className="flex-1 max-w-full flex items-center rounded-2xl bg-gray-700 px-[1rem]">
+            <div>
+              <FaRegSmile
+                className="smile-picker p-[0.3rem] min-w-[2.8rem] min-h-[2.8rem] text-gray-400 cursor-pointer rounded-full duration-200 hover:text-purple-500 relative"
+                onClick={() => setShowEmojis((prev) => !prev)}
+              />
+              <motion.div
+                className="absolute top-[-45.5rem] left-[1rem] origin-bottom-left"
+                initial={{ transform: "scale(0)" }}
+                animate={{
+                  transform: showEmojis ? "scale(100%)" : "scale(0%)",
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <EmojiPicker
+                  lazyLoadEmojis={true}
+                  skinTonesDisabled={true}
+                  theme={Theme.DARK}
+                  onEmojiClick={handlePickEmoji}
+                />
+              </motion.div>
+            </div>
+            <input
+              className="h-full flex-1 px-[2rem] bg-transparent outline-none text-2xl font-normal message-input"
+              placeholder="Message"
+              onChange={handleInputChange}
+              ref={inputRef}
+              name="message"
+            />
+            <div className="relative">
+              <AiOutlinePaperClip
+                className="open-files-popup p-[0.3rem] min-w-[3.2rem] min-h-[3.2rem] text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
+                style={{ transform: "rotateZ(180deg)" }}
+                onClick={() => setShowFilesPopup((prev) => !prev)}
+              />
+              <SendFilesPopup
+                showPopup={showFilesPopup}
+                setFile={setFile}
+                setMedia={setMedia}
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className=" flex items-center justify-center  p-[1.7rem] rounded-full bg-purple-500 duration-200 hover:bg-purple-600 cursor-pointer"
+          >
+            <IoMdSend className="text-4xl" />
+          </button>
+        </form> */

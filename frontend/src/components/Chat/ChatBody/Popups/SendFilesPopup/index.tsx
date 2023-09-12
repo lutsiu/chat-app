@@ -68,7 +68,7 @@ export default function SendFilesPopup(props: Props) {
       initial={{ transform: "scale(0)" }}
       animate={{ transform: showPopup ? "scale(100%)" : "scale(0)" }}
       transition={{ duration: 0.1 }}
-      className="files-popup absolute bg-slate-700 top-[-10rem] right-[-1.3rem] rounded-2xl overflow-hidden w-[18rem] origin-bottom-right"
+      className="files-popup absolute bg-slate-700 top-[-10rem] right-[-.7rem] rounded-2xl overflow-hidden w-[18rem] origin-bottom-right"
     >
       <div
         {...getMediaRootProps({
