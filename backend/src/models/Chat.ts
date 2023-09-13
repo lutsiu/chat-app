@@ -7,6 +7,7 @@ const chatSchema = new mongoose.Schema({
     message: String,
     images: [{type: String}],
     videos: [{type: String}],
+    files: [{type: String}],
     timeStamp: {type: Date, default: Date.now()}
   }]
 });
