@@ -54,7 +54,6 @@ export default function LoginForm() {
         const data = (await res.json()) as { user: UserModel; token: string };
         const {user, token} = data;
         dispatch(setLogin({user, token}));
-
         navigate('/home')
       }
     } catch (err) {

@@ -28,6 +28,7 @@ export default function ResponsiveSearch(props: Props) {
         onFocus={() => setInputIsFocused(true)}
         onBlur={() => setInputIsFocused(false)}
         onChange={(e) => setQuery(e.currentTarget.value)}
+        value={query}
       />
       <IoMdClose
         className="text-4xl duration-200 absolute right-[0.5rem] top-[0.75rem] cursor-pointer"

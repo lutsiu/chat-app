@@ -13,29 +13,29 @@ import { useEffect, useState } from "react";
 import { hideEverything } from "./state/ui";
 import ChatPage from "./pages/Chat";
 import useResponsive from "./hooks/useResponsive";
+import { SocketProvider } from "./context/SocketContext";
 function App() {
   const dispatch = useDispatch();
   const isAuthenticated = Boolean(
     useSelector((state: ReduxState) => state.user.token)
   );
   const width = useResponsive();
-  const [chatElement, setChatElement] = useState(<MainWrapper/>);
+  const [chatElement, setChatElement] = useState(<MainWrapper />);
 
   useEffect(() => {
     if (width >= 768) {
       if (isAuthenticated) {
-        setChatElement(<MainWrapper/>);
+        setChatElement(<MainWrapper />);
       } else {
         setChatElement(<Navigate to="/" />);
       }
     } else {
       if (isAuthenticated) {
-        setChatElement(<ChatPage/>)
+        setChatElement(<ChatPage />);
       } else {
         setChatElement(<Navigate to="/" />);
       }
     }
-    
   }, [width, isAuthenticated]);
 
   const router = createBrowserRouter([
@@ -49,7 +49,7 @@ function App() {
     {
       path: "/:chat",
       element: chatElement,
-      children: width >= 768 ? [{index: true, element: <ChatPage/>}] : []
+      children: width >= 768 ? [{ index: true, element: <ChatPage /> }] : [],
     },
   ]);
 
@@ -57,7 +57,11 @@ function App() {
     dispatch(hideEverything());
   }, [dispatch]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <SocketProvider serverUrl="http://localhost:3000">
+      <RouterProvider router={router} />
+    </SocketProvider>
+  );
 }
 
 export default App;

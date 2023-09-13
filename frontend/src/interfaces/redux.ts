@@ -1,15 +1,20 @@
 import { UserModel } from "./models";
-
+import {Socket} from 'socket.io-client'
 export interface UserInitialState {
   user: null | UserModel;
   token: null | string;
-  
 }
 export interface LoginState {
   payload: {
     user: UserModel;
     token: string;
   };
+}
+export interface ReduxState {
+  user: UserInitialState;
+  ui: UiInitialState;
+  createGroup: CreateGroupInitial;
+
 }
 
 export interface UiInitialState {
@@ -21,8 +26,10 @@ export interface UiInitialState {
   showCreateContact: boolean,
   showSettings: boolean;
   showMyAccountSettings: boolean;
-  showEditContactProfile: boolean
+  showEditContactProfile: boolean;
+  showWarningPopup: boolean
 }
+
 
 export interface CreateGroupInitial {
   groupName: string;
@@ -43,8 +50,3 @@ export interface ActionWithGroupUser {
   }
 }
 
-export interface ReduxState {
-  user: UserInitialState;
-  ui: UiInitialState;
-  createGroup: CreateGroupInitial 
-}

@@ -12,10 +12,22 @@ html {
 html,
 :root,
 body {
-  @apply h-full w-full box-border m-0 p-0 bg-black text-white max-h-[100vh] min-h-[100vh] overflow-hidden; 
+  @apply h-full w-full box-border m-0 p-0 bg-black text-white max-h-[100vh] min-h-[100vh] ; 
   
 }
 ul {
   @apply m-0 p-0
 }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+::-webkit-scrollbar {
+  width: 8px; 
+}
 
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 4px;
+}

@@ -17,7 +17,7 @@ const persistConfig = { key: "root", storage, version: 1 };
 const rootReducer = combineReducers({
   user: userReducer,
   ui: uiReducer,
-  createGroup: createGroupReducer
+  createGroup: createGroupReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

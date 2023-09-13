@@ -11,6 +11,7 @@ const initialState: UiInitialState = {
   showSettings: false,
   showMyAccountSettings: false,
   showEditContactProfile: false,
+  showWarningPopup: false
 };
 
 const uiSlice = createSlice({
@@ -44,7 +45,9 @@ const uiSlice = createSlice({
     setShowEditContactProfile: (state) => {
       state.showEditContactProfile = state.showEditContactProfile ? false : true;
     },
-
+    setShowWarningPopup: (state) => {
+      state.showWarningPopup = state.showWarningPopup ? false : true;
+    },
     hideEverything: (state) => {
       state.showOverlay = false;
       state.showContacts = false;
@@ -55,6 +58,7 @@ const uiSlice = createSlice({
       state.showMyAccountSettings = false;
       state.showSettings = false;
       state.showEditContactProfile = false
+      state.showWarningPopup= false
     },
   },
 });
@@ -70,6 +74,7 @@ export const {
   setShowSettings,
   setShowMyAccountSettings,
   setShowEditContactProfile,
+  setShowWarningPopup,
   hideEverything,
 
 } = uiSlice.actions;

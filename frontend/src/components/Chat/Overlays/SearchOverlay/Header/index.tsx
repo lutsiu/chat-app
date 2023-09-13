@@ -34,6 +34,7 @@ export default function Header(props: Props) {
             name="chatQuery"
             className="w-full bg-transparent outline-none text-2xl font-medium px-[2.5rem]"
             placeholder="Search"
+            value={query}
             onFocus={() => setInputIsFocused(true)}
             onBlur={() => setInputIsFocused(false)}
             onChange={(e) => setQuery(e.currentTarget.value)}

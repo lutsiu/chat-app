@@ -16,6 +16,7 @@ export default function Header() {
   const [query, setQuery] = useState("");
   const width = useResponsive();
   const navigate = useNavigate();
+  const showNavContent = (width < 768 && !showSearch) || width >= 768;
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -34,7 +35,7 @@ export default function Header() {
           </div>
         )}
 
-        {(width < 768 && !showSearch) || width >= 768 && (
+        {showNavContent && (
           <>
             <div className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
               <img

@@ -4,6 +4,7 @@ export default {
   theme: {
     extend: {
       screens: {
+        mb: {min: '350px'},
         sm: { min: "576px" },
         md: { min: "768px" },
         lg: { min: "992px" },

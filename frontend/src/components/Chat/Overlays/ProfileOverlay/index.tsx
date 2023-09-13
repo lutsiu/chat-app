@@ -15,7 +15,7 @@ export default function ProfileOverlay(props: Props) {
   const [showGroups, setShowGroups] = useState(false);
   return (
     <motion.div
-      className="md:w-[42rem] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0"
+      className="md:w-[42rem] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0 z-10"
       initial={{ x: 1000 }}
       animate={{ x: showOverlay ? 0 : 1000 }}
       transition={{ duration: 0.25 }}

@@ -50,7 +50,7 @@ export default function SearchOverlay(props: Props) {
 
   return (
     <motion.div
-      className="md:w-[60%] xl:w-[40%] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0"
+      className="md:w-[60%] xl:w-[40%] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0 z-10"
       initial={{ x: 1000 }}
       animate={{ x: showSearch ? 0 : 1000 }}
       transition={{ duration: 0.25 }}
