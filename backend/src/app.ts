@@ -14,6 +14,7 @@ import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
 import fetch from "node-fetch";
+import { IMessage } from "./interfaces/models.ts";
 /* CONFIG */
 
 dotenv.config();
@@ -80,25 +81,22 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     const { id } = socket;
     socket.on(
       "chatMessage",
-      async (message: { message: string; userId: string }) => {
+      async (message: { content: string; userId: string; chatId: string }) => {
         try {
-          const { message: msg, userId } = message;
-          const user = await User.findById(userId);
-          if (!user) {
-            return;
-          }
-          const body = JSON.stringify({ userId, message: msg });
-          const response = await fetch("http://localhost:3000/chat/messages", {
-            headers: { "Content-Type": "application/json" },
-            body,
-            method: "POST",
+          const { content, userId, chatId } = message;
+          const body = JSON.stringify({
+            message: content,
+            senderId: userId,
+            chatId,
           });
-          if (response.ok) {
-            console.log();
-            socket.emit("chatMessage", message);
-          } else {
-            socket.emit('chatMessageError', 'Some interval error occured')
-          }
+          const res = await fetch(`http://localhost:3000/chat/chat/${chatId}`, {
+            method: "PUT",
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+          const result = await res.json() as IMessage;
+          socket.emit("chatMessage", result);
+          
         } catch (err) {
           console.log(err);
         }

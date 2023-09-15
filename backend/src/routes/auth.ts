@@ -7,12 +7,13 @@ import {
   resendCode,
   deleteAccount,
   login,
+  checkUsername,
 } from "../controllers/auth.ts";
 
 const router = express.Router();
 
 router.post("/check-email", checkEmail);
-
+router.post('/check-username', checkUsername )
 router.post('/login', login);
 
 router.post(

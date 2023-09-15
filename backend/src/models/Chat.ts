@@ -1,18 +1,25 @@
 import mongoose from "mongoose";
+import { IMessage } from "../interfaces/models.ts";
 
-const chatSchema = new mongoose.Schema({
-  participants: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-  messages: [{
-    sender: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    message: String,
-    images: [{type: String}],
-    videos: [{type: String}],
-    files: [{type: String}],
-    timeStamp: {type: Date, default: Date.now()}
-  }]
+interface IChat {
+  participants: string[];
+  messages: IMessage[];
+}
+
+const messageSchema = new mongoose.Schema<IMessage>({
+  sender: String,
+  message: String,
+  images: { type: [String], required: false },
+  videos: { type: [String], required: false },
+  file: String,
+  timeStamp: { type: Date, default: Date.now() },
 });
 
-const Chat = mongoose.model('Chat', chatSchema);
+const chatSchema = new mongoose.Schema<IChat>({
+  participants: [String],
+  messages: [messageSchema],
+});
 
+const Chat = mongoose.model<IChat>("Chat", chatSchema);
 
 export default Chat;

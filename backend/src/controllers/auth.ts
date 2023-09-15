@@ -20,7 +20,19 @@ export const checkEmail = async (req, res) => {
     res.status(409).json("Internal server error occured");
   }
 };
-
+export const checkUsername = async (req, res) => {
+  try {
+    const { query } = req.body;
+    const isUserExist = await User.findOne({ userName: query });
+    if (isUserExist) {
+      res.status(200).json("User is already exist");
+    } else {
+      res.status(404).json("User doesn't exist. You can use this email");
+    }
+  } catch (err) {
+    res.status(409).json("Internal server error occured");
+  }
+};
 export const login = async (req, res) => {
   try {
     const {email, password} = req.body;
