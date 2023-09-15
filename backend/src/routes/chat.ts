@@ -56,11 +56,11 @@ router.post("/findOrCreateChat", async (req, res) => {
     if (!myUser || !interlocutor) {
       return res.status(404).json("One of users wasn't found");
     }
+    const participants = [myUser._id, interlocutor._id].sort();
     const chat = await Chat.findOne({
-      participants: [myUser._id, interlocutor._id],
+      participants
     });
     if (chat) {
-      console.log("there was a chat", chat._id);
       return res
         .status(200)
         .json({ chatId: chat._id, chatHistory: chat.messages });
@@ -70,7 +70,6 @@ router.post("/findOrCreateChat", async (req, res) => {
         participants: [myUser._id, interlocutor._id],
       });
       await newChat.save();
-      console.log("there wasn't any chat, but we created one", newChat._id);
 
       return res
         .status(201)

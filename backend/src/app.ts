@@ -79,11 +79,18 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   });
   io.on("connection", (socket) => {
     const { id } = socket;
+    let roomId = null;
+    socket.on("joinRoom", (chatId: string) => {
+      roomId = chatId;
+      socket.join(roomId);
+      socket.emit("joinRoom", roomId);
+    });
     socket.on(
       "chatMessage",
       async (message: { content: string; userId: string; chatId: string }) => {
         try {
           const { content, userId, chatId } = message;
+          socket.join(chatId);
           const body = JSON.stringify({
             message: content,
             senderId: userId,
@@ -94,9 +101,9 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             body,
             headers: { "Content-Type": "application/json" },
           });
-          const result = await res.json() as IMessage;
-          socket.emit("chatMessage", result);
-          
+          const result = (await res.json()) as IMessage;
+          console.log(socket.rooms);
+          io.in(chatId).emit('chatMessage', result);
         } catch (err) {
           console.log(err);
         }
