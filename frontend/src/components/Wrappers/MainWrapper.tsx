@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLoaderData, useLocation} from "react-router-dom";
 import LeftSide from "../LeftSide";
 import { createPortal } from "react-dom";
 import DesktopMenu from "../Widgets/Menus/DesktopMenu";
@@ -17,11 +17,14 @@ import ResponsiveCreateGroupStep2 from "../Widgets/Group/CreateGroupResponsive/S
 import ContactsResponsive from "../Widgets/Contacts/ContactsResponsive";
 import ResponsiveSettings from "../Widgets/Settings/ResponsiveSettings";
 import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/PersonalResponsiveSettings";
-
+import {IMessage} from "../../interfaces/models"
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
 
   const width = useResponsive();
+
+  const location = useLocation();
+  const loaderData = useLoaderData() as {chatId: string, chatHistory: IMessage[]}; 
 
   return (
     <>
@@ -31,7 +34,7 @@ export default function MainWrapper() {
         </div>
         {width > 768 && (
           <div className="flex-[6.5]">
-            <Outlet />
+            <Outlet context={location.pathname == '/home' ? '' : loaderData}/>
           </div>
         )}
       </main>

@@ -105,6 +105,27 @@ export default function FormStep3(props: Props) {
     }
   }, [formik.touched, formik.errors]);
 
+  useEffect(() => {
+    async function checkUsernameUniqueness() {
+      try {
+        const body = JSON.stringify({ query: formik.values.userName });
+        const res = await fetch(`http://localhost:3000/auth/check-username`, {
+          headers: { "Content-Type": "application/json" },
+          body,
+          method: "POST",
+        });
+        if (res.ok) {
+          formik.setErrors({
+            userName: "This username has been already taken. Use another username",
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    checkUsernameUniqueness();
+  }, [formik]);
+
   return (
     <>
       <form

@@ -23,7 +23,7 @@ export default function MessageBar(props: Props) {
   } = props;
   return (
     <form
-      className="fixed bottom-[2rem] flex gap-[1rem] px-[1rem] md:w-[65%] w-full "
+      className="fixed bottom-[0] flex gap-[1rem] px-[1rem] md:w-[65%] w-full "
       onSubmit={sendMessage}
     >
       <div className="flex-1 max-w-full flex items-center rounded-2xl bg-gray-700 px-[1rem] py-[1rem]">

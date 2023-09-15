@@ -12,3 +12,12 @@ export interface UserModel {
   confirmationCode: number | null;
   userIsVerified: boolean;
 }
+
+export interface IMessage {
+  sender: string;
+  message: string;
+  images?: string[];
+  videos?: string[];
+  file?: string;
+  timeStamp: Date;
+}

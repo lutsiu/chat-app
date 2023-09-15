@@ -1,0 +1,11 @@
+.containerHeight {
+  max-height: calc(100vh - 110px);
+}
+::-webkit-scrollbar {
+  width: 0.5em; /* Width of the scrollbar */
+}
+
+/* Hide scrollbar handle (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Color of the thumb */
+}
