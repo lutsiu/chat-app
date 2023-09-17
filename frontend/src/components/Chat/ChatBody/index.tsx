@@ -33,7 +33,7 @@ export default function ChatBody(props: Props) {
     e.preventDefault();
     try {
       if (inputValue.trim() !== "") {
-        socket.emit("chatMessage", {
+        socket.emit("send-message", {
           content: inputValue,
           userId: user?._id,
           chatId,
@@ -46,11 +46,21 @@ export default function ChatBody(props: Props) {
   }
   // get message
   useEffect(() => {
-    socket.on("chatMessage", (message: IMessage) => {
+    socket.on("send-message", (message: IMessage) => {
       setChatMessages((prev) => [...prev, message]);
     });
     return () => {
-      socket.off("chatMessage");
+      socket.off("send-message");
+    };
+  }, [socket]);
+
+  // update messages if one of them was deleted
+  useEffect(() => {
+    socket.on("delete-message", (messageId: string) => {
+      setChatMessages((prev) => prev.filter((msg) => msg._id !== messageId));
+    });
+    return () => {
+      socket.off("delete-message");
     };
   }, [socket]);
 
@@ -87,7 +97,7 @@ export default function ChatBody(props: Props) {
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden">
-        <Messages messages={chatMessages} myUserId={user?._id} />
+        <Messages messages={chatMessages} chatId={chatId} myUserId={user?._id} />
         <MessageBar
           sendMessage={sendMessage}
           setInputValue={setInputValue}
@@ -113,10 +123,3 @@ export default function ChatBody(props: Props) {
     </>
   );
 }
-
-/* Chat logic.
-  1. When i open chat, i send request for server with my id and interlocutor id, in order to determine whether we've already had a chat , or we need a new one
-  2. if we've already had one, i retrieve data from server. 
-  3. if we didn't have , i just create new chat 
-
-*/
