@@ -86,7 +86,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       socket.emit("joinRoom", roomId);
     });
     socket.on(
-      "chatMessage",
+      "send-message",
       async (message: { content: string; userId: string; chatId: string }) => {
         try {
           const { content, userId, chatId } = message;
@@ -102,12 +102,31 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             headers: { "Content-Type": "application/json" },
           });
           const result = (await res.json()) as IMessage;
-          console.log(socket.rooms);
-          io.in(chatId).emit('chatMessage', result);
+          io.in(chatId).emit("send-message", result);
         } catch (err) {
           console.log(err);
         }
       }
+    );
+    socket.on(
+      "delete-message",
+      async (data: {messageId: string, chatId: string}) => {
+        const {messageId, chatId} = data;
+        socket.join(chatId);
+        const body = JSON.stringify({
+          messageId,
+          chatId
+        });
+        const res = await fetch(`http://localhost:3000/chat/delete-message`, {
+          method: "DELETE",
+          body,
+          headers: { "Content-Type": "application/json" },
+        });
+        if (res.ok) {
+          io.in(chatId).emit('delete-message', messageId)
+        }
+      }
+
     );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");

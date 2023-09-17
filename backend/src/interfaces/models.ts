@@ -14,10 +14,16 @@ export interface UserModel {
   userIsVerified: boolean;
 }
 export interface IMessage {
+  _id?: string,
   sender: string;
   message: string;
+  timeStamp: Date;
   images?: string[];
   videos?: string[];
   file?: string[];
-  timeStamp: Date;
+  pinned?: boolean,
+  reply: {
+    isReply: boolean,
+    messageToReplyId: string
+  }
 }

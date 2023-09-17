@@ -13,6 +13,21 @@ const messageSchema = new mongoose.Schema<IMessage>({
   videos: { type: [String], required: false },
   file: String,
   timeStamp: { type: Date, default: Date.now() },
+  pinned: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  reply: {
+    isReply: {
+      type: Boolean,
+      default: false
+    },
+    messageToReplyId: {
+      type: String,
+      default: null
+    }
+  },
 });
 
 const chatSchema = new mongoose.Schema<IChat>({
