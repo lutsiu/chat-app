@@ -7,25 +7,30 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import useResponsive from "../../../../../hooks/useResponsive";
+import { IMessage } from "../../../../../interfaces/models";
+import { useSocket } from "../../../../../context/SocketContext";
 interface Props {
   x: number;
   y: number;
   showMenu: boolean;
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
   editable: boolean;
-  message: string;
+  msg: IMessage;
+  chatId: string
 }
 
 export default function MessageContextMenu(props: Props) {
-  const { x, y, showMenu, setShowMenu, editable } = props;
+  const { x, y, showMenu, setShowMenu, editable, msg, chatId} = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault()
     const target = e.target as HTMLDivElement;
     if (target.classList.contains("overlay")) {
       setShowMenu(false);
     }
   };
   const width = useResponsive();
+  const socket = useSocket();
   useEffect(() => {
     function preventWindowScroll(e: Event) {
       e.preventDefault();
@@ -38,8 +43,6 @@ export default function MessageContextMenu(props: Props) {
     };
   }, [showMenu]);
 
-  console.log(props.message)
-
   useEffect(() => {
     if (width - x < 200) {
       setShowMenuBeforeCursor(false);
@@ -47,6 +50,11 @@ export default function MessageContextMenu(props: Props) {
       setShowMenuBeforeCursor(true);
     }
   }, [width, x]);
+  
+  function handleDeleteMessage() {
+    setShowMenu(false)
+    socket.emit('delete-message', {messageId: msg._id, chatId })
+  }
 
   return (
     <motion.div
@@ -56,9 +64,9 @@ export default function MessageContextMenu(props: Props) {
         pointerEvents: showMenu ? "all" : "none",
       }}
 
-      className="overlay fixed top-0 z-20 right-0 bottom-0 left-0 bg-blue-500"
+      className="overlay fixed top-0 z-20 right-0 bottom-0 left-0 "
       onClick={handleCloseMenu}
-      
+      onContextMenu={handleCloseMenu}
     >
       <motion.div
         style={{ top: y, left: showMenuBeforeCursor ? x : x - 154 }}
@@ -93,6 +101,7 @@ export default function MessageContextMenu(props: Props) {
         </div>
         <div
           className={`${styles.deleteContainer} flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg  duration-200 cursor-pointer`}
+          onClick={handleDeleteMessage}
         >
           <MdOutlineDeleteOutline className="text-red-500 w-[2rem] h-[2rem]" />
           <span className="font-medium text-xl text-red-500">Delete</span>

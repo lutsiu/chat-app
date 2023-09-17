@@ -6,9 +6,10 @@ import Message from "./Message";
 interface Props {
   messages: IMessage[];
   myUserId: string | undefined;
+  chatId: string;
 }
 export default function Messages(props: Props) {
-  const { messages, myUserId } = props;
+  const { messages, myUserId, chatId} = props;
   const chatContainer = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,9 +29,9 @@ export default function Messages(props: Props) {
         {messages.map((msg, i) => {
           const { sender } = msg;
           if (myUserId && sender === myUserId) {
-            return <Message key={i} myUserId={myUserId} msg={msg} />;
+            return <Message key={i} myUserId={myUserId} msg={msg} chatId={chatId} />;
           } else {
-            return <Message key={i} myUserId={myUserId} msg={msg} />;
+            return <Message key={i} myUserId={myUserId} msg={msg} chatId={chatId} />;
           }
         })}
       </ul>

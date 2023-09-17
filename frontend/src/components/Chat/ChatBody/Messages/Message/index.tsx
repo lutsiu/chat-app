@@ -4,10 +4,11 @@ import MessageContextMenu from "../ContextMenu";
 interface Props {
   msg: IMessage;
   myUserId: string | undefined;
+  chatId :string
 }
 
 export default function Message(props: Props) {
-  const { msg, myUserId } = props;
+  const { msg, myUserId, chatId } = props;
   const { message, timeStamp, file, images, videos, sender } = msg;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
@@ -47,7 +48,8 @@ export default function Message(props: Props) {
             showMenu={showContextMenu}
             setShowMenu={setShowContextMenu}
             editable={true}
-            message={message}
+            msg={msg}
+            chatId={chatId}
           />
         </>
       )}
@@ -72,7 +74,8 @@ export default function Message(props: Props) {
               showMenu={showContextMenu}
               setShowMenu={setShowContextMenu}
               editable={false}
-              message={message}
+              msg={msg}
+              chatId={chatId}
             />
         </>
       )}
