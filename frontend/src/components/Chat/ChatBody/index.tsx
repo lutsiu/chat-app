@@ -44,15 +44,22 @@ export default function ChatBody(props: Props) {
       console.log(err);
     }
   }
+  // get message
   useEffect(() => {
     socket.on("chatMessage", (message: IMessage) => {
-      setChatMessages((prev) => [...prev, message])
+      setChatMessages((prev) => [...prev, message]);
     });
     return () => {
       socket.off("chatMessage");
     };
   }, [socket]);
 
+  // provide socket with id of group in order to create group
+  useEffect(() => {
+    socket.emit("joinRoom", chatId);
+  }, [chatId, socket]);
+
+  // show one of overlays
   useEffect(() => {
     if (file) {
       setShowFileOverlay(true);
@@ -61,7 +68,7 @@ export default function ChatBody(props: Props) {
       setShowMediaOverlay(true);
     }
   }, [file, media]);
-
+  // close overlay
   useEffect(() => {
     function handleCloseSendFiles(e: MouseEvent) {
       const target = e.target as HTMLElement;
@@ -77,11 +84,10 @@ export default function ChatBody(props: Props) {
       document.removeEventListener("click", handleCloseSendFiles);
     };
   }, []);
-  
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden">
-        <Messages messages={chatMessages} myUserId={user?._id}/>
+        <Messages messages={chatMessages} myUserId={user?._id} />
         <MessageBar
           sendMessage={sendMessage}
           setInputValue={setInputValue}
