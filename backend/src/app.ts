@@ -87,9 +87,14 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     });
     socket.on(
       "send-message",
-      async (message: { content: string; userId: string; chatId: string }) => {
+      async (message: {
+        content: string;
+        userId: string;
+        chatId: string;
+        senderId: string;
+      }) => {
         try {
-          const { content, userId, chatId } = message;
+          const { content, userId, chatId, senderId } = message;
           socket.join(chatId);
           const body = JSON.stringify({
             message: content,
@@ -142,13 +147,48 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             messageId,
             chatId,
           });
-          const res = await fetch('http://localhost:3000/chat/edit-message', {
-            headers: {'Content-Type': 'application/json'},
+          const res = await fetch("http://localhost:3000/chat/edit-message", {
+            headers: { "Content-Type": "application/json" },
             body,
-            method: 'PATCH'
-          })
+            method: "PATCH",
+          });
           if (res.ok) {
-            io.in(chatId).emit("edit-message", {messageId, message});
+            io.in(chatId).emit("edit-message", { messageId, message });
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "reply-to-message",
+      async (data: {
+        message: string;
+        messageToReplyId: string;
+        chatId: string;
+        senderId: string;
+      }) => {
+        try {
+          const { message, messageToReplyId, chatId, senderId } = data;
+          socket.join(chatId);
+          const body = JSON.stringify({
+            chatId,
+            message,
+            messageToReplyId,
+            senderId
+          });
+          console.log(body);
+          const res = await fetch(
+            "http://localhost:3000/chat/reply-to-message",
+            {
+              headers: { "Content-Type": "application/json" },
+              body,
+              method: "PUT",
+            }
+          );
+          if (res.ok) {
+            const reply = await res.json();
+            io.in(chatId).emit("reply-to-message", reply);
           }
         } catch (err) {
           console.log(err);

@@ -22,9 +22,11 @@ export interface IMessage {
   videos?: string[];
   file?: string[];
   pinned?: boolean,
-  reply: {
+  reply?: {
     isReply: boolean,
     messageToReplyId: string
-  }
+    messageToReplyMessage: string,
+    messageToReplyRecipientName: string
+  } 
   isEdited?: boolean
 }

@@ -27,6 +27,8 @@ const messageSchema = new mongoose.Schema<IMessage>({
       type: String,
       default: null,
     },
+    messageToReplyMessage: String,
+    messageToReplyRecipientName: String
   },
   isEdited: {
     type: Boolean,
