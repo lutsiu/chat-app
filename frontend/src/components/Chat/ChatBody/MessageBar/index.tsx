@@ -5,12 +5,16 @@ import { IoMdSend } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import { motion } from "framer-motion";
-import { BsReply } from "react-icons/bs";
-import { HiOutlinePencil } from "react-icons/hi";
-import { IoClose } from "react-icons/io5";
-import styles from './styles.module.scss';
+import { useEffect, useRef } from "react";
+import TextareaAutosize from "react-textarea-autosize";
+import MessageActionBar from "./MessageActionBar";
+import { handleEditMessage } from "../../../../state/ui";
+import { MessageType } from "../../../../interfaces/message";
 interface Props {
-  sendMessage: (e: React.FormEvent<HTMLFormElement>) => void;
+  sendMessage: (
+    action: MessageType,
+    e: React.FormEvent<HTMLFormElement>
+  ) => void;
   setInputValue: (value: string) => void;
   inputValue: string;
   setShowFilesPopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,64 +32,102 @@ export default function MessageBar(props: Props) {
     setMedia,
     showFilesPopup,
   } = props;
+
+  const formRef = useRef<null | HTMLFormElement>(null);
+  const submitForm = () => {
+    const syntheticEvent = new Event("submit", {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    // Find the form element using the ref
+    const formElement = formRef.current;
+
+    if (formElement) {
+      formElement.dispatchEvent(syntheticEvent);
+    }
+  };
+
+  const dispatch = useDispatch();
+
+  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    if (replyToMessage.show) {
+      sendMessage(
+        {
+          reply: { messageIdToReply: "id" },
+          editMessage: null,
+          sendMessage: false,
+        },
+        e
+      );
+    }
+    if (editMessage.show) {
+      sendMessage(
+        {
+          reply: null,
+          sendMessage: false,
+          editMessage: { messageId: editMessage.message?._id },
+        },
+        e
+      );
+      dispatch(handleEditMessage({ message: null, show: false }));
+    }
+    if (!replyToMessage.show && !editMessage.show) {
+      sendMessage({ editMessage: null, reply: null, sendMessage: true }, e);
+    }
+  };
   const { replyToMessage, editMessage } = useSelector(
     (state: ReduxState) => state.ui
   );
-  const dispatch = useDispatch();
+
+  function handleTextAreaEnterPressed(
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitForm();
+    }
+  }
+
+  useEffect(() => {
+    if (editMessage.message) {
+      setInputValue(editMessage.message.message);
+    }
+  }, [editMessage.message, setInputValue]);
+
   return (
     <form
       className="fixed bottom-[0] flex flex-col px-[1rem] md:w-[65%] w-full "
-      onSubmit={sendMessage}
+      onSubmit={handleSubmitForm}
+      ref={formRef}
     >
-      <motion.div
-        initial={{ transform: "scale(100%)" }}
-        className="w-full h-[5rem] bg-gray-700 rounded-t-2xl origin-bottom flex gap-[2.5rem] px-[1rem]"
-      >
-        <div className="flex items-center">
-          {!replyToMessage.show && (
-            <BsReply className="w-[2.5rem] h-[2.5rem] text-purple-500" />
-          )}
-          {editMessage.show && (
-            <HiOutlinePencil className="w-[2.5rem] h-[2.5rem] text-purple-500" />
-          )}
-        </div>
-        <div className="flex-1 py-[0.8rem] flex justify-between items-center">
-          <div className="h-full flex gap-[0.7rem]">
-            <span className="inline-block w-[0.25rem] h-full bg-purple-500"></span>
-            <div className="flex flex-col justify-between">
-              <span className="text-purple-500 font-semibold text-xl">
-                {!replyToMessage.show && "UserName"}
-                {editMessage.show && "Editing"}
-              </span>
-              <span className="text-lg text-gray-200">{"Message"}</span>
-            </div>
-          </div>
-          <div>
-            <IoClose className={`${styles.closeBtn} min-w-[3.5rem] min-h-[3.5rem] text-gray-300 p-[0.7rem] rounded-full cursor-pointer`} />
-          </div>
-        </div>
-      </motion.div>
+      <MessageActionBar setInputValue={setInputValue} />
       <motion.div
         initial={{
           borderTopLeftRadius: "1rem",
           borderTopRightRadius: "1rem",
         }}
         animate={{
-          borderTopLeftRadius: replyToMessage.show ? 0 : "1rem",
-          borderTopRightRadius: replyToMessage.show ? 0 : "1rem",
+          borderTopLeftRadius:
+            replyToMessage.show || editMessage.show ? 0 : "1rem",
+          borderTopRightRadius:
+            replyToMessage.show || editMessage.show ? 0 : "1rem",
         }}
-        className="w-full max-w-full flex items-center bg-gray-700 px-[1rem] py-[1rem] rounded-b-2xl"
+        className="w-full max-w-full flex items-end bg-gray-700 px-[1rem] py-[1rem] rounded-b-2xl"
       >
         <div>
           <FaRegSmile className="p-[0.3rem] min-w-[2.8rem] min-h-[2.8rem] text-gray-400 cursor-pointer rounded-full duration-200 hover:text-purple-500 relative" />
         </div>
         <div className="flex-1">
-          <input
+          <TextareaAutosize
+            maxRows={20}
             placeholder="Message"
-            onChange={(e) => setInputValue(e.currentTarget.value)}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleTextAreaEnterPressed}
+            autoFocus
             value={inputValue}
             name="message"
-            className="message-input w-full outline-none bg-transparent sm:text-2xl text-2xl font-normal px-[1rem] box-border"
+            className="message-input w-full h-[2rem] outline-none bg-transparent sm:text-2xl text-2xl font-normal px-[1rem] box-border mb-[0.4rem]"
           />
         </div>
         <div className="relative min-w-[3.2rem] min-h-[3.2rem] max-w-[3.2rem] max-h-[3.2rem]">

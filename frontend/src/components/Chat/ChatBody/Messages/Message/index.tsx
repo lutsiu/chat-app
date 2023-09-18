@@ -4,12 +4,12 @@ import MessageContextMenu from "../ContextMenu";
 interface Props {
   msg: IMessage;
   myUserId: string | undefined;
-  chatId :string
+  chatId: string;
 }
 
 export default function Message(props: Props) {
   const { msg, myUserId, chatId } = props;
-  const { message, timeStamp, file, images, videos, sender } = msg;
+  const { message, timeStamp, file, images, videos, sender, isEdited } = msg;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
@@ -30,17 +30,22 @@ export default function Message(props: Props) {
       {myUserId === sender && (
         <>
           <li
-            className="message relative bg-purple-500 justify-self-end rounded-2xl p-[0.8rem] pr-[4rem] max-w-[70%]"
+            className="message relative bg-purple-500 justify-self-end rounded-2xl p-[0.8rem] max-w-[70%]"
             onContextMenu={handleShowContextMenu}
           >
             <p className="text-xl font-medium">{message}</p>
-            <span className="absolute bottom-[0.7rem] right-[0.7rem]">{`${new Date(
-              timeStamp
-            ).getHours()}: ${
-              new Date(timeStamp).getMinutes() < 10
-                ? `0${new Date(timeStamp).getMinutes()}`
-                : new Date(timeStamp).getMinutes()
-            }`}</span>
+            <div className="flex justify-end">
+              <div className="flex gap-[0.7rem]">
+                {isEdited && <span className="italic text-gray-100">edited</span>}
+                <span className="text-gray-100">{`${new Date(
+                  timeStamp
+                ).getHours()}: ${
+                  new Date(timeStamp).getMinutes() < 10
+                    ? `0${new Date(timeStamp).getMinutes()}`
+                    : new Date(timeStamp).getMinutes()
+                }`}</span>
+              </div>
+            </div>
           </li>
           <MessageContextMenu
             x={contextMenuX}
@@ -68,15 +73,15 @@ export default function Message(props: Props) {
                 : new Date(timeStamp).getMinutes()
             }`}</span>
           </li>
-            <MessageContextMenu
-              x={contextMenuX}
-              y={contextMenuY}
-              showMenu={showContextMenu}
-              setShowMenu={setShowContextMenu}
-              editable={false}
-              msg={msg}
-              chatId={chatId}
-            />
+          <MessageContextMenu
+            x={contextMenuX}
+            y={contextMenuY}
+            showMenu={showContextMenu}
+            setShowMenu={setShowContextMenu}
+            editable={false}
+            msg={msg}
+            chatId={chatId}
+          />
         </>
       )}
     </>

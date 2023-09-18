@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { IMessage } from "../../../interfaces/models";
 import Messages from "./Messages";
+import { MessageType } from "../../../interfaces/message";
 interface Props {
   chatId: string;
   chatHistory: IMessage[];
@@ -29,22 +30,39 @@ export default function ChatBody(props: Props) {
 
   const socket = useSocket();
 
-  async function sendMessage(e: React.FormEvent<HTMLFormElement>) {
+  async function sendMessage(
+    action: MessageType,
+    e: React.FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
     try {
       if (inputValue.trim() !== "") {
-        socket.emit("send-message", {
-          content: inputValue,
-          userId: user?._id,
-          chatId,
-        });
+        if (action.sendMessage) {
+          socket.emit("send-message", {
+            content: inputValue,
+            userId: user?._id,
+            chatId,
+          });
+        }
+        if (action.editMessage) {
+          const { messageId } = action.editMessage;
+          socket.emit("edit-message", {
+            messageId,
+            chatId,
+            message: inputValue,
+          });
+        }
+        if (action.reply) {
+          console.log("reply");
+        }
         setInputValue("");
       }
     } catch (err) {
       console.log(err);
     }
   }
-  // get message
+
+  // fetch sended message
   useEffect(() => {
     socket.on("send-message", (message: IMessage) => {
       setChatMessages((prev) => [...prev, message]);
@@ -62,6 +80,31 @@ export default function ChatBody(props: Props) {
     return () => {
       socket.off("delete-message");
     };
+  }, [socket]);
+
+  // update messages if one of them was edited
+  useEffect(() => {
+    socket.on(
+      "edit-message",
+      (data: { messageId: string; message: string }) => {
+        const { message, messageId } = data;
+  
+        setChatMessages((prev) => {
+          return prev.map((msg) => {
+            if (msg._id !== messageId) {
+              return msg;
+            } else {
+              // Create a new message object with the updated content
+              return {
+                ...msg,
+                message: message,
+                isEdited: true,
+              };
+            }
+          });
+        });
+      }
+    );
   }, [socket]);
 
   // provide socket with id of group in order to create group
@@ -97,7 +140,11 @@ export default function ChatBody(props: Props) {
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden">
-        <Messages messages={chatMessages} chatId={chatId} myUserId={user?._id} />
+        <Messages
+          messages={chatMessages}
+          chatId={chatId}
+          myUserId={user?._id}
+        />
         <MessageBar
           sendMessage={sendMessage}
           setInputValue={setInputValue}
