@@ -26,4 +26,5 @@ export interface IMessage {
     isReply: boolean,
     messageToReplyId: string
   }
+  isEdited?: boolean
 }

@@ -78,3 +78,25 @@ export const findOrCreateChat = async (req, res) => {
     res.status(409).json("Internal error occured");
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { messageId, chatId } = req.body;
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json("Chat wasn't found");
+    }
+    const message = await Chat.findOne({ "messages._id": messageId });
+    if (!message) {
+      return res.status(404).json("Message wasn't found");
+    }
+    chat.messages = chat.messages.filter(
+      (msg) => msg._id.toString() !== messageId
+    );
+    await chat.save();
+    console.log(chat.messages);
+    return res.status(200).json("Message was deleted");
+  } catch (err) {
+    res.status(409).json("Some internal error occured");
+  }
+};

@@ -110,23 +110,50 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     );
     socket.on(
       "delete-message",
-      async (data: {messageId: string, chatId: string}) => {
-        const {messageId, chatId} = data;
-        socket.join(chatId);
-        const body = JSON.stringify({
-          messageId,
-          chatId
-        });
-        const res = await fetch(`http://localhost:3000/chat/delete-message`, {
-          method: "DELETE",
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
-        if (res.ok) {
-          io.in(chatId).emit('delete-message', messageId)
+      async (data: { messageId: string; chatId: string }) => {
+        try {
+          const { messageId, chatId } = data;
+          socket.join(chatId);
+          const body = JSON.stringify({
+            messageId,
+            chatId,
+          });
+          const res = await fetch(`http://localhost:3000/chat/delete-message`, {
+            method: "DELETE",
+            body,
+            headers: { "Content-Type": "application/json" },
+          });
+          if (res.ok) {
+            io.in(chatId).emit("delete-message", messageId);
+          }
+        } catch (err) {
+          console.log(err);
         }
       }
-
+    );
+    socket.on(
+      "edit-message",
+      async (data: { messageId: string; chatId: string; message: string }) => {
+        try {
+          const { message, messageId, chatId } = data;
+          socket.join(chatId);
+          const body = JSON.stringify({
+            message,
+            messageId,
+            chatId,
+          });
+          const res = await fetch('http://localhost:3000/chat/edit-message', {
+            headers: {'Content-Type': 'application/json'},
+            body,
+            method: 'PATCH'
+          })
+          if (res.ok) {
+            io.in(chatId).emit("edit-message", {messageId, message});
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
     );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");

@@ -21,12 +21,16 @@ const messageSchema = new mongoose.Schema<IMessage>({
   reply: {
     isReply: {
       type: Boolean,
-      default: false
+      default: false,
     },
     messageToReplyId: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
+  },
+  isEdited: {
+    type: Boolean,
+    required: false,
   },
 });
 
