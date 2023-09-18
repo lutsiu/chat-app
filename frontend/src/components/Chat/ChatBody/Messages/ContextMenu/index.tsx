@@ -9,8 +9,13 @@ import styles from "./styles.module.scss";
 import useResponsive from "../../../../../hooks/useResponsive";
 import { IMessage } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
-import { useDispatch } from "react-redux";
-import { handleEditMessage } from "../../../../../state/ui";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleEditMessage,
+  handleForwardMessage,
+  handleReplytoMessage,
+} from "../../../../../state/ui";
+import { ReduxState } from "../../../../../interfaces/redux";
 
 interface Props {
   x: number;
@@ -20,10 +25,22 @@ interface Props {
   editable: boolean;
   msg: IMessage;
   chatId: string;
+  messageUpperPoint: number | undefined;
+  myUserId: string
 }
 
 export default function MessageContextMenu(props: Props) {
-  const { x, y, showMenu, setShowMenu, editable, msg, chatId } = props;
+  const {
+    x,
+    y,
+    showMenu,
+    setShowMenu,
+    editable,
+    msg,
+    chatId,
+    messageUpperPoint,
+    myUserId
+  } = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
   const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -33,11 +50,11 @@ export default function MessageContextMenu(props: Props) {
       setShowMenu(false);
     }
   };
-  
-  
+
   const width = useResponsive();
   const socket = useSocket();
   const dispatch = useDispatch();
+  /* const {replyToMessage: reply, editMessage: edit, forwardMessage: forward} = useSelector((state: ReduxState) => state.ui) */
   useEffect(() => {
     function preventWindowScroll(e: Event) {
       e.preventDefault();
@@ -57,7 +74,7 @@ export default function MessageContextMenu(props: Props) {
       setShowMenuBeforeCursor(true);
     }
     if (window.innerHeight - y < 200) {
-      setShowMenuBelowCursor(false)
+      setShowMenuBelowCursor(false);
     } else {
       setShowMenuBelowCursor(true);
     }
@@ -70,8 +87,17 @@ export default function MessageContextMenu(props: Props) {
 
   function editMessage() {
     setShowMenu(false);
-    dispatch(handleEditMessage({ message: msg, show: true }));
+    dispatch(
+      handleEditMessage({ message: msg, show: true, messageUpperPoint })
+    );
   }
+  function replyToMessage() {
+    setShowMenu(false);
+    dispatch(
+      handleReplytoMessage({ message: msg, show: true, messageUpperPoint, senderId: myUserId })
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -84,16 +110,23 @@ export default function MessageContextMenu(props: Props) {
       onContextMenu={handleCloseMenu}
     >
       <motion.div
-        style={{ top: showMenuBelowCursor ? y : y - 185, left: showMenuBeforeCursor ? x : x - 154 }}
+        style={{
+          top: showMenuBelowCursor ? y : y - 185,
+          left: showMenuBeforeCursor ? x : x - 154,
+        }}
         className="absolute bg-slate-800 py-[0.7rem] px-[.3rem] rounded-xl"
       >
-        <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
+        <div
+          className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+          onClick={replyToMessage}
+        >
           <BsReply className="w-[2rem] h-[2rem]" />
           <span className="font-medium text-xl ">Reply</span>
         </div>
 
         {editable && showMenu && (
-          <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+          <div
+            className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
             onClick={editMessage}
           >
             <HiOutlinePencil className="w-[1.7rem] h-[1.7rem]" />

@@ -8,6 +8,7 @@ import { ReduxState } from "../../../../../interfaces/redux";
 import {
   handleEditMessage,
   handleReplytoMessage,
+  handleScrollToMessage,
 } from "../../../../../state/ui";
 
 interface Props {
@@ -20,19 +21,52 @@ export default function MessageActionBar(props: Props) {
     (state: ReduxState) => state.ui
   );
   const dispatch = useDispatch();
-
+  const CHAT_HEADER_HEIGHT = 52;
   function handleCloseActionBar() {
     if (replyToMessage.show) {
-      dispatch(handleReplytoMessage({ message: null, show: false }));
+      dispatch(
+        handleReplytoMessage({
+          message: null,
+          show: false,
+          messageUpperPoint: undefined,
+          senderId: "",
+        })
+      );
+      console.log("done");
     }
     if (editMessage.show) {
-      setInputValue("");
-      dispatch(handleEditMessage({ message: null, show: false }));
+      dispatch(
+        handleEditMessage({
+          message: null,
+          show: false,
+          messageUpperPoint: undefined,
+        })
+      );
+      console.log("done");
+    }
+    setInputValue("");
+  }
+  function scrollToMessage() {
+    if (replyToMessage.show) {
+      dispatch(
+        handleScrollToMessage({
+          top:
+            (replyToMessage.messageUpperPoint as number) - CHAT_HEADER_HEIGHT,
+        })
+      );
+    }
+    if (editMessage.show) {
+      dispatch(
+        handleScrollToMessage({
+          top: (editMessage.messageUpperPoint as number) - CHAT_HEADER_HEIGHT,
+        })
+      );
     }
   }
+
   return (
     <motion.div
-      initial={{ opacity: 0, display: "none"}}
+      initial={{ opacity: 0, display: "none" }}
       animate={{
         opacity: replyToMessage.show || editMessage.show ? 1 : 0,
         display: replyToMessage.show || editMessage.show ? "flex" : "none",
@@ -48,7 +82,10 @@ export default function MessageActionBar(props: Props) {
         )}
       </div>
       <div className="flex-1 py-[0.8rem] flex justify-between items-center">
-        <div className="h-full flex gap-[0.7rem]">
+        <div
+          className="h-full flex gap-[0.7rem] flex-1"
+          onClick={scrollToMessage}
+        >
           <span className="inline-block w-[0.25rem] h-full bg-purple-500"></span>
           <div className="flex flex-col justify-between">
             <span className="text-purple-500 font-semibold text-xl">
@@ -59,6 +96,10 @@ export default function MessageActionBar(props: Props) {
               {editMessage.message?.message.slice(0, 70)}
               {editMessage.message &&
                 editMessage.message.message.length > 70 &&
+                "..."}
+              {replyToMessage.message?.message.slice(0, 70)}
+              {replyToMessage.message &&
+                replyToMessage.message.message.length > 70 &&
                 "..."}
             </span>
           </div>

@@ -60,19 +60,19 @@ export default function ContextMenu(props: Props) {
         transition={{ duration: 0.2 }}
       >
         <div className="flex gap-[1rem] items-center pr-[1rem] py-[0.4rem] hover:bg-slate-700 duration-200 cursor-pointer rounded-lg px-[0.5rem]">
-          <PiFilePlusLight className="min-h-[2.5rem] min-w-[2.5rem]" />
+          <PiFilePlusLight className="min-h-[2rem] min-w-[2rem]" />
           <span className="font-semibold text-xl">Open in new tab</span>
         </div>
         <div className="flex gap-[1rem] items-center pr-[1rem] py-[0.4rem] hover:bg-slate-700 duration-200 cursor-pointer rounded-lg px-[0.5rem]">
-          <BsFillPinFill className="min-h-[2.5rem] min-w-[2.5rem]" />
+          <BsFillPinFill className="min-h-[2rem] min-w-[2rem]" />
           <span className="font-semibold text-xl">Pin</span>
         </div>
         <div className="flex gap-[1rem] items-center pr-[1rem] py-[0.4rem] hover:bg-slate-700 duration-200 cursor-pointer rounded-lg px-[0.5rem]">
-          <BsBellSlash className="min-h-[2.5rem] min-w-[2.5rem]" />
+          <BsBellSlash className="min-h-[2rem] min-w-[2rem]" />
           <span className="font-semibold text-xl">Mute</span>
         </div>
         <div className="flex gap-[1rem] items-center pr-[1rem] py-[0.4rem] hover:bg-slate-700 duration-200 cursor-pointer rounded-lg px-[0.5rem]">
-          <BiArchiveIn className="min-h-[2.5rem] min-w-[2.5rem]" />
+          <BiArchiveIn className="min-h-[2rem] min-w-[2rem]" />
           <span className="font-semibold text-xl">Archive</span>
         </div>
         <div
@@ -85,7 +85,7 @@ export default function ContextMenu(props: Props) {
             backgroundColor: deleteIsActive ? "rgba(220, 38, 38,0.3)" : "",
           }}
         >
-          <AiTwotoneDelete className="min-h-[2.5rem] min-w-[2.5rem]" />
+          <AiTwotoneDelete className="min-h-[2rem] min-w-[2rem]" />
           <span className="font-semibold text-xl">Delete</span>
         </div>
       </motion.div>

@@ -1,12 +1,12 @@
 export interface UserModel {
-  _id: string,
+  _id: string;
   fullName: string;
   userName: string;
   email: string;
   password: string;
   profilePicture: string;
   bio: string;
-  status: string,
+  status: string;
   contacts: string[];
   chats: string[];
   confirmationCode: number | null;
@@ -14,10 +14,19 @@ export interface UserModel {
 }
 
 export interface IMessage {
+  _id?: string;
   sender: string;
   message: string;
+  timeStamp: Date;
   images?: string[];
   videos?: string[];
-  file?: string;
-  timeStamp: Date;
+  file?: string[];
+  pinned?: boolean;
+  reply?: {
+    isReply: boolean,
+    messageToReplyId: string
+    messageToReplyMessage: string,
+    messageToReplyRecipientName: string
+  } 
+  isEdited?: boolean
 }

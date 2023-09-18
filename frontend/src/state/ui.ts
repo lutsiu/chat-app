@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UiInitialState } from "../interfaces/redux";
+import { UiInitialState, ActionWithMessage, ActionWithScroll, ActionWithReply } from "../interfaces/redux";
 
 const initialState: UiInitialState = {
   showOverlay: false,
@@ -11,7 +11,23 @@ const initialState: UiInitialState = {
   showSettings: false,
   showMyAccountSettings: false,
   showEditContactProfile: false,
-  showWarningPopup: false
+  showWarningPopup: false,
+  replyToMessage: {
+    show: false,
+    message: null,
+    messageUpperPoint: undefined,
+    senderId: ''
+  },
+  editMessage: {
+    show: false,
+    message: null,
+    messageUpperPoint: undefined
+  },
+  forwardMessage: {
+    show: false,
+    message: null,
+  },
+  scrollToMessage: null
 };
 
 const uiSlice = createSlice({
@@ -43,10 +59,41 @@ const uiSlice = createSlice({
       state.showMyAccountSettings = state.showMyAccountSettings ? false : true;
     },
     setShowEditContactProfile: (state) => {
-      state.showEditContactProfile = state.showEditContactProfile ? false : true;
+      state.showEditContactProfile = state.showEditContactProfile
+        ? false
+        : true;
     },
     setShowWarningPopup: (state) => {
       state.showWarningPopup = state.showWarningPopup ? false : true;
+    },
+    handleReplytoMessage: (state, action: ActionWithReply) => {
+      const {payload} = action;
+      const {show, message, messageUpperPoint, senderId} = payload
+      state.replyToMessage.show = show
+      state.replyToMessage.message = message
+      state.replyToMessage.messageUpperPoint = messageUpperPoint;
+      state.replyToMessage.senderId = senderId
+    },
+    handleEditMessage: (state, action: ActionWithMessage) => {
+      const {payload} = action;
+      const {show, message, messageUpperPoint} = payload
+      state.editMessage.show = show
+      state.editMessage.message = message
+      state.editMessage.messageUpperPoint = messageUpperPoint;
+    },
+    handleForwardMessage: (state, action: ActionWithMessage) => {
+      const {payload} = action;
+      const {show, message} = payload
+      state.forwardMessage.show = show
+      state.forwardMessage.message = message
+    },
+    handleScrollToMessage: (state, action: ActionWithScroll) => {
+      const {top} = action.payload;
+      if (!top) {
+        state.scrollToMessage = null
+      } else {
+        state.scrollToMessage = {top};
+      }
     },
     hideEverything: (state) => {
       state.showOverlay = false;
@@ -57,8 +104,8 @@ const uiSlice = createSlice({
       state.showCreateContact = false;
       state.showMyAccountSettings = false;
       state.showSettings = false;
-      state.showEditContactProfile = false
-      state.showWarningPopup= false
+      state.showEditContactProfile = false;
+      state.showWarningPopup = false;
     },
   },
 });
@@ -76,5 +123,8 @@ export const {
   setShowEditContactProfile,
   setShowWarningPopup,
   hideEverything,
-
+  handleEditMessage,
+  handleForwardMessage,
+  handleReplytoMessage,
+  handleScrollToMessage
 } = uiSlice.actions;

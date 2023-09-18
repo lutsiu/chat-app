@@ -8,8 +8,9 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import MessageActionBar from "./MessageActionBar";
-import { handleEditMessage } from "../../../../state/ui";
+import { handleEditMessage, handleReplytoMessage } from "../../../../state/ui";
 import { MessageType } from "../../../../interfaces/message";
+import { IMessage } from "../../../../interfaces/models";
 interface Props {
   sendMessage: (
     action: MessageType,
@@ -54,11 +55,22 @@ export default function MessageBar(props: Props) {
     if (replyToMessage.show) {
       sendMessage(
         {
-          reply: { messageIdToReply: "id" },
+          reply: {
+            messageToReplyId: replyToMessage.message?._id as string,
+            senderId: replyToMessage.senderId,
+          },
           editMessage: null,
           sendMessage: false,
         },
         e
+      );
+      dispatch(
+        handleReplytoMessage({
+          message: null,
+          show: false,
+          messageUpperPoint: undefined,
+          senderId: "",
+        })
       );
     }
     if (editMessage.show) {
@@ -70,7 +82,13 @@ export default function MessageBar(props: Props) {
         },
         e
       );
-      dispatch(handleEditMessage({ message: null, show: false }));
+      dispatch(
+        handleEditMessage({
+          message: null,
+          show: false,
+          messageUpperPoint: undefined,
+        })
+      );
     }
     if (!replyToMessage.show && !editMessage.show) {
       sendMessage({ editMessage: null, reply: null, sendMessage: true }, e);
@@ -80,6 +98,7 @@ export default function MessageBar(props: Props) {
     (state: ReduxState) => state.ui
   );
 
+  // submit form if press enter
   function handleTextAreaEnterPressed(
     e: React.KeyboardEvent<HTMLTextAreaElement>
   ) {
@@ -88,7 +107,7 @@ export default function MessageBar(props: Props) {
       submitForm();
     }
   }
-
+  // set value of input if edit
   useEffect(() => {
     if (editMessage.message) {
       setInputValue(editMessage.message.message);
@@ -120,7 +139,7 @@ export default function MessageBar(props: Props) {
         </div>
         <div className="flex-1">
           <TextareaAutosize
-            maxRows={20}
+            maxRows={15}
             placeholder="Message"
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleTextAreaEnterPressed}

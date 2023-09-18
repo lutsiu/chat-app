@@ -53,7 +53,13 @@ export default function ChatBody(props: Props) {
           });
         }
         if (action.reply) {
-          console.log("reply");
+          const { messageToReplyId, senderId } = action.reply;
+          socket.emit("reply-to-message", {
+            message: inputValue,
+            messageToReplyId,
+            senderId,
+            chatId,
+          });
         }
         setInputValue("");
       }
@@ -88,7 +94,7 @@ export default function ChatBody(props: Props) {
       "edit-message",
       (data: { messageId: string; message: string }) => {
         const { message, messageId } = data;
-  
+
         setChatMessages((prev) => {
           return prev.map((msg) => {
             if (msg._id !== messageId) {
@@ -105,6 +111,13 @@ export default function ChatBody(props: Props) {
         });
       }
     );
+  }, [socket]);
+
+  // fetch replies
+  useEffect(() => {
+    socket.on("reply-to-message", (reply: IMessage) => {
+      setChatMessages((prev) => [...prev, reply]);
+    });
   }, [socket]);
 
   // provide socket with id of group in order to create group

@@ -19,7 +19,6 @@ export default function ChatListItem() {
     e: React.MouseEvent<HTMLLIElement, MouseEvent>
   ) {
     e.preventDefault();
-    const target = e.target as HTMLElement;
     const position: {
       x: number;
       y: number;
@@ -39,9 +38,9 @@ export default function ChatListItem() {
               ? "w-full h-full flex gap-[1rem] bg-violet-600 px-[0.8rem] py-[0.4rem] rounded-lg"
               : "w-full h-full flex gap-[1rem]  hover:bg-slate-700 px-[0.8rem] py-[0.4rem] rounded-lg"
           }
-          style={{background: showContextMenu ? 'rgb(51 65 85)' : ''}}
+          style={{ background: showContextMenu ? "rgb(51 65 85)" : "" }}
         >
-          <div >
+          <div>
             <div className="w-[5rem] h-[5rem]">
               <img
                 src="https://i.pinimg.com/736x/66/82/e6/6682e6bd841d40dbdd7f77dee789a0cf.jpg"
@@ -52,7 +51,9 @@ export default function ChatListItem() {
           </div>
           <div className="flex flex-col flex-1  justify-between pb-[0.2rem]">
             <div className="flex justify-between items-start ">
-              <h2 className="text-xl font-medium mt-[0.4rem]">{user.fullName}</h2>
+              <h2 className="text-xl font-medium mt-[0.4rem]">
+                {user.fullName}
+              </h2>
               <div className="flex gap-[0.2rem] items-center">
                 <IoCheckmarkOutline
                   className="text-2xl"

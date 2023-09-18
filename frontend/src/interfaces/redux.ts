@@ -1,4 +1,4 @@
-import { UserModel } from "./models";
+import { IMessage, UserModel } from "./models";
 import {Socket} from 'socket.io-client'
 export interface UserInitialState {
   user: null | UserModel;
@@ -27,7 +27,25 @@ export interface UiInitialState {
   showSettings: boolean;
   showMyAccountSettings: boolean;
   showEditContactProfile: boolean;
-  showWarningPopup: boolean
+  showWarningPopup: boolean;
+  replyToMessage: {
+    show: boolean,
+    message: IMessage | null,
+    senderId: string,
+    messageUpperPoint: undefined | number
+  }, 
+  editMessage: {
+    show: boolean, 
+    message: IMessage | null,
+    messageUpperPoint: undefined | number
+  },
+  forwardMessage: {
+    show: boolean,
+    message: IMessage | null
+  };
+  scrollToMessage: {
+    top: number
+  } | null
 }
 
 
@@ -50,3 +68,23 @@ export interface ActionWithGroupUser {
   }
 }
 
+export interface ActionWithMessage {
+  payload: {
+    message: IMessage | null,
+    show: boolean,
+    messageUpperPoint: undefined | number
+  }
+}
+export interface ActionWithReply extends ActionWithMessage {
+  payload: {
+    message: IMessage | null,
+    show: boolean,
+    messageUpperPoint: undefined | number,
+    senderId: string
+  }
+}
+export interface ActionWithScroll {
+  payload: {
+    top: number | null
+  }
+}

@@ -1,8 +1,9 @@
 import { IMessage } from "../../../../interfaces/models";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import styles from "./styles.module.scss";
-import MessageContextMenu from "./ContextMenu";
 import Message from "./Message";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../interfaces/redux";
 interface Props {
   messages: IMessage[];
   myUserId: string | undefined;
@@ -11,7 +12,7 @@ interface Props {
 export default function Messages(props: Props) {
   const { messages, myUserId, chatId} = props;
   const chatContainer = useRef<null | HTMLDivElement>(null);
-
+  const {scrollToMessage} = useSelector((state: ReduxState) => state.ui)
   useEffect(() => {
     setTimeout(() => {
       if (chatContainer.current) {
@@ -20,6 +21,11 @@ export default function Messages(props: Props) {
     }, 10);
   }, [messages]);
 
+  useEffect(() => {
+    if (scrollToMessage && chatContainer.current) {
+      chatContainer.current.scroll({top: scrollToMessage.top, behavior: 'smooth'});
+    }
+  }, [scrollToMessage])
   return (
     <div
       className={`${styles.containerHeight} overflow-y-scroll box-border`}
