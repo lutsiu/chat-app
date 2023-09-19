@@ -175,7 +175,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             chatId,
             message,
             messageToReplyId,
-            senderId
+            senderId,
           });
           console.log(body);
           const res = await fetch(
@@ -189,6 +189,29 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           if (res.ok) {
             const reply = await res.json();
             io.in(chatId).emit("reply-to-message", reply);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "pin-or-unpin-message",
+      async (data: { messageId: string; chatId: string }) => {
+        try {
+          const { messageId, chatId } = data;
+          socket.join(chatId);
+          const body = JSON.stringify({
+            messageId,
+            chatId,
+          });
+          const res = await fetch("http://localhost:3000/chat/pin-or-unpin-message", {
+            headers: { "Content-Type": "application/json" },
+            body,
+            method: "PATCH",
+          });
+          if (res.ok) {
+            io.in(chatId).emit("pin-or-unpin-message", messageId);
           }
         } catch (err) {
           console.log(err);

@@ -34,7 +34,6 @@ export const updateChat = async (req, res) => {
       sender: senderId,
       message: message as string,
       timeStamp: new Date(),
-
     };
     chat.messages.push(newMessage);
     await chat.save();
@@ -103,28 +102,69 @@ export const deleteMessage = async (req, res) => {
 
 export const editMessage = async (req, res) => {
   try {
-    const {messageId, chatId, message} = req.body
-    const chat = await Chat.findById(chatId); 
+    const { messageId, chatId, message } = req.body;
+    const chat = await Chat.findById(chatId);
     if (!chat) {
       return res.status(409).json("Chat wasn't found");
     }
-    const foundedMessage = await Chat.findOne({'messages._id': messageId});
+    const foundedMessage = await Chat.findOne({ "messages._id": messageId });
     if (!foundedMessage) {
       return res.status(409).json("Message wasn't found");
     }
     const updatedMessages = chat.messages.map((msg) => {
       if (msg._id.toString() !== messageId) {
-        return msg
+        return msg;
       } else {
         msg.message = message;
         msg.isEdited = true;
-        return msg
+        return msg;
       }
     });
     chat.messages = updatedMessages;
     await chat.save();
-    return res.status(200).json('Done');
-  } catch (err) { 
-    res.status(409).json('some internal error occured');
+    return res.status(200).json("Done");
+  } catch (err) {
+    res.status(409).json("some internal error occured");
   }
-}
+};
+
+export const replyToMessage = async (req, res) => {
+  try {
+    const { message, messageToReplyId, chatId, senderId } = req.body;
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json("Chat wasn't found");
+    }
+    const messageToReply = chat.messages.find(
+      (msg) => msg._id.toString() === messageToReplyId
+    );
+    if (!messageToReply) {
+      return res.status(404).json("Message to reply wasn't found");
+    }
+    const recipient = await User.findById(messageToReply.sender);
+    if (!recipient) {
+      return res.status(404).json("Recipient wasn't found");
+    }
+    const sender = await User.findById(senderId);
+    if (!sender) {
+      return res.status(404).json("Sender wasn't found");
+    }
+    const reply: IMessage = {
+      message,
+      sender: senderId,
+      timeStamp: new Date(),
+      reply: {
+        isReply: true,
+        messageToReplyId,
+        messageToReplyMessage: messageToReply.message,
+        messageToReplyRecipientName: recipient.fullName,
+      },
+    };
+    chat.messages.push(reply);
+    await chat.save();
+    const myReply = chat.messages.at(-1);
+    res.status(200).json(myReply);
+  } catch (err) {
+    res.status(409).json("Internal error occured");
+  }
+};

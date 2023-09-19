@@ -4,6 +4,7 @@ import {
   deleteMessage,
   editMessage,
   findOrCreateChat,
+  replyToMessage,
   updateChat,
 } from "../controllers/chat.ts";
 import User from "../models/User.ts";
@@ -22,44 +23,30 @@ router.delete("/delete-message", deleteMessage);
 
 router.patch("/edit-message", editMessage);
 
-router.put("/reply-to-message", async (req, res) => {
+router.put("/reply-to-message", replyToMessage);
+
+router.patch('/pin-or-unpin-message', async (req, res) => {
   try {
-    const { message, messageToReplyId, chatId, senderId } = req.body;
+    const {messageId, chatId} = req.body;
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json("Chat wasn't found");
+      return res.status(404).json("Chat wasn't found")
     }
-    const messageToReply = chat.messages.find(
-      (msg) => msg._id.toString() === messageToReplyId
-    );
-    if (!messageToReply) {
-      return res.status(404).json("Message to reply wasn't found");
-    }
-    const recipient = await User.findById(messageToReply.sender);
-    if (!recipient) {
-      return res.status(404).json("Recipient wasn't found");
-    }
-    const sender = await User.findById(senderId);
-    if (!sender) {
-      return res.status(404).json("Sender wasn't found");
-    }
-    const reply: IMessage = {
-      message,
-      sender: senderId,
-      timeStamp: new Date(),
-      reply: {
-        isReply: true,
-        messageToReplyId,
-        messageToReplyMessage: messageToReply.message,
-        messageToReplyRecipientName: recipient.fullName,
-      },
+    const message = chat.messages.find((msg) => msg._id.toString() === messageId)
+    if (!message) {
+      return res.status(404).json("Message wasn't found")
     };
-    chat.messages.push(reply);
+    chat.messages.map((msg) => {
+      if (msg._id.toString() !== messageId) {
+        return msg
+      } else {
+        msg.pinned = !msg.pinned
+      }
+    })
     await chat.save();
-    const myReply = chat.messages.at(-1);
-    res.status(200).json(myReply);
+    return res.status(200).json('done')
   } catch (err) {
-    res.status(409).json("Internal error occured");
+    res.status(409).json('Internal server error occured');
   }
-});
+})
 export default router;
