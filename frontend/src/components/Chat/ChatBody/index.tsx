@@ -9,6 +9,7 @@ import { ReduxState } from "../../../interfaces/redux";
 import { IMessage } from "../../../interfaces/models";
 import Messages from "./Messages";
 import { MessageType } from "../../../interfaces/message";
+import PinnedMessages from "./PinnedMessages";
 interface Props {
   chatId: string;
   chatHistory: IMessage[];
@@ -112,7 +113,25 @@ export default function ChatBody(props: Props) {
       }
     );
   }, [socket]);
-
+  // update messages if one of them was pinned/unpinned
+  useEffect(() => {
+    socket.on('pin-or-unpin-message', (messageId: string) => {
+      console.log('pin!!!!', messageId)
+      setChatMessages((prev) => {
+        return prev.map((msg) => {
+          if (msg._id !== messageId) {
+            return msg
+          } else {
+            return {
+              ...msg,
+              pinned: !msg.pinned,
+    
+            }
+          }
+        })
+      });
+    })  
+  }, [socket]);
   // fetch replies
   useEffect(() => {
     socket.on("reply-to-message", (reply: IMessage) => {
@@ -150,9 +169,15 @@ export default function ChatBody(props: Props) {
       document.removeEventListener("click", handleCloseSendFiles);
     };
   }, []);
+  
   return (
     <>
-      <div className="flex-1 w-full overflow-y-hidden">
+      <div className="flex-1 w-full overflow-y-hidden relative">
+        {chatMessages.filter((msg) => msg.pinned).length > 0 && (
+          <PinnedMessages
+            pinnedMessages={chatMessages.filter((msg) => msg.pinned)}
+          />
+        )}
         <Messages
           messages={chatMessages}
           chatId={chatId}

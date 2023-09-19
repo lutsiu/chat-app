@@ -14,7 +14,7 @@ import {
   handleEditMessage,
   handleForwardMessage,
   handleReplytoMessage,
-} from "../../../../../state/ui";
+} from "../../../../../state/message";
 import { ReduxState } from "../../../../../interfaces/redux";
 
 interface Props {
@@ -26,7 +26,7 @@ interface Props {
   msg: IMessage;
   chatId: string;
   messageUpperPoint: number | undefined;
-  myUserId: string
+  myUserId: string;
 }
 
 export default function MessageContextMenu(props: Props) {
@@ -39,7 +39,7 @@ export default function MessageContextMenu(props: Props) {
     msg,
     chatId,
     messageUpperPoint,
-    myUserId
+    myUserId,
   } = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
@@ -94,10 +94,24 @@ export default function MessageContextMenu(props: Props) {
   function replyToMessage() {
     setShowMenu(false);
     dispatch(
-      handleReplytoMessage({ message: msg, show: true, messageUpperPoint, senderId: myUserId })
+      handleReplytoMessage({
+        message: msg,
+        show: true,
+        messageUpperPoint,
+        senderId: myUserId,
+      })
     );
   }
 
+  function copyMessage() {
+    navigator.clipboard.writeText(msg.message);
+    setShowMenu(false);
+  }
+
+  function pinMessage() {
+    socket.emit("pin-or-unpin-message", { chatId, messageId: msg._id });
+    setShowMenu(false);
+  }
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -134,13 +148,25 @@ export default function MessageContextMenu(props: Props) {
           </div>
         )}
 
-        <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
+        <div
+          className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+          onClick={copyMessage}
+        >
           <IoCopyOutline className="w-[1.5rem] h-[1.5rem]" />
           <span className="font-medium text-xl ">Copy</span>
         </div>
-        <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
-          <BsFillPinAngleFill className="w-[1.5rem] h-[1.5rem]" />
-          <span className="font-medium text-xl ">Pin</span>
+        <div
+          className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+          onClick={pinMessage}
+        >
+          {msg.pinned ? (
+            <RiUnpinFill className="w-[1.5rem] h-[1.5rem]" />
+          ) : (
+            <BsFillPinAngleFill className="w-[1.5rem] h-[1.5rem]" />
+          )}
+          <span className="font-medium text-xl ">
+            {msg.pinned ? "Unpin" : "Pin"}
+          </span>
         </div>
         <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
           <BsReply

@@ -1,6 +1,11 @@
 .reply {
-
   &:hover {
     background-color: rgba(60, 60, 60, 0.1);
   }
+}
+.recipientMessage {
+  @apply  relative bg-gray-700 justify-self-start rounded-2xl p-[0.8rem] max-w-[70%];
+}
+.myMessage {
+  @apply  relative bg-purple-500 justify-self-end rounded-2xl p-[0.8rem] max-w-[70%];
 }

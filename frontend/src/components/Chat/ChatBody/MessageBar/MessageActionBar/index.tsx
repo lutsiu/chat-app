@@ -9,7 +9,7 @@ import {
   handleEditMessage,
   handleReplytoMessage,
   handleScrollToMessage,
-} from "../../../../../state/ui";
+} from "../../../../../state/message";
 
 interface Props {
   setInputValue: (value: string) => void;
@@ -18,10 +18,9 @@ interface Props {
 export default function MessageActionBar(props: Props) {
   const { setInputValue } = props;
   const { replyToMessage, editMessage } = useSelector(
-    (state: ReduxState) => state.ui
+    (state: ReduxState) => state.message
   );
   const dispatch = useDispatch();
-  const CHAT_HEADER_HEIGHT = 52;
   function handleCloseActionBar() {
     if (replyToMessage.show) {
       dispatch(
@@ -32,7 +31,6 @@ export default function MessageActionBar(props: Props) {
           senderId: "",
         })
       );
-      console.log("done");
     }
     if (editMessage.show) {
       dispatch(
@@ -42,7 +40,6 @@ export default function MessageActionBar(props: Props) {
           messageUpperPoint: undefined,
         })
       );
-      console.log("done");
     }
     setInputValue("");
   }
@@ -51,14 +48,14 @@ export default function MessageActionBar(props: Props) {
       dispatch(
         handleScrollToMessage({
           top:
-            (replyToMessage.messageUpperPoint as number) - CHAT_HEADER_HEIGHT,
+            (replyToMessage.messageUpperPoint as number)
         })
       );
     }
     if (editMessage.show) {
       dispatch(
         handleScrollToMessage({
-          top: (editMessage.messageUpperPoint as number) - CHAT_HEADER_HEIGHT,
+          top: (editMessage.messageUpperPoint as number)
         })
       );
     }

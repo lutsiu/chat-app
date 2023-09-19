@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import MessageActionBar from "./MessageActionBar";
-import { handleEditMessage, handleReplytoMessage } from "../../../../state/ui";
+import { handleEditMessage, handleReplytoMessage } from "../../../../state/message";
 import { MessageType } from "../../../../interfaces/message";
 import { IMessage } from "../../../../interfaces/models";
 interface Props {
@@ -95,7 +95,7 @@ export default function MessageBar(props: Props) {
     }
   };
   const { replyToMessage, editMessage } = useSelector(
-    (state: ReduxState) => state.ui
+    (state: ReduxState) => state.message
   );
 
   // submit form if press enter
@@ -117,6 +117,7 @@ export default function MessageBar(props: Props) {
   return (
     <form
       className="fixed bottom-[0] flex flex-col px-[1rem] md:w-[65%] w-full "
+      id="message-bar"
       onSubmit={handleSubmitForm}
       ref={formRef}
     >
