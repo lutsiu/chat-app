@@ -107,6 +107,25 @@ export const signUpStep2 = async (req: Request, res: Response) => {
   }
 };
 
+export const signUpStep3 = async (req: Request, res: Response) => {
+  try {
+    const { userName, fullName, bio, userId } = req.body;
+    const { path } = req.file;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json("User wasn't found");
+    }
+    user.fullName = fullName;
+    user.userName = userName;
+    user.bio = bio;
+    user.profilePicture = path;
+    await user.save();
+    return res.status(201).json("Sign up is done");
+  } catch (err) {
+    res.status(409).json(err.message);
+  }
+}
+
 export const resendCode = async (req, res) => {
   try {
     const { userId } = req.body;

@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import multer from "multer";
 import helmet from "helmet";
+import fs from "fs/promises";
 import morgan from "morgan";
 import * as socket from "socket.io";
 import path from "path";
@@ -15,6 +16,11 @@ import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
 import fetch from "node-fetch";
 import { IMessage } from "./interfaces/models.ts";
+import { signUpStep3 } from "./controllers/auth.ts";
+import { FormData } from "formdata-polyfill/esm.min.js";
+import { Blob } from "fetch-blob";
+import { cwd } from "process";
+import Chat from "./models/Chat.ts";
 /* CONFIG */
 
 dotenv.config();
@@ -30,38 +36,29 @@ app.use("/public", express.static(path.join(process.cwd(), "public")));
 /* FILE STORAGE */
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, `public/uploads`);
+    console.log("mutler", file);
+    /* cb(null, `public/uploads`); */
   },
   filename(req, file, cb) {
-    cb(null, file.originalname.replace(".", `-${generateNumber()}.`));
+    console.log(file);
+    /* cb(null, file.originalname.replace(".", `-${generateNumber()}.`)); */
   },
 });
 
 const upload = multer({ storage });
 
-app.post(
-  "/auth/sign-up/step-3",
-  upload.single("profilePicture"),
-  async (req: Request, res: Response) => {
+app.post("/auth/sign-up/step-3", upload.single("profilePicture"), signUpStep3);
+app.put(
+  "/chat/send-message-with-file",
+  upload.single("file"),
+  async (req, res) => {
     try {
-      const { userName, fullName, bio, userId } = req.body;
-      const { path } = req.file;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json("User wasn't found");
-      }
-      user.fullName = fullName;
-      user.userName = userName;
-      user.bio = bio;
-      user.profilePicture = path;
-      await user.save();
-      return res.status(201).json("Sign up is done");
+      console.log(req.file, req.body);
     } catch (err) {
-      res.status(409).json(err.message);
+      res.status(409).json("Internal error occured");
     }
   }
 );
-
 /* ROUTES */
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
@@ -72,6 +69,7 @@ const PORT = process.env.PORT;
 mongoose.connect(process.env.MONGO_URL).then(() => {
   const server = app.listen(PORT);
   const io = new socket.Server(server, {
+    maxHttpBufferSize: 1e8,
     cors: {
       origin: "http://127.0.0.1:5173",
       methods: ["GET", "POST", "PATCH", "DELETE"],
@@ -169,14 +167,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         senderId: string;
       }) => {
         try {
-          const { message, messageToReplyId, chatId, senderId } = data;
-          socket.join(chatId);
-          const body = JSON.stringify({
-            chatId,
-            message,
-            messageToReplyId,
-            senderId,
-          });
+          socket.join(data.chatId);
+          const body = JSON.stringify(data);
           console.log(body);
           const res = await fetch(
             "http://localhost:3000/chat/reply-to-message",
@@ -188,7 +180,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           );
           if (res.ok) {
             const reply = await res.json();
-            io.in(chatId).emit("reply-to-message", reply);
+            io.in(data.chatId).emit("reply-to-message", reply);
           }
         } catch (err) {
           console.log(err);
@@ -200,16 +192,16 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       async (data: { messageId: string; chatId: string }) => {
         try {
           const { messageId, chatId } = data;
-          socket.join(chatId);
-          const body = JSON.stringify({
-            messageId,
-            chatId,
-          });
-          const res = await fetch("http://localhost:3000/chat/pin-or-unpin-message", {
-            headers: { "Content-Type": "application/json" },
-            body,
-            method: "PATCH",
-          });
+          socket.join(data.chatId);
+          const body = JSON.stringify(data);
+          const res = await fetch(
+            "http://localhost:3000/chat/pin-or-unpin-message",
+            {
+              headers: { "Content-Type": "application/json" },
+              body,
+              method: "PATCH",
+            }
+          );
           if (res.ok) {
             io.in(chatId).emit("pin-or-unpin-message", messageId);
           }
@@ -218,32 +210,88 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
-    socket.on('find-message', async (data: {chatId: string, message: string}) => {
-      try {
-        const {chatId, message} = data;
-        const res = await fetch(`http://localhost:3000/chat/find-message?chatId=${chatId}&message=${message}`)
-        if (res.ok) {
-          const data = await res.json();
-          socket.emit("find-message", data);
+    socket.on(
+      "find-message",
+      async (data: { chatId: string; message: string }) => {
+        try {
+          const { chatId, message } = data;
+          const res = await fetch(
+            `http://localhost:3000/chat/find-message?chatId=${chatId}&message=${message}`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            socket.emit("find-message", data);
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch(err) {
-        console.log(err);
       }
-    });
-    socket.on('find-message-by-date', async (data: {chatId: string, date: string}) => {
-      try {
-        const {chatId, date} = data
-        const time = new Date(date).getTime()
-        const res = await fetch(`http://localhost:3000/chat/find-message-by-date?chatId=${chatId}&date=${time}`);
-        if (res.ok) {
-          const foundedMessage = await res.json();
-          console.log(foundedMessage)
-          socket.emit('find-message-by-date', foundedMessage);
+    );
+    socket.on(
+      "find-message-by-date",
+      async (data: { chatId: string; date: string }) => {
+        try {
+          const { chatId, date } = data;
+          const time = new Date(date).getTime();
+          const res = await fetch(
+            `http://localhost:3000/chat/find-message-by-date?chatId=${chatId}&date=${time}`
+          );
+          if (res.ok) {
+            const foundedMessage = await res.json();
+            console.log(foundedMessage);
+            socket.emit("find-message-by-date", foundedMessage);
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
       }
-    })
+    );
+    socket.on(
+      "send-message-with-file",
+      async (data: {
+        message: string;
+        file: {
+          file: Buffer;
+          name: string;
+          type: string;
+        };
+        userId: string;
+        chatId: string;
+      }) => {
+        try {
+          const { message, file, userId, chatId } = data;
+          socket.join(data.chatId);
+          const chat = await Chat.findById(chatId);
+          if (!chat) {
+            return socket.emit("send-message-with-file", "Chat wasn't found");
+          }
+          const user = await User.findById(userId);
+          if (!user) {
+            return socket.emit("send-message-with-file", "User wasn't found");
+          }
+          const baseDir = path.join(process.cwd(), "public", "uploads");
+          const chatDir = path.join(baseDir, `chat-${chatId}`);
+          const userDir = path.join(chatDir, `user-${userId}`);
+          await fs.mkdir(chatDir, { recursive: true });
+          await fs.mkdir(userDir, { recursive: true });
+          const filePath = path.join(userDir, file.name);
+          const fileDirection = path.relative(process.cwd(), filePath);
+          await fs.writeFile(filePath, file.file);
+          const msgWithFile: IMessage = {
+            message,
+            sender: userId,
+            timeStamp: new Date(),
+            file: fileDirection,
+          };
+          chat.messages.push(msgWithFile);
+          await chat.save();
+          const messageToReturn = chat.messages.at(-1);
+          io.in(chatId).emit("send-message-with-file", messageToReturn);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

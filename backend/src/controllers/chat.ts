@@ -17,7 +17,7 @@ export const deleteChat = async (req, res) => {
   }
 };
 
-export const updateChat = async (req, res) => {
+export const sendMessage = async (req, res) => {
   try {
     const { message, senderId } = req.body;
     const { chatId } = req.params;
@@ -225,3 +225,28 @@ export const findMessage = async (req, res) => {
     res.status(409).json("Internal error occured");
   }
 };
+
+export const findMessageByDate = async (req, res) => {
+  try {
+    const {chatId, date} = req.query;
+    console.log(chatId, date);
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      res.status(404).json("Chat wasn't found");
+    }
+    if (chat.messages.length === 0) {
+      res.status(200).json(null);
+    }
+    const messagesAndTime = chat.messages.map((msg) => {
+      const msgDate = new Date(msg.timeStamp).getTime();
+      const timeDifference = Math.abs(+date - msgDate)
+      return {msg, timeDifference}
+    });
+    const closestDate = messagesAndTime.reduce((prev, cur) => {
+      return prev.timeDifference < cur.timeDifference ? prev : cur;
+    });
+    res.status(200).json(closestDate.msg);
+  } catch(err) {
+    res.status(409).json('Internal error occured');
+  }
+}

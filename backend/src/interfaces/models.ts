@@ -20,7 +20,7 @@ export interface IMessage {
   timeStamp: Date;
   images?: string[];
   videos?: string[];
-  file?: string[];
+  file?: string;
   pinned?: boolean,
   reply?: {
     isReply: boolean,
