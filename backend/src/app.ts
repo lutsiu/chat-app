@@ -26,7 +26,7 @@ app.use(cors({ credentials: true }));
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
-
+app.use("/public", express.static(path.join(process.cwd(), "public")));
 /* FILE STORAGE */
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -218,6 +218,18 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on('find-message', async (data: {chatId: string, message: string}) => {
+      try {
+        const {chatId, message} = data;
+        const res = await fetch(`http://localhost:3000/chat/find-message?chatId=${chatId}&message=${message}`)
+        if (res.ok) {
+          const data = await res.json();
+          socket.emit("find-message", data);
+        }
+      } catch(err) {
+        console.log(err);
+      }
+    })
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

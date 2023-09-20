@@ -168,3 +168,28 @@ export const replyToMessage = async (req, res) => {
     res.status(409).json("Internal error occured");
   }
 };
+
+export const pinOrUnpin = async (req, res) => {
+  try {
+    const {messageId, chatId} = req.body;
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json("Chat wasn't found")
+    }
+    const message = chat.messages.find((msg) => msg._id.toString() === messageId)
+    if (!message) {
+      return res.status(404).json("Message wasn't found")
+    };
+    chat.messages.map((msg) => {
+      if (msg._id.toString() !== messageId) {
+        return msg
+      } else {
+        msg.pinned = !msg.pinned
+      }
+    })
+    await chat.save();
+    return res.status(200).json('done')
+  } catch (err) {
+    res.status(409).json('Internal server error occured');
+  }
+}

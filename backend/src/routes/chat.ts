@@ -4,6 +4,7 @@ import {
   deleteMessage,
   editMessage,
   findOrCreateChat,
+  pinOrUnpin,
   replyToMessage,
   updateChat,
 } from "../controllers/chat.ts";
@@ -25,28 +26,37 @@ router.patch("/edit-message", editMessage);
 
 router.put("/reply-to-message", replyToMessage);
 
-router.patch('/pin-or-unpin-message', async (req, res) => {
+router.patch("/pin-or-unpin-message", pinOrUnpin);
+
+router.get("/find-message", async (req, res) => {
   try {
-    const {messageId, chatId} = req.body;
+    const { chatId, message } = req.query as {
+      chatId: string;
+      message: string;
+    };
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json("Chat wasn't found")
+      return res.status(409).json("Chat wasn't found");
     }
-    const message = chat.messages.find((msg) => msg._id.toString() === messageId)
-    if (!message) {
-      return res.status(404).json("Message wasn't found")
-    };
-    chat.messages.map((msg) => {
-      if (msg._id.toString() !== messageId) {
-        return msg
-      } else {
-        msg.pinned = !msg.pinned
-      }
-    })
-    await chat.save();
-    return res.status(200).json('done')
+
+    const matches = chat.messages.filter((msg) => {
+      return msg.message.toLowerCase().includes(message.toLowerCase());
+    });
+
+    const usersPromise = matches.map((msg) => {
+      return User.findById(msg.sender);
+    });
+    const users = await Promise.all(usersPromise);
+    const result = matches.map((msg) => {
+      const user = users.find(
+        (user) => user._id.toString() === msg.sender.toString()
+      );
+      const { _id, profilePicture, fullName } = user;
+      return { message: msg, user: { _id, profilePicture, fullName } };
+    });
+    res.status(200).json(result);
   } catch (err) {
-    res.status(409).json('Internal server error occured');
+    res.status(409).json("Internal error occured");
   }
-})
+});
 export default router;
