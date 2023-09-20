@@ -19,7 +19,7 @@ export default function MenuOverlay(props: Props) {
   const width = useResponsive();
   return (
     <motion.div
-      className="menu-overlay fixed  w-full h-full top-0 right-0 bottom-0 left-0"
+      className="menu-overlay fixed  w-full h-full top-0 right-0 bottom-0 left-0 z-[20]"
       animate={{
         opacity: showOverlay ? 1 : 0,
         pointerEvents: showOverlay ? "auto" : "none",

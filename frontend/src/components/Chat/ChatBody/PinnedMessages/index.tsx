@@ -73,7 +73,7 @@ export default function PinnedMessages(props: Props) {
   }, [messagesContainerScrollTop, pinnedMessages]);
 
   return (
-    <ul className="absolute w-full py-[.4rem] bg-slate-700 z-10 flex justify-between px-[1rem] items-center">
+    <ul className="absolute w-full py-[.4rem] bg-slate-700 z-[2] flex justify-between px-[1rem] items-center">
       <div onClick={handleScrollToPinnedMessage} className="flex-1 cursor-pointer">
         <span className="text-purple-400 font-medium text-lg flex items-center">
           Pinned message

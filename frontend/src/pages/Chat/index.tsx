@@ -11,7 +11,7 @@ export default function ChatPage() {
 
   return (
     <div className="bg-gray-900 min-h-screen max-h-screen relative flex flex-col">
-      <Header/>
+      <Header chatId={data.chatId}/>
       <ChatBody chatId={data.chatId} chatHistory={data.chatHistory}/>
       {ui.showWarningPopup && <WarningPopup/>}
     </div>

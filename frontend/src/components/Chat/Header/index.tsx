@@ -9,11 +9,15 @@ import { HiOutlineArrowLeft } from "react-icons/hi";
 import useResponsive from "../../../hooks/useResponsive";
 import { Link, useNavigate } from "react-router-dom";
 import ResponsiveSearch from "../Overlays/SearchOverlay/Responsive";
-export default function Header() {
+interface Props {
+  chatId: string
+}
+export default function Header(props: Props) {
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const width = useResponsive();
   const navigate = useNavigate();
   const showNavContent = (width < 768 && !showSearch) || width >= 768;
@@ -78,10 +82,13 @@ export default function Header() {
       />
       {width >= 768 && (
         <SearchOverlay
+          chatId={props.chatId}
           showSearch={showSearch}
           setShowSearch={setShowSearch}
           query={query}
           setQuery={setQuery}
+          debouncedQuery={debouncedQuery}
+          setDebouncedQuery={setDebouncedQuery}
         />
       )}
       <ProfileOverlay
