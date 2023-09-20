@@ -3,6 +3,7 @@ import {
   deleteChat,
   deleteMessage,
   editMessage,
+  findMessage,
   findOrCreateChat,
   pinOrUnpin,
   replyToMessage,
@@ -28,35 +29,30 @@ router.put("/reply-to-message", replyToMessage);
 
 router.patch("/pin-or-unpin-message", pinOrUnpin);
 
-router.get("/find-message", async (req, res) => {
+router.get("/find-message", findMessage);
+
+router.get('/find-message-by-date', async (req, res) => {
   try {
-    const { chatId, message } = req.query as {
-      chatId: string;
-      message: string;
-    };
+    const {chatId, date} = req.query;
+    console.log(chatId, date);
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(409).json("Chat wasn't found");
+      res.status(404).json("Chat wasn't found");
     }
-
-    const matches = chat.messages.filter((msg) => {
-      return msg.message.toLowerCase().includes(message.toLowerCase());
+    if (chat.messages.length === 0) {
+      res.status(200).json(null);
+    }
+    const messagesAndTime = chat.messages.map((msg) => {
+      const msgDate = new Date(msg.timeStamp).getTime();
+      const timeDifference = Math.abs(+date - msgDate)
+      return {msg, timeDifference}
     });
-
-    const usersPromise = matches.map((msg) => {
-      return User.findById(msg.sender);
+    const closestDate = messagesAndTime.reduce((prev, cur) => {
+      return prev.timeDifference < cur.timeDifference ? prev : cur;
     });
-    const users = await Promise.all(usersPromise);
-    const result = matches.map((msg) => {
-      const user = users.find(
-        (user) => user._id.toString() === msg.sender.toString()
-      );
-      const { _id, profilePicture, fullName } = user;
-      return { message: msg, user: { _id, profilePicture, fullName } };
-    });
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(409).json("Internal error occured");
+    res.status(200).json(closestDate.msg);
+  } catch(err) {
+    res.status(409).json('Internal error occured');
   }
-});
+})
 export default router;

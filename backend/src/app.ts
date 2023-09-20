@@ -229,6 +229,20 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       } catch(err) {
         console.log(err);
       }
+    });
+    socket.on('find-message-by-date', async (data: {chatId: string, date: string}) => {
+      try {
+        const {chatId, date} = data
+        const time = new Date(date).getTime()
+        const res = await fetch(`http://localhost:3000/chat/find-message-by-date?chatId=${chatId}&date=${time}`);
+        if (res.ok) {
+          const foundedMessage = await res.json();
+          console.log(foundedMessage)
+          socket.emit('find-message-by-date', foundedMessage);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     })
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
