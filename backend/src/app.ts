@@ -21,6 +21,7 @@ import { FormData } from "formdata-polyfill/esm.min.js";
 import { Blob } from "fetch-blob";
 import { cwd } from "process";
 import Chat from "./models/Chat.ts";
+import { random } from "lodash";
 /* CONFIG */
 
 dotenv.config();
@@ -36,12 +37,10 @@ app.use("/public", express.static(path.join(process.cwd(), "public")));
 /* FILE STORAGE */
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    console.log("mutler", file);
-    /* cb(null, `public/uploads`); */
+    cb(null, `public/uploads`);
   },
   filename(req, file, cb) {
-    console.log(file);
-    /* cb(null, file.originalname.replace(".", `-${generateNumber()}.`)); */
+    cb(null, file.originalname.replace(".", `-${generateNumber()}.`));
   },
 });
 
@@ -169,7 +168,6 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         try {
           socket.join(data.chatId);
           const body = JSON.stringify(data);
-          console.log(body);
           const res = await fetch(
             "http://localhost:3000/chat/reply-to-message",
             {
@@ -238,7 +236,6 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           );
           if (res.ok) {
             const foundedMessage = await res.json();
-            console.log(foundedMessage);
             socket.emit("find-message-by-date", foundedMessage);
           }
         } catch (err) {
@@ -252,7 +249,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         message: string;
         file: {
           file: Buffer;
-          name: string;
+          fileName: string;
+          fileSize: number;
           type: string;
         };
         userId: string;
@@ -263,10 +261,12 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           socket.join(data.chatId);
           const chat = await Chat.findById(chatId);
           if (!chat) {
+            console.log('chat wasnt found')
             return socket.emit("send-message-with-file", "Chat wasn't found");
           }
           const user = await User.findById(userId);
           if (!user) {
+            console.log('user wasnt found')
             return socket.emit("send-message-with-file", "User wasn't found");
           }
           const baseDir = path.join(process.cwd(), "public", "uploads");
@@ -274,16 +274,21 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           const userDir = path.join(chatDir, `user-${userId}`);
           await fs.mkdir(chatDir, { recursive: true });
           await fs.mkdir(userDir, { recursive: true });
-          const filePath = path.join(userDir, file.name);
+          const filePath = path.join(userDir, `${file.fileName.replace(".", `-${generateNumber()}.`)}`);
           const fileDirection = path.relative(process.cwd(), filePath);
           await fs.writeFile(filePath, file.file);
           const msgWithFile: IMessage = {
             message,
             sender: userId,
             timeStamp: new Date(),
-            file: fileDirection,
+            file: {
+              filePath: fileDirection,
+              fileName: file.fileName,
+              fileType: file.type,
+              fileSize: file.fileSize,
+            },
           };
-          chat.messages.push(msgWithFile);
+          chat.messages.push(msgWithFile as IMessage);
           await chat.save();
           const messageToReturn = chat.messages.at(-1);
           io.in(chatId).emit("send-message-with-file", messageToReturn);
@@ -292,6 +297,11 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on('download-file', async (data: {filePath: string, fileName: string}) => {
+      const {fileName, filePath} = data;
+      const res = await fetch(`http://localhost:3000/chat/download-file?filePath=${filePath}&fileName=${fileName}`)
+      socket.emit('download-file', res);
+    })
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

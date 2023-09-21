@@ -7,26 +7,32 @@ export interface UserModel {
   password: string;
   profilePicture: string;
   bio: string;
-  status: string,
+  status: string;
   contacts: string[];
   chats: string[];
   confirmationCode: number | null;
   userIsVerified: boolean;
 }
+interface IFile {
+  filePath: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+}
 export interface IMessage {
-  _id?: string,
+  _id?: string;
   sender: string;
   message: string;
   timeStamp: Date;
   images?: string[];
   videos?: string[];
-  file?: string;
-  pinned?: boolean,
+  file?: IFile;
+  pinned?: boolean;
   reply?: {
-    isReply: boolean,
-    messageToReplyId: string
-    messageToReplyMessage: string,
-    messageToReplyRecipientName: string
-  } 
-  isEdited?: boolean
+    isReply: boolean;
+    messageToReplyId: string;
+    messageToReplyMessage: string;
+    messageToReplyRecipientName: string;
+  };
+  isEdited?: boolean;
 }

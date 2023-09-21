@@ -11,7 +11,12 @@ const messageSchema = new mongoose.Schema<IMessage>({
   message: String,
   images: { type: [String], required: false },
   videos: { type: [String], required: false },
-  file: String,
+  file: {
+    filePath: String,
+    fileName: String,
+    fileType: String,
+    fileSize: Number
+  },
   timeStamp: { type: Date, default: Date.now() },
   pinned: {
     type: Boolean,
