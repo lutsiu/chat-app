@@ -10,12 +10,14 @@ import useResponsive from "../../../../../hooks/useResponsive";
 import { IMessage } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
+import { LiaDownloadSolid } from "react-icons/lia";
 import {
   handleEditMessage,
   handleForwardMessage,
   handleReplytoMessage,
 } from "../../../../../state/message";
 import { ReduxState } from "../../../../../interfaces/redux";
+import downloadFile from "../../../../../utils/downloadFile";
 
 interface Props {
   x: number;
@@ -112,6 +114,10 @@ export default function MessageContextMenu(props: Props) {
     socket.emit("pin-or-unpin-message", { chatId, messageId: msg._id });
     setShowMenu(false);
   }
+  function handleDownloadFile() {
+    downloadFile(msg);
+    setShowMenu(false);
+  }
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -168,6 +174,17 @@ export default function MessageContextMenu(props: Props) {
             {msg.pinned ? "Unpin" : "Pin"}
           </span>
         </div>
+        {msg.file && (
+          <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+            onClick={handleDownloadFile}
+          >
+            <LiaDownloadSolid
+              className="w-[2rem] h-[2rem]"
+              style={{ transform: "rotateY(180deg)" }}
+            />
+            <span className="font-medium text-xl ">Download</span>
+          </div>
+        )}
         <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
           <BsReply
             className="w-[2rem] h-[2rem]"

@@ -1,4 +1,4 @@
-import { AiOutlinePaperClip } from "react-icons/ai";
+import { GoPaperclip } from "react-icons/go";
 import { FaRegSmile } from "react-icons/fa";
 import SendFilesPopup from "../Popups/SendFilesPopup";
 import { IoMdSend } from "react-icons/io";
@@ -8,7 +8,10 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import MessageActionBar from "./MessageActionBar";
-import { handleEditMessage, handleReplytoMessage } from "../../../../state/message";
+import {
+  handleEditMessage,
+  handleReplytoMessage,
+} from "../../../../state/message";
 import { MessageType } from "../../../../interfaces/message";
 import { IMessage } from "../../../../interfaces/models";
 interface Props {
@@ -150,13 +153,20 @@ export default function MessageBar(props: Props) {
             className="message-input w-full h-[2rem] outline-none bg-transparent sm:text-2xl text-2xl font-normal px-[1rem] box-border mb-[0.4rem]"
           />
         </div>
-        <div className="relative min-w-[3.2rem] min-h-[3.2rem] max-w-[3.2rem] max-h-[3.2rem]">
+        <div
+          className="media-div relative min-w-[3.2rem] min-h-[3.2rem] max-w-[3.2rem] max-h-[3.2rem]"
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.closest(".media-div")) {
+              setShowFilesPopup((prev) => !prev);
+            }
+          }}
+        >
           {!inputValue && (
             <>
-              <AiOutlinePaperClip
+              <GoPaperclip
                 className="open-files-popup p-[0.3rem] w-full h-full text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
                 style={{ transform: "rotateZ(180deg)" }}
-                onClick={() => setShowFilesPopup((prev) => !prev)}
               />
               <SendFilesPopup
                 showPopup={showFilesPopup}
@@ -167,10 +177,7 @@ export default function MessageBar(props: Props) {
           )}
           {inputValue && (
             <button type="submit" className="w-full h-full">
-              <IoMdSend
-                className="open-files-popup p-[0.3rem] w-full h-full text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 "
-                onClick={() => setShowFilesPopup((prev) => !prev)}
-              />
+              <IoMdSend className="open-files-popup p-[0.3rem] w-full h-full text-gray-400 cursor-pointer hover:bg-gray-600 rounded-full duration-200 " />
             </button>
           )}
         </div>

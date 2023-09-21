@@ -5,6 +5,8 @@ import Header from "./Header";
 import { useSocket } from "../../../../context/SocketContext";
 import { IMessage } from "../../../../interfaces/models";
 import months from "../../../../utils/months";
+import { useDispatch } from "react-redux";
+import { handleScrollToMessage } from "../../../../state/message";
 interface Props {
   showSearch: boolean;
   setShowSearch: (show: boolean) => void;
@@ -28,12 +30,13 @@ export default function SearchOverlay(props: Props) {
     setDebouncedQuery,
   } = props;
   const [messages, setMessages] = useState<Message[]>([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<null | Date>(null);
   const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
   const socket = useSocket();
   const { chatId } = props;
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
+  const dispatch = useDispatch();
   useEffect(() => {
     // Function to emit the query after a delay
     const emitQuery = () => {
@@ -89,6 +92,7 @@ export default function SearchOverlay(props: Props) {
         setShowSearch={setShowSearch}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
+        chatId={chatId}
       />
       <div className="pt-[2rem]">
         {query && (
@@ -97,6 +101,9 @@ export default function SearchOverlay(props: Props) {
         <ul className="w-full px-[1rem] mt-[1.5rem] ">
           {query &&
             messages.map((msg, i) => {
+
+              const messageToSearchDOM = document.getElementById(msg.message._id as string);
+              const messageToSearchTop = messageToSearchDOM?.offsetTop;
               const messageDate = new Date(msg.message.timeStamp);
               const day = messageDate.getDate();
               const month = months.at(messageDate.getMonth());
@@ -106,13 +113,15 @@ export default function SearchOverlay(props: Props) {
               if (messageDate.toDateString() === currentDate.toDateString()) {
                 dateToShow = `today`;
               }
-                if (showYear) {
-                  dateToShow = `${day}/${month}/${year}`;
-                }
+              if (showYear) {
+                dateToShow = `${day}/${month}/${year}`;
+              }
+              
               return (
                 <li
                   key={i}
-                  className="hover:bg-gray-700 duration-300 rounded-xl py-[0.6rem] pl-[0.6rem] pr-[1.3rem] flex gap-[1rem] w-full cursor-pointer  "
+                  className="hover:bg-gray-700 duration-300 rounded-xl py-[0.6rem] pl-[0.6rem] pr-[1.3rem] flex gap-[1rem] w-full cursor-pointer"
+                  onClick={() => dispatch(handleScrollToMessage({top: messageToSearchTop as number}))}
                 >
                   <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
                     <img

@@ -79,6 +79,11 @@ export default function ChatBody(props: Props) {
     };
   }, [socket]);
 
+  useEffect(() => {
+    socket.on('send-message-with-file', (message: IMessage) => {
+      setChatMessages(prev => [...prev, message]);
+    })
+  }, [socket]);
   // update messages if one of them was deleted
   useEffect(() => {
     socket.on("delete-message", (messageId: string) => {
@@ -148,9 +153,13 @@ export default function ChatBody(props: Props) {
   useEffect(() => {
     if (file) {
       setShowFileOverlay(true);
+    } else {
+      setShowFileOverlay(false);
     }
     if (media) {
       setShowMediaOverlay(true);
+    } else {
+      setShowMediaOverlay(false)
     }
   }, [file, media]);
   // close overlay
@@ -195,9 +204,10 @@ export default function ChatBody(props: Props) {
       </div>
       <SendFile
         showOverlay={showFileOverlay}
-        setShowOverlay={setShowFileOverlay}
-        fileName={file?.name || ""}
-        size={file?.size || 0}
+        setFile={setFile}
+        file={file}
+        chatId={chatId}
+        userId={user?._id as string}
       />
       <MediaFilesPopup
         showOverlay={showMediaOverlay}

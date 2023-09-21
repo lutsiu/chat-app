@@ -1,26 +1,55 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { IoCloseOutline } from "react-icons/io5";
 import { AiFillFile } from "react-icons/ai";
+import { useRef } from "react";
+import { useSocket } from "../../../../../context/SocketContext";
+import getSizeOfFile from "../../../../../utils/getSizeOfFile";
+import normalizeNameOfFile from "../../../../../utils/normalizeNameOfFile";
 interface Props {
   showOverlay: boolean;
-  setShowOverlay: (show: boolean) => void;
-  fileName: string,
-  size: number
+  setFile: React.Dispatch<React.SetStateAction<File | null>>;
+  file: null | File;
+  chatId: string;
+  userId: string;
 }
 export default function SendFile(props: Props) {
-  const { showOverlay, setShowOverlay, fileName, size } = props;
-  const MILLION = 1000000;
-  const indexOfLastDot = fileName.lastIndexOf('.');
-  const unitOfMeasure = size <  MILLION ? 'KB' : 'MB';
-  const properFilename = fileName.length >= 40 ? fileName.slice(0, 20) + '...' + fileName.slice(indexOfLastDot, -1) : fileName; 
+  const socket = useSocket();
+  const { showOverlay, setFile, file, chatId, userId } = props;
+  const formRef = useRef<null | HTMLFormElement>(null);
+  const fileName = file?.name || "";
+  const size = file?.size || 0;
+  const sizeToShow = getSizeOfFile(size);
+  const properFilename = normalizeNameOfFile(fileName);
 
   function handleCloseOverlay(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const target = e.target as HTMLElement;
-    if (target.classList.contains("overlay") || target.classList.contains('close-overlay')) {
-      setShowOverlay(false);
+    if (
+      target.classList.contains("overlay") ||
+      target.classList.contains("close-overlay")
+    ) {
+      setFile(null);
     }
   }
-
+  function sendFile(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (formRef.current) {
+      const formData = new FormData(formRef.current);
+      const dataToSend = {
+        chatId,
+        userId,
+        message: formData.get("message"),
+        file: {
+          file,
+          fileName,
+          fileSize: size,
+          type: file?.type,
+        },
+      };
+      socket.emit("send-message-with-file", dataToSend);
+    }
+    setFile(null);
+    formRef.current?.reset();
+  }
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -39,6 +68,8 @@ export default function SendFile(props: Props) {
           y: showOverlay ? 0 : 100,
         }}
         className="flex flex-col gap-[1.5rem] p-[1rem] bg-slate-800 rounded-xl w-[40rem]"
+        ref={formRef}
+        onSubmit={sendFile}
       >
         <div className="flex items-center gap-[2rem]">
           <div onClick={handleCloseOverlay}>
@@ -52,7 +83,7 @@ export default function SendFile(props: Props) {
           </div>
           <div>
             <p className="text-2xl font-medium">{properFilename}</p>
-            <p className="text-xl text-gray-300">{(size < MILLION ? size /  10000 : size / MILLION).toFixed(2)}{unitOfMeasure}</p>
+            <p className="text-xl text-gray-300">{sizeToShow}</p>
           </div>
         </div>
         <div className="flex gap-[1rem]">

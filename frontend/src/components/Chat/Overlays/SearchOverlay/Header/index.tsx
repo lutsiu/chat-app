@@ -8,13 +8,14 @@ interface Props {
   setShowSearch: (show: boolean) => void;
   query: string;
   setQuery: (query: string) => void;
-  selectedDate: Date;
+  selectedDate: Date | null;
   setSelectedDate: (date: Date) => void;
+  chatId: string
 }
 export default function Header(props: Props) {
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const { setQuery, setShowSearch, query, setSelectedDate } = props;
+  const { setQuery, setShowSearch, query, setSelectedDate, chatId, selectedDate } = props;
   return (
     <>
       <div className="pr-[1rem] pl-[2rem] flex items-center  justify-between py-[0.8rem] overflow-x-hidden sticky top-0 bg-gray-800">
@@ -57,6 +58,8 @@ export default function Header(props: Props) {
         setShowCalendar={setShowCalendar}
         showCalendar={showCalendar}
         setSelectedDate={setSelectedDate}
+        selectedDate={selectedDate}
+        chatId={chatId}
       />
     </>
   );

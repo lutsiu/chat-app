@@ -5,6 +5,7 @@ import { BsPinAngleFill } from "react-icons/bs";
 import styles from "./styles.module.scss";
 import { useDispatch } from "react-redux";
 import { handleScrollToMessage } from "../../../../../state/message";
+import FileLoader from "./FileLoader";
 interface Props {
   msg: IMessage;
   myUserId: string | undefined;
@@ -77,6 +78,7 @@ export default function Message(props: Props) {
           ref={messageRef}
           id={msg._id}
         >
+          {file && <FileLoader file={file} message={msg} chatId={chatId} />}
           {reply && reply.isReply && (
             <div
               className={`${styles.reply} duration-200 flex flex-col border-l-[.3rem] border-l-white pl-[0.8rem] mb-[0.4rem] cursor-pointer`}

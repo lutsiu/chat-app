@@ -43,18 +43,26 @@ export default function Messages(props: Props) {
     function handleScroll() {
       if (chatContainer.current) {
         const { scrollTop } = chatContainer.current;
-      
+
         dispatch(setMessageContainerScrollTop(scrollTop));
       }
     }
     chatContainer.current?.addEventListener("scroll", handleScroll);
   }, [dispatch]);
+
+
   return (
     <div
       className={`${styles.containerHeight} overflow-y-scroll box-border`}
       ref={chatContainer}
     >
-      <ul className="2xl:px-[15rem] grid grid-cols-1 gap-y-[0.2rem]">
+      <ul
+        className="2xl:px-[15rem] grid grid-cols-1 gap-y-[0.2rem]"
+        style={{
+          paddingTop:
+            messages.filter((msg) => msg.pinned).length > 0 ? `${PINNED_MESSAGES_BAR_HEIGHT + 3}px ` :'',
+        }}
+      >
         {messages.map((msg, i) => {
           const { sender } = msg;
           if (myUserId && sender === myUserId) {

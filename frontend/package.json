@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rajesh896/video-thumbnails-generator": "^2.3.9",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react-calendar": "^4.1.0",
     "@types/socket.io-client": "^3.0.0",
@@ -32,6 +33,7 @@
     "sass": "^1.64.0",
     "scss": "^0.2.4",
     "socket.io-client": "^4.7.2",
+    "video-snapshot": "^1.0.11",
     "yup": "^1.2.0"
   },
   "devDependencies": {

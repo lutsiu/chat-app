@@ -13,6 +13,12 @@ export interface UserModel {
   userIsVerified: boolean;
 }
 
+export interface IFile {
+  filePath: string,
+  fileName: string,
+  fileSize: number,
+  fileType: string
+}
 export interface IMessage {
   _id?: string;
   sender: string;
@@ -20,7 +26,7 @@ export interface IMessage {
   timeStamp: Date;
   images?: string[];
   videos?: string[];
-  file?: string[];
+  file?: IFile;
   pinned?: boolean;
   reply?: {
     isReply: boolean,

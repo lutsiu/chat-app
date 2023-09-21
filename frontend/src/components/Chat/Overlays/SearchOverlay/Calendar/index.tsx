@@ -2,26 +2,47 @@ import { motion } from "framer-motion";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./styles.scss";
-import {Value} from '../../../../../../node_modules/react-calendar/dist/esm/shared/types'
+import { Value } from "../../../../../../node_modules/react-calendar/dist/esm/shared/types";
+import { useSocket } from "../../../../../context/SocketContext";
+import { useEffect } from "react";
+import { IMessage } from "../../../../../interfaces/models";
+import { useDispatch } from "react-redux";
+import { handleScrollToMessage } from "../../../../../state/message";
 interface Props {
   showCalendar: boolean;
   setShowCalendar: (show: boolean) => void;
   setSelectedDate: (date: Date) => void;
+  chatId: string;
+  selectedDate: null | Date;
 }
 
 export default function CalendarOverlay(props: Props) {
-  const { showCalendar, setShowCalendar, setSelectedDate } = props;
+  const {
+    showCalendar,
+    setShowCalendar,
+    setSelectedDate,
+    chatId,
+    selectedDate,
+  } = props;
 
   const INITIAL_DATE = new Date(2023, 8, 8);
-
-  const handleCalendarChange = (
-    value: Value,
-  ) => {
+  const socket = useSocket();
+  const handleCalendarChange = (value: Value) => {
     setSelectedDate(value as Date);
   };
-
-  
-
+  const dispatch = useDispatch()
+  function findMessageByDate() {
+    if (selectedDate) {
+      socket.emit("find-message-by-date", { chatId, date: selectedDate });
+    }
+    setShowCalendar(false);
+  } 
+  useEffect(() => {
+    socket.on('find-message-by-date', (message: IMessage) => {
+      const messageDOM = document.getElementById(message._id as string);
+      dispatch(handleScrollToMessage({top: messageDOM?.offsetTop as number}))
+    });
+  }, [socket,dispatch]);
   return (
     <motion.div
       className="calendar-overlay fixed top-0 bottom-0 right-0 left-0 flex flex-col justify-center items-center"
@@ -35,7 +56,6 @@ export default function CalendarOverlay(props: Props) {
       initial={{ opacity: 0, pointerEvents: "none" }}
       animate={{
         opacity: showCalendar ? 1 : 0,
-
         pointerEvents: showCalendar ? "auto" : "none",
       }}
     >
@@ -55,10 +75,7 @@ export default function CalendarOverlay(props: Props) {
           </button>
           <button
             className="py-[1rem] px-[2rem] rounded-xl duration-200 text-2xl font-semibold text-purple-500 form-button"
-            onClick={() => {
-              setShowCalendar(false);
-              /* SOME JUMP FUNCTION, I THINK REDUX WILL BE FINE FOR IT */
-            }}
+            onClick={findMessageByDate}
           >
             JUMP TO DATE
           </button>
