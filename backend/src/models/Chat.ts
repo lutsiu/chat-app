@@ -9,8 +9,18 @@ interface IChat {
 const messageSchema = new mongoose.Schema<IMessage>({
   sender: String,
   message: String,
-  images: { type: [String], required: false },
-  videos: { type: [String], required: false },
+  images: [{
+    filePath: String,
+    fileName: String,
+    fileType: String,
+    fileSize: Number
+  }],
+  videos: [{
+    filePath: String,
+    fileName: String,
+    fileType: String,
+    fileSize: Number
+  }],
   file: {
     filePath: String,
     fileName: String,

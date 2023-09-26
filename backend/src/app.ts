@@ -15,7 +15,7 @@ import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
 import fetch from "node-fetch";
-import { IMessage } from "./interfaces/models.ts";
+import { IFile, IMessage } from "./interfaces/models.ts";
 import { signUpStep3 } from "./controllers/auth.ts";
 import { FormData } from "formdata-polyfill/esm.min.js";
 import { Blob } from "fetch-blob";
@@ -261,12 +261,12 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           socket.join(data.chatId);
           const chat = await Chat.findById(chatId);
           if (!chat) {
-            console.log('chat wasnt found')
+            console.log("chat wasnt found");
             return socket.emit("send-message-with-file", "Chat wasn't found");
           }
           const user = await User.findById(userId);
           if (!user) {
-            console.log('user wasnt found')
+            console.log("user wasnt found");
             return socket.emit("send-message-with-file", "User wasn't found");
           }
           const baseDir = path.join(process.cwd(), "public", "uploads");
@@ -274,7 +274,10 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           const userDir = path.join(chatDir, `user-${userId}`);
           await fs.mkdir(chatDir, { recursive: true });
           await fs.mkdir(userDir, { recursive: true });
-          const filePath = path.join(userDir, `${file.fileName.replace(".", `-${generateNumber()}.`)}`);
+          const filePath = path.join(
+            userDir,
+            `${file.fileName.replace(".", `-${generateNumber()}.`)}`
+          );
           const fileDirection = path.relative(process.cwd(), filePath);
           await fs.writeFile(filePath, file.file);
           const msgWithFile: IMessage = {
@@ -288,7 +291,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
               fileSize: file.fileSize,
             },
           };
-          chat.messages.push(msgWithFile as IMessage);
+          chat.messages.push(msgWithFile);
           await chat.save();
           const messageToReturn = chat.messages.at(-1);
           io.in(chatId).emit("send-message-with-file", messageToReturn);
@@ -297,11 +300,82 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
-    socket.on('download-file', async (data: {filePath: string, fileName: string}) => {
-      const {fileName, filePath} = data;
-      const res = await fetch(`http://localhost:3000/chat/download-file?filePath=${filePath}&fileName=${fileName}`)
-      socket.emit('download-file', res);
-    })
+    socket.on(
+      "send-message-with-media",
+      async (data: {
+        message: string;
+        userId: string;
+        chatId: string;
+        media: {
+          media: Buffer;
+          fileName: string;
+          fileSize: number;
+          fileType: string;
+        }[];
+      }) => {
+        try {
+          const { message, userId, chatId, media } = data;
+          socket.join(data.chatId);
+          const chat = await Chat.findById(chatId);
+          if (!chat) {
+            console.log("chat wasnt found");
+            return socket.emit("send-message-with-file", "Chat wasn't found");
+          }
+          const user = await User.findById(userId);
+          if (!user) {
+            console.log("user wasnt found");
+            return socket.emit("send-message-with-file", "User wasn't found");
+          }
+          const baseDir = path.join(process.cwd(), "public", "uploads");
+          const chatDir = path.join(baseDir, `chat-${chatId}`);
+          const userDir = path.join(chatDir, `user-${userId}`);
+
+          await fs.mkdir(chatDir, { recursive: true });
+          await fs.mkdir(userDir, { recursive: true });
+
+          const mediaWithDirsPromise = media.map(async (md) => {
+            const { fileName, fileSize, fileType } = md;
+            const filePath = path.join(
+              userDir,
+              `${md.fileName.replace(".", `-${generateNumber()}.`)}`
+            );
+            const fileDirection = path.relative(process.cwd(), filePath);
+            await fs.writeFile(filePath, md.media);
+            const fileToReturn: IFile = {
+              filePath: fileDirection,
+              fileName,
+              fileSize,
+              fileType,
+            };
+            return fileToReturn;
+          });
+          const mediaWithDirs = await Promise.all(mediaWithDirsPromise);
+          const msgWithMedia: IMessage = {
+            message,
+            sender: userId,
+            timeStamp: new Date(),
+            videos: mediaWithDirs.filter((md) => md.fileType.includes('video')),
+            images: mediaWithDirs.filter(md => md.fileType.includes('image'))
+          }
+          chat.messages.push(msgWithMedia);
+          await chat.save();
+          const messageToReturn = chat.messages.at(-1);
+          io.in(chatId).emit("send-message-with-media", messageToReturn);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "download-file",
+      async (data: { filePath: string; fileName: string }) => {
+        const { fileName, filePath } = data;
+        const res = await fetch(
+          `http://localhost:3000/chat/download-file?filePath=${filePath}&fileName=${fileName}`
+        );
+        socket.emit("download-file", res);
+      }
+    );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

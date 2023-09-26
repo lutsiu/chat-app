@@ -13,7 +13,7 @@ export interface UserModel {
   confirmationCode: number | null;
   userIsVerified: boolean;
 }
-interface IFile {
+export interface IFile {
   filePath: string;
   fileName: string;
   fileType: string;
@@ -24,8 +24,8 @@ export interface IMessage {
   sender: string;
   message: string;
   timeStamp: Date;
-  images?: string[];
-  videos?: string[];
+  images?: IFile[];
+  videos?: IFile[];
   file?: IFile;
   pinned?: boolean;
   reply?: {
