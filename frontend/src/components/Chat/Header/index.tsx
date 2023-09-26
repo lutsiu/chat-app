@@ -1,6 +1,6 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuOverlay from "../Overlays/MenuOverlay";
 import ProfileOverlay from "../Overlays/ProfileOverlay";
 import EditProfile from "../Overlays/ProfileOverlay/EditProfile";
@@ -26,6 +26,17 @@ export default function Header(props: Props) {
   const navigate = useNavigate();
   const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
   const dispatch = useDispatch();
+  function resetSearch() {
+    dispatch(setShowSearchBar());
+    dispatch(setSearchedMessages(null))
+    setQuery('')
+  }
+  useEffect(() => {
+    window.addEventListener('beforeunload', resetSearch);
+    return () => {
+      window.removeEventListener('beforeunload', resetSearch)
+    }
+  }, [resetSearch]);
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -34,9 +45,7 @@ export default function Header(props: Props) {
             className="block"
             onClick={() => {
               if (showSearchBar) {
-                dispatch(setShowSearchBar());
-                dispatch(setSearchedMessages(null))
-                setQuery('2')
+                resetSearch
               } else {
                 navigate("/home");
               }

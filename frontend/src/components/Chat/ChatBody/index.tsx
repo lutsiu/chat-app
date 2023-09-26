@@ -10,6 +10,7 @@ import { IMessage } from "../../../interfaces/models";
 import Messages from "./Messages";
 import { MessageType } from "../../../interfaces/message";
 import PinnedMessages from "./PinnedMessages";
+import styles from './styles.module.scss';
 import FoundMessagesBottomBar from "./FoundMessagesBottomBar";
 interface Props {
   chatId: string;
@@ -31,7 +32,7 @@ export default function ChatBody(props: Props) {
   const width = useResponsive();
 
   const socket = useSocket();
-
+  const pinnedMessages = chatMessages.filter((msg) => msg.pinned).length > 0;
   async function sendMessage(
     action: MessageType,
     e: React.FormEvent<HTMLFormElement>
@@ -206,7 +207,7 @@ export default function ChatBody(props: Props) {
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden relative">
-        {chatMessages.filter((msg) => msg.pinned).length > 0 && (
+        {pinnedMessages && (
           <PinnedMessages
             pinnedMessages={chatMessages.filter((msg) => msg.pinned)}
           />
@@ -227,7 +228,9 @@ export default function ChatBody(props: Props) {
             showFilesPopup={showFilesPopup}
           />
         )}
-        {(showSearchBar && width < 768) && <FoundMessagesBottomBar chatId={chatId}/>}
+        {showSearchBar && width < 768 && (
+          <FoundMessagesBottomBar chatId={chatId} />
+        )}
       </div>
       <SendFile
         showOverlay={showFileOverlay}

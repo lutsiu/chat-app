@@ -81,7 +81,6 @@ export default function Message(props: Props) {
           style={{
             padding: media.length > 0 ? "0" : "0.8rem",
             overflow: media.length > 0 ? "hidden" : "auto",
-            marginTop: media.length > 0 ? ".5rem" : "0",
           }}
         >
           {media.length > 0 && <Media chatId={chatId} message={msg} />}

@@ -9,3 +9,8 @@
 ::-webkit-scrollbar-thumb {
   background-color: transparent; /* Color of the thumb */
 }
+
+.date-header {
+  transform: translateX(-50%);
+  background-color: rgba(168, 85, 247, .8);
+}

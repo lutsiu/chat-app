@@ -8,6 +8,7 @@ import months from "../../../../utils/months";
 import { useDispatch, useSelector } from "react-redux";
 import { handleScrollToMessage, setSearchedMessages } from "../../../../state/message";
 import { ReduxState } from "../../../../interfaces/redux";
+import getDate from "../../../../utils/getDate";
 interface Props {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -31,8 +32,6 @@ export default function SearchOverlay(props: Props) {
   const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
   const socket = useSocket();
   const { chatId } = props;
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
   const dispatch = useDispatch();
   const {showSearchBar} = useSelector((state: ReduxState) => state.ui);
   useEffect(() => {
@@ -98,16 +97,13 @@ export default function SearchOverlay(props: Props) {
         <ul className="w-full px-[1rem] mt-[1.5rem] ">
           {query &&
             searchMessages && searchMessages.map((msg, i) => {
-
               const messageToSearchDOM = document.getElementById(msg.message._id as string);
               const messageToSearchTop = messageToSearchDOM?.offsetTop;
-              const messageDate = new Date(msg.message.timeStamp);
-              const day = messageDate.getDate();
-              const month = months.at(messageDate.getMonth());
-              const year = messageDate.getFullYear();
+              const {day, month, year, currentDate, currentYear} = getDate(msg.message.timeStamp);
+
               const showYear = currentYear !== year;
               let dateToShow = `${month} ${day}`;
-              if (messageDate.toDateString() === currentDate.toDateString()) {
+              if (new Date(msg.message.timeStamp).toDateString() === currentDate.toDateString()) {
                 dateToShow = `today`;
               }
               if (showYear) {
