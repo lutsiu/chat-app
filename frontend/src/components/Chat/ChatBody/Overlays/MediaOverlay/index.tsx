@@ -3,25 +3,24 @@ import { MdOutlineDelete } from "react-icons/md";
 import { BsFillReplyFill } from "react-icons/bs";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { HiOutlineZoomIn, HiOutlineZoomOut } from "react-icons/hi";
-import { IoMdClose } from "react-icons/io";
+import { VscChromeClose } from "react-icons/vsc";
 import styles from "./styles.module.scss";
-import { IMessage } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import downloadFile from "../../../../../utils/downloadFile";
+import { IFile } from "../../../../../interfaces/models";
 interface Props {
   setShowOverlay: (show: boolean) => void;
   showOverlay: boolean;
-  mediaSrc: string;
-  mediaType: "image" | "video";
-  message: IMessage;
+  file: IFile,
+  messageId: string;
   chatId: string;
 }
 
 export default function MediaOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, mediaSrc, mediaType, message, chatId } =
+  const { showOverlay, setShowOverlay, file, messageId, chatId } =
     props;
-  const [mediaScale, setMediaScale] = useState(20);
+  const [mediaScale, setMediaScale] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [progressBarWasTouched, setProgressBarWasTouched] = useState(false);
   const socket = useSocket();
@@ -37,7 +36,7 @@ export default function MediaOverlay(props: Props) {
     }
   }
   function handleDeleteMessage() {
-    socket.emit("delete-message", { chatId, messageId: message._id });
+    socket.emit("delete-message", { chatId, messageId });
     setShowOverlay(false);
   }
 
@@ -61,6 +60,17 @@ export default function MediaOverlay(props: Props) {
     setMediaScale((prev) => prev - 20);
   }
 
+  useEffect(() => {
+    function handleCloseOverlay(e: KeyboardEvent) {
+      const event = e as KeyboardEventInit
+      if (event.key === 'Escape') {
+        setShowOverlay(false);
+      }
+    }
+    if (showOverlay) {
+      document.addEventListener('keydown', handleCloseOverlay);
+    }
+  }, [showOverlay, setShowOverlay]);
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -68,7 +78,7 @@ export default function MediaOverlay(props: Props) {
         opacity: showOverlay ? 1 : 0,
         pointerEvents: showOverlay ? "auto" : "none",
       }}
-      className={`${styles.overlay} media-overlay fixed top-0 bottom-0 right-0 left-0 z-[100] flex justify-center items-center`}
+      className={`${styles.overlay} media-overlay fixed top-0 bottom-0 right-0 left-0 z-[100] flex items-center justify-center`}
       onClick={handleCloseMediaOverlay}
     >
       <div className="absolute top-0 flex items-center gap-[2rem] right-0 p-[1.6rem] z-[2]">
@@ -81,7 +91,7 @@ export default function MediaOverlay(props: Props) {
             style={{ transform: "rotateY(180deg)" }}
           />
         </div>
-        <div className={styles["icon-container"]} onClick={() => downloadFile(message)}>
+        <div className={styles["icon-container"]} onClick={() => downloadFile(file)}>
           <LiaDownloadSolid className="w-[2.8rem] h-[2.8rem] text-gray-500 duration-500" />
         </div>
         <div className={styles["icon-container"]}>
@@ -108,17 +118,17 @@ export default function MediaOverlay(props: Props) {
           className={styles["icon-container"]}
           onClick={handleCloseMediaOverlay}
         >
-          <IoMdClose className="close-overlay w-[2.8rem] h-[2.8rem] text-gray-500 duration-500" />
+          <VscChromeClose className="close-overlay w-[2.8rem] h-[2.8rem] text-gray-500 duration-500" />
         </div>
       </div>
       <div
-        className="md:max-w-[35rem] md:max-h-[35rem] duration-200 ease-out"
+        className={`max-w-[35rem] max-h-[40rem] duration-200 ease-out ${styles['media-container']}`}
         style={{
           scale: `${100 + mediaScale * 3}%`,
         }}
       >
-        {mediaType === "image" && (
-          <img className="w-full h-full object-cover" src={mediaSrc} />
+        {file.fileType.includes("image") && (
+          <img className="w-full h-full object-cover" src={`http://localhost:3000/${file.filePath}`} />
         )}
       </div>
       <div

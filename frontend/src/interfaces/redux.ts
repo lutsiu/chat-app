@@ -1,4 +1,4 @@
-import { IMessage, UserModel } from "./models";
+import { IMessage, SearchedMessage, UserModel } from "./models";
 import { Socket } from "socket.io-client";
 export interface UserInitialState {
   user: null | UserModel;
@@ -28,6 +28,7 @@ export interface UiInitialState {
   showMyAccountSettings: boolean;
   showEditContactProfile: boolean;
   showWarningPopup: boolean;
+  showSearchBar: boolean
 }
 
 export interface MessageInitialState {
@@ -46,6 +47,7 @@ export interface MessageInitialState {
     show: boolean;
     message: IMessage | null;
   };
+  searchMessages: SearchedMessage[] | null
   scrollToMessage: {
     top: number;
   } | null;
@@ -96,4 +98,8 @@ export interface ActionWithScroll {
   payload: {
     top: number | null;
   };
+}
+
+export interface ActionWithSearch {
+  payload: SearchedMessage[] | null
 }

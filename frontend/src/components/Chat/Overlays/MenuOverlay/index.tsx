@@ -7,16 +7,18 @@ import { BsUnlockFill } from "react-icons/bs";
 import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useState } from "react";
 import useResponsive from "../../../../hooks/useResponsive";
+import { useDispatch } from "react-redux";
+import { setShowSearchBar } from "../../../../state/ui";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
-  setShowSearch: (show: boolean) => void;
 }
 
 export default function MenuOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, setShowSearch } = props;
+  const { showOverlay, setShowOverlay } = props;
   const [deleteIsActive, setDeleteIsActive] = useState(false);
   const width = useResponsive();
+  const dispatch = useDispatch();
   return (
     <motion.div
       className="menu-overlay fixed  w-full h-full top-0 right-0 bottom-0 left-0 z-[20]"
@@ -43,7 +45,7 @@ export default function MenuOverlay(props: Props) {
           <div
             className="py-[0.6rem] px-[1rem] flex items-center gap-[1rem] rounded-lg hover:bg-gray-700 duration-200 cursor-pointer"
             onClick={() => {
-              setShowSearch(true);
+              dispatch(setShowSearchBar())
               setShowOverlay(false);
             }}
           >

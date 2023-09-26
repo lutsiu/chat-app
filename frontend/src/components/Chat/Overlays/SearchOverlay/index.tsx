@@ -5,11 +5,10 @@ import Header from "./Header";
 import { useSocket } from "../../../../context/SocketContext";
 import { IMessage } from "../../../../interfaces/models";
 import months from "../../../../utils/months";
-import { useDispatch } from "react-redux";
-import { handleScrollToMessage } from "../../../../state/message";
+import { useDispatch, useSelector } from "react-redux";
+import { handleScrollToMessage, setSearchedMessages } from "../../../../state/message";
+import { ReduxState } from "../../../../interfaces/redux";
 interface Props {
-  showSearch: boolean;
-  setShowSearch: (show: boolean) => void;
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
   chatId: string;
@@ -22,14 +21,12 @@ interface Message {
 }
 export default function SearchOverlay(props: Props) {
   const {
-    showSearch,
-    setShowSearch,
     query,
     setQuery,
     debouncedQuery,
     setDebouncedQuery,
   } = props;
-  const [messages, setMessages] = useState<Message[]>([]);
+  const {searchMessages} = useSelector((state: ReduxState) => state.message);
   const [selectedDate, setSelectedDate] = useState<null | Date>(null);
   const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
   const socket = useSocket();
@@ -37,6 +34,7 @@ export default function SearchOverlay(props: Props) {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const dispatch = useDispatch();
+  const {showSearchBar} = useSelector((state: ReduxState) => state.ui);
   useEffect(() => {
     // Function to emit the query after a delay
     const emitQuery = () => {
@@ -73,34 +71,33 @@ export default function SearchOverlay(props: Props) {
         }[]
       ) => {
         if (data) {
-          setMessages(data);
+          dispatch(setSearchedMessages(data))
         }
       }
     );
-  }, [socket]);
+  }, [socket, dispatch]);
 
   return (
     <motion.div
       className="md:w-[60%] xl:w-[40%] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0 z-10"
       initial={{ x: 1000 }}
-      animate={{ x: showSearch ? 0 : 1000 }}
+      animate={{ x: showSearchBar ? 0 : 1000 }}
       transition={{ duration: 0.25 }}
     >
       <Header
         query={query}
         setQuery={setQuery}
-        setShowSearch={setShowSearch}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         chatId={chatId}
       />
       <div className="pt-[2rem]">
         {query && (
-          <h3 className="text-xl text-gray-300 font-medium  pl-[3rem]">{`${messages.length} messages found`}</h3>
+          <h3 className="text-xl text-gray-300 font-medium  pl-[3rem]">{`${searchMessages && searchMessages.length} messages found`}</h3>
         )}
         <ul className="w-full px-[1rem] mt-[1.5rem] ">
           {query &&
-            messages.map((msg, i) => {
+            searchMessages && searchMessages.map((msg, i) => {
 
               const messageToSearchDOM = document.getElementById(msg.message._id as string);
               const messageToSearchTop = messageToSearchDOM?.offsetTop;

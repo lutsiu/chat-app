@@ -6,6 +6,7 @@ import styles from "./styles.module.scss";
 import { useDispatch } from "react-redux";
 import { handleScrollToMessage } from "../../../../../state/message";
 import FileLoader from "./FileLoader";
+import Media from "./Media";
 interface Props {
   msg: IMessage;
   myUserId: string | undefined;
@@ -14,33 +15,33 @@ interface Props {
 
 export default function Message(props: Props) {
   const { msg, myUserId, chatId } = props;
-  const {
-    message,
-    timeStamp,
-    file,
-    images,
-    videos,
-    sender,
-    isEdited,
-    reply,
-    pinned,
-  } = msg;
+  const { message, timeStamp, file, media, sender, isEdited, reply, pinned } =
+    msg;
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
-
+  const [mediaSrcForContextMenu, setMediaSrcForContextMenu] = useState('')
   const [messageUpperPoint, setMessageUpperPoint] = useState<
     undefined | number
   >(undefined);
 
   const messageRef = useRef<null | HTMLLIElement>(null);
-
   const dispatch = useDispatch();
 
   const handleShowContextMenu = (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>
   ) => {
     const target = e.target as HTMLLIElement;
+    if (target.hasAttribute('src')) {
+      setMediaSrcForContextMenu(target.getAttribute('src') as string);
+    }
+    if (target.tagName === 'VIDEO') {
+      const sourceEl = target.getElementsByTagName('source').item(0);
+      if (sourceEl) {
+        const src = sourceEl.getAttribute('src');
+        setMediaSrcForContextMenu(src as string);
+      }
+    }
     if (!target.closest(".message")) return;
     e.preventDefault();
     const x = e.clientX;
@@ -77,7 +78,13 @@ export default function Message(props: Props) {
           onContextMenu={handleShowContextMenu}
           ref={messageRef}
           id={msg._id}
+          style={{
+            padding: media.length > 0 ? "0" : "0.8rem",
+            overflow: media.length > 0 ? "hidden" : "auto",
+            marginTop: media.length > 0 ? ".5rem" : "0",
+          }}
         >
+          {media.length > 0 && <Media chatId={chatId} message={msg} />}
           {file && <FileLoader file={file} message={msg} chatId={chatId} />}
           {reply && reply.isReply && (
             <div
@@ -95,8 +102,23 @@ export default function Message(props: Props) {
             </div>
           )}
           <div className="flex items-end gap-[0.4rem] flex-wrap">
-            <p className="text-xl font-medium pb-[0.3rem]">{message}</p>
-            <div className="flex justify-end flex-1">
+            {message && (
+              <p
+                className={`text-xl font-medium pb-[0.3rem] ${
+                  media.length > 0 ? styles.messageContentWithMedia : ""
+                } ${media.length > 0 && isEdited ? styles.messageContentPaddingRightBig :"" }`}
+              >
+                {message}
+              </p>
+            )}
+            <div
+              className={`flex justify-end flex-1
+               ${
+                media.length > 0 ? styles.messageInfoAbsolute : ""
+              }
+                ${media.length > 0 && message ? styles.messageInfoAbsoluteWithMessage : ""}
+              `}
+            >
               <div className="flex gap-[0.7rem] items-center">
                 {pinned && <BsPinAngleFill />}
                 {isEdited && (
@@ -123,6 +145,7 @@ export default function Message(props: Props) {
           chatId={chatId}
           messageUpperPoint={messageUpperPoint}
           myUserId={myUserId as string}
+          mediaSrc={mediaSrcForContextMenu}
         />
       </>
     </>

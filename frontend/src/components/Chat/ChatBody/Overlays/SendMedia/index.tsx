@@ -1,16 +1,20 @@
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IoCloseOutline } from "react-icons/io5";
-import styles from "./styles.module.scss";
+import styles from "./stylesSendMedia.module.scss";
+import { useSocket } from "../../../../../context/SocketContext";
 interface Props {
   media: Blob[] | null;
-  setShowOverlay: (show: boolean) => void;
-  showOverlay: boolean;
+  showOverlay: boolean,
   setMedia: React.Dispatch<React.SetStateAction<Blob[] | null>>;
+  chatId: string;
+  userId: string;
 }
-export default function MediaFilesPopup(props: Props) {
-  const { media, setShowOverlay, showOverlay, setMedia } = props;
-
+export default function SendMedia(props: Props) {
+  const { media, showOverlay, setMedia, userId, chatId } =
+    props;
+  const formRef = useRef<null | HTMLFormElement>(null);
+  const socket = useSocket();
   let headerTitle = "files";
 
   let mediaContainerClasses = `${styles["media-container"]}`;
@@ -54,7 +58,7 @@ export default function MediaFilesPopup(props: Props) {
         target.classList.contains("media-overlay") ||
         target.classList.contains("close-overlay")
       ) {
-        setShowOverlay(false);
+        setMedia(null);
         setTimeout(() => {
           setMedia(null);
         }, 1000);
@@ -64,11 +68,35 @@ export default function MediaFilesPopup(props: Props) {
     return () => {
       document.removeEventListener("click", handleCloseOverlay);
     };
-  }, [setShowOverlay, setMedia]);
+  }, [setMedia]);
+
+  function sendMedia(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (formRef.current && media) {
+      const formData = new FormData(formRef.current);
+      const mediaToSend = media.map((md) => {
+        return {
+          media: md,
+          fileName: md.name,
+          fileSize: md.size,
+          fileType: md.type,
+        };
+      });
+      const dataToSend = {
+        media: mediaToSend,
+        message: formData.get("message"),
+        chatId,
+        userId,
+      };
+      socket.emit('send-message-with-media', dataToSend)
+      formRef.current.reset();
+      setMedia(null)
+    }
+  }
 
   return (
     <motion.div
-      className="media-overlay fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
+      className="media-overlay fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center z-10"
       style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
       initial={{ opacity: 0, pointerEvents: "none" }}
       animate={{
@@ -82,6 +110,8 @@ export default function MediaFilesPopup(props: Props) {
           y: showOverlay ? 0 : 100,
         }}
         className="flex flex-col gap-[1.5rem] p-[1rem] bg-slate-800 rounded-xl w-[40rem]"
+        onSubmit={sendMedia}
+        ref={formRef}
       >
         <div className="flex items-center gap-[2rem]">
           <div>

@@ -35,7 +35,7 @@ export default function FileLoader(props: Props) {
     if (fileType.includes("image")) {
       setShowMediaOverlay(true);
     } else {
-      downloadFile(message);
+      downloadFile(file);
     }
   }
   return (
@@ -54,12 +54,11 @@ export default function FileLoader(props: Props) {
       </div>
       {createPortal(
         <MediaOverlay
-          message={message}
+          file={file}
           setShowOverlay={setShowMediaOverlay}
           showOverlay={showMediaOverlay}
-          mediaSrc={`http://localhost:3000/${filePath}`}
-          mediaType={fileType.includes("image") ? "image" : "video"}
           chatId={chatId}
+          messageId={message._id as string}
         />
       , document.getElementById('overlay') as HTMLElement)}
     </>

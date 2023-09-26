@@ -1,12 +1,15 @@
 
 .media-container {
-  @apply w-full grid rounded-3xl overflow-hidden max-h-[80vh] gap-[.5rem];
+  @apply w-full grid rounded-3xl overflow-hidden max-h-[80vh] gap-[.2rem];
+}
+.media-container-chat {
+  @apply w-full grid rounded-3xl gap-[.15rem];
 }
 .one-col {
   @apply grid-cols-1 justify-items-center;
 }
 .two-cols {
-  @apply grid-cols-2 ;
+  @apply grid-cols-2  ;
 }
 .three-cols {
   @apply grid-cols-2 ;
@@ -15,10 +18,10 @@
   @apply grid-cols-3;
 }
 .five-cols {
-  @apply grid-cols-2 overflow-y-scroll;
+  @apply grid-cols-2 h-[80rem] ;
 }
 .six-cols {
-  @apply grid-cols-2;
+  @apply grid-cols-2 h-[80rem];
 }
 .img {
   @apply object-cover block;
@@ -28,6 +31,9 @@
 }
 .two-imgs {
   @apply h-[17rem] min-w-[18rem] max-w-[25rem];
+}
+.two-imgs-chat {
+  @apply h-[17rem] w-[25rem];
 }
 .three-imgs {
   &:nth-child(1) {

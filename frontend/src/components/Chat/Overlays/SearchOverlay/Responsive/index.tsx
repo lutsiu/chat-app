@@ -1,16 +1,82 @@
-import { useState } from "react";
-import {HiMagnifyingGlass} from 'react-icons/hi2'
+import { useState, useEffect } from "react";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import { mediumPurple, gray } from "../../../../../utils/colors";
-import {IoMdClose} from 'react-icons/io'
-
+import { IoMdClose } from "react-icons/io";
+import { IMessage, SearchedMessage } from "../../../../../interfaces/models";
+import { useSocket } from "../../../../../context/SocketContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleScrollToMessage,
+  setSearchedMessages,
+} from "../../../../../state/message";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
-  query: string, 
-  setQuery: (query: string) => void
+  query: string;
+  setQuery: (query: string) => void;
+  debouncedQuery: string;
+  setDebouncedQuery: React.Dispatch<React.SetStateAction<string>>;
+  chatId: string;
 }
 
 export default function ResponsiveSearch(props: Props) {
-  const {query, setQuery} = props;
+  const { query, setQuery, debouncedQuery, setDebouncedQuery, chatId } = props;
   const [inputIsFocused, setInputIsFocused] = useState(false);
+  const { searchMessages } = useSelector((state: ReduxState) => state.message);
+  const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
+  const socket = useSocket();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // Function to emit the query after a delay
+    const emitQuery = () => {
+      if (query.length > 0) {
+        socket.emit("find-message", { chatId, message: debouncedQuery });
+      }
+    };
+
+    if (query !== debouncedQuery) {
+      if (timer) {
+        clearTimeout(timer);
+      }
+
+      const newTimer = setTimeout(emitQuery, 300);
+      setTimer(newTimer);
+    }
+
+    setDebouncedQuery(query);
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [query, debouncedQuery, socket, chatId, timer, setDebouncedQuery]);
+
+  useEffect(() => {
+    socket.on(
+      "find-message",
+      (
+        data: {
+          message: IMessage;
+          user: { _id: string; profilePicture: string; fullName: string };
+        }[]
+      ) => {
+        if (data) {
+          dispatch(setSearchedMessages(data));
+        }
+      }
+    );
+  }, [socket, dispatch]);
+
+  // scroll to first matching message
+  useEffect(() => {
+    if (searchMessages) {
+      const lastSearchMsg = searchMessages.at(-1);
+      const lastMsgDOM = document.getElementById(
+        lastSearchMsg?.message._id as string
+      );
+      dispatch(handleScrollToMessage({ top: lastMsgDOM?.offsetTop as number }));
+    }
+  }, [searchMessages, dispatch]);
   return (
     <form
       className="rounded-3xl relative px-[1rem] flex w-full  items-center py-[0.8rem] bg-gray-900 border-[1px] duration-200"
@@ -37,7 +103,10 @@ export default function ResponsiveSearch(props: Props) {
           opacity: query ? 1 : 0,
           pointerEvents: query ? "all" : "none",
         }}
-        onClick={() => setQuery("")}
+        onClick={() => {
+          dispatch(setSearchedMessages(null));
+          setQuery("");
+        }}
       />
     </form>
   );

@@ -7,7 +7,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import useResponsive from "../../../../../hooks/useResponsive";
-import { IMessage } from "../../../../../interfaces/models";
+import { IFile, IMessage } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { LiaDownloadSolid } from "react-icons/lia";
@@ -29,6 +29,7 @@ interface Props {
   chatId: string;
   messageUpperPoint: number | undefined;
   myUserId: string;
+  mediaSrc: string
 }
 
 export default function MessageContextMenu(props: Props) {
@@ -42,6 +43,7 @@ export default function MessageContextMenu(props: Props) {
     chatId,
     messageUpperPoint,
     myUserId,
+    mediaSrc
   } = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
@@ -84,6 +86,11 @@ export default function MessageContextMenu(props: Props) {
 
   function deleteMessage() {
     setShowMenu(false);
+    if (mediaSrc && msg.media.length > 1) {
+      const path = mediaSrc.split('/')[3];
+      console.log(path);
+      return socket.emit('delete-media', {messageId: msg._id, chatId, filePath: path});
+    }
     socket.emit("delete-message", { messageId: msg._id, chatId });
   }
 
@@ -115,7 +122,7 @@ export default function MessageContextMenu(props: Props) {
     setShowMenu(false);
   }
   function handleDownloadFile() {
-    downloadFile(msg);
+    downloadFile(msg.file as IFile);
     setShowMenu(false);
   }
   return (
@@ -174,17 +181,19 @@ export default function MessageContextMenu(props: Props) {
             {msg.pinned ? "Unpin" : "Pin"}
           </span>
         </div>
-        {msg.file && (
-          <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
-            onClick={handleDownloadFile}
-          >
-            <LiaDownloadSolid
-              className="w-[2rem] h-[2rem]"
-              style={{ transform: "rotateY(180deg)" }}
-            />
-            <span className="font-medium text-xl ">Download</span>
-          </div>
-        )}
+        {msg.media.length > 0 ||
+          (msg.file && (
+            <div
+              className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer"
+              onClick={handleDownloadFile}
+            >
+              <LiaDownloadSolid
+                className="w-[2rem] h-[2rem]"
+                style={{ transform: "rotateY(180deg)" }}
+              />
+              <span className="font-medium text-xl ">Download</span>
+            </div>
+          ))}
         <div className="flex items-center gap-[1.5rem] pl-[.9rem] pr-[5rem] py-[.5rem] rounded-lg hover:bg-slate-700 duration-200 cursor-pointer">
           <BsReply
             className="w-[2rem] h-[2rem]"

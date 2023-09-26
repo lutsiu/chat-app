@@ -1,0 +1,12 @@
+
+.icon-parent {
+  &-disabled {
+    & > * {
+      @apply text-gray-500;
+    }
+    cursor: default !important;
+  }
+  &:not(.icon-parent-disabled):hover {
+    background-color: rgba(145, 145, 145, 0.1);
+  }
+}

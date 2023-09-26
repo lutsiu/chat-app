@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { MessageInitialState, ActionWithReply, ActionWithMessage, ActionWithScroll, UIActionWithMessage } from "../interfaces/redux";
+import {
+  MessageInitialState,
+  ActionWithReply,
+  ActionWithMessage,
+  ActionWithScroll,
+  UIActionWithMessage,
+  ActionWithSearch,
+} from "../interfaces/redux";
 
 const initialState: MessageInitialState = {
   replyToMessage: {
@@ -17,8 +24,9 @@ const initialState: MessageInitialState = {
     show: false,
     message: null,
   },
+  searchMessages: null,
   scrollToMessage: null,
-  messagesContainerScrollTop: null
+  messagesContainerScrollTop: null,
 };
 
 const messageSlice = createSlice({
@@ -54,12 +62,23 @@ const messageSlice = createSlice({
         state.scrollToMessage = { top };
       }
     },
-    setMessageContainerScrollTop: (state, action: {payload: number}) => {
-      const top =  action.payload
+    setMessageContainerScrollTop: (state, action: { payload: number }) => {
+      const top = action.payload;
       state.messagesContainerScrollTop = top;
+    },
+    setSearchedMessages: (state, action: ActionWithSearch) => {
+      const {payload} = action;
+      state.searchMessages = payload;
     }
   },
 });
 
 export default messageSlice.reducer;
-export const {handleScrollToMessage, handleEditMessage, handleForwardMessage, handleReplytoMessage, setMessageContainerScrollTop} = messageSlice.actions
+export const {
+  handleScrollToMessage,
+  handleEditMessage,
+  handleForwardMessage,
+  handleReplytoMessage,
+  setMessageContainerScrollTop,
+  setSearchedMessages
+} = messageSlice.actions;

@@ -57,7 +57,7 @@ export default function Messages(props: Props) {
       ref={chatContainer}
     >
       <ul
-        className="2xl:px-[15rem] grid grid-cols-1 gap-y-[0.2rem]"
+        className="2xl:px-[15rem] grid grid-cols-1 gap-y-[0.2rem] px-[1rem]"
         style={{
           paddingTop:
             messages.filter((msg) => msg.pinned).length > 0 ? `${PINNED_MESSAGES_BAR_HEIGHT + 3}px ` :'',

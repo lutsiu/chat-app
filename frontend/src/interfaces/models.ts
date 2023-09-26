@@ -14,25 +14,29 @@ export interface UserModel {
 }
 
 export interface IFile {
-  filePath: string,
-  fileName: string,
-  fileSize: number,
-  fileType: string
+  filePath: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
 }
 export interface IMessage {
   _id?: string;
   sender: string;
   message: string;
   timeStamp: Date;
-  images?: string[];
-  videos?: string[];
+  media: IFile[];
   file?: IFile;
   pinned?: boolean;
   reply?: {
-    isReply: boolean,
-    messageToReplyId: string
-    messageToReplyMessage: string,
-    messageToReplyRecipientName: string
-  } 
-  isEdited?: boolean
+    isReply: boolean;
+    messageToReplyId: string;
+    messageToReplyMessage: string;
+    messageToReplyRecipientName: string;
+  };
+  isEdited?: boolean;
+}
+
+export interface SearchedMessage {
+  message: IMessage;
+  user: { _id: string; fullName: string; profilePicture: string };
 }

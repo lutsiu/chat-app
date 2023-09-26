@@ -4,8 +4,21 @@
   }
 }
 .recipientMessage {
-  @apply  relative bg-gray-700 justify-self-start rounded-2xl p-[0.8rem] max-w-[70%];
+  @apply relative bg-gray-700 justify-self-start rounded-2xl  max-w-[70%];
 }
 .myMessage {
-  @apply  relative bg-purple-500 justify-self-end rounded-2xl p-[0.8rem] max-w-[70%];
+  @apply relative bg-purple-500 justify-self-end rounded-2xl  max-w-[70%];
+}
+.messageInfoAbsolute {
+  @apply absolute bottom-[.8rem] right-[.8rem];
+}
+.messageInfoAbsoluteWithMessage {
+  @apply absolute bottom-[.3rem] right-[.8rem];
+}
+.messageContentWithMedia {
+  @apply mt-[.5rem]  w-full px-[1rem];
+  word-break: break-all;
+}
+.messageContentPaddingRightBig {
+  @apply pr-[2rem];
 }

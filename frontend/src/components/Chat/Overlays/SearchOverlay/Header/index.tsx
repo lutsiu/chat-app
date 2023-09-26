@@ -4,8 +4,10 @@ import { IoMdClose } from "react-icons/io";
 import { mediumPurple, gray } from "../../../../../utils/colors";
 import { useState } from "react";
 import Calendar from "../Calendar";
+import { useDispatch } from "react-redux";
+import { setShowSearchBar } from "../../../../../state/ui";
+import { setSearchedMessages } from "../../../../../state/message";
 interface Props {
-  setShowSearch: (show: boolean) => void;
   query: string;
   setQuery: (query: string) => void;
   selectedDate: Date | null;
@@ -15,11 +17,17 @@ interface Props {
 export default function Header(props: Props) {
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const { setQuery, setShowSearch, query, setSelectedDate, chatId, selectedDate } = props;
+  const { setQuery,  query, setSelectedDate, chatId, selectedDate } = props;
+  const dispatch = useDispatch();
+  function handleCloseAndClear() {
+    dispatch(setShowSearchBar());
+    dispatch(setSearchedMessages(null))
+    setQuery('')
+  }
   return (
     <>
       <div className="pr-[1rem] pl-[2rem] flex items-center  justify-between py-[0.8rem] overflow-x-hidden sticky top-0 bg-gray-800">
-        <div onClick={() => setShowSearch(false)}>
+        <div onClick={handleCloseAndClear}>
           <HiArrowLeft className="text-gray-300  p-[0.7rem] hover:bg-gray-700 duration-200 h-[3.5rem] w-[3.5rem] cursor-pointer rounded-full" />
         </div>
         <form

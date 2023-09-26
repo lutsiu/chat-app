@@ -7,20 +7,25 @@ import EditProfile from "../Overlays/ProfileOverlay/EditProfile";
 import SearchOverlay from "../Overlays/SearchOverlay";
 import { HiOutlineArrowLeft } from "react-icons/hi";
 import useResponsive from "../../../hooks/useResponsive";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ResponsiveSearch from "../Overlays/SearchOverlay/Responsive";
+import { useDispatch, useSelector } from "react-redux";
+import { ReduxState } from "../../../interfaces/redux";
+import { setShowSearchBar } from "../../../state/ui";
+import { setSearchedMessages } from "../../../state/message";
 interface Props {
-  chatId: string
+  chatId: string;
 }
 export default function Header(props: Props) {
+  const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const width = useResponsive();
   const navigate = useNavigate();
-  const showNavContent = (width < 768 && !showSearch) || width >= 768;
+  const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
+  const dispatch = useDispatch();
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -28,8 +33,10 @@ export default function Header(props: Props) {
           <div
             className="block"
             onClick={() => {
-              if (showSearch) {
-                setShowSearch(false);
+              if (showSearchBar) {
+                dispatch(setShowSearchBar());
+                dispatch(setSearchedMessages(null))
+                setQuery('2')
               } else {
                 navigate("/home");
               }
@@ -60,7 +67,7 @@ export default function Header(props: Props) {
               </div>
               <div className="flex items-center gap-[2rem] text-gray-400">
                 {width >= 768 && (
-                  <div onClick={() => setShowSearch(true)}>
+                  <div onClick={() => dispatch(setShowSearchBar())}>
                     <HiMagnifyingGlass className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer" />
                   </div>
                 )}
@@ -71,20 +78,23 @@ export default function Header(props: Props) {
             </div>
           </>
         )}
-        {width < 768 && showSearch && (
-          <ResponsiveSearch query={query} setQuery={setQuery} />
+        {width < 768 && showSearchBar && (
+          <ResponsiveSearch
+            query={query}
+            setQuery={setQuery}
+            chatId={props.chatId}
+            debouncedQuery={debouncedQuery}
+            setDebouncedQuery={setDebouncedQuery}
+          />
         )}
       </nav>
       <MenuOverlay
         showOverlay={showMenuOverlay}
         setShowOverlay={setShowMenuOverlay}
-        setShowSearch={setShowSearch}
       />
       {width >= 768 && (
         <SearchOverlay
           chatId={props.chatId}
-          showSearch={showSearch}
-          setShowSearch={setShowSearch}
           query={query}
           setQuery={setQuery}
           debouncedQuery={debouncedQuery}
