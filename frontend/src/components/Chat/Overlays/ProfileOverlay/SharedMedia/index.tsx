@@ -2,38 +2,33 @@ import Media from "./Media";
 import Groups from "./Groups";
 import Files from "./Files";
 import { useState, useEffect } from "react";
+import { IMessage } from "../../../../../interfaces/models";
 interface Props {
   showMedia: boolean;
   showFiles: boolean;
   showGroups: boolean;
+  chatMessages: IMessage[]
+  chatId:string
 }
 
 export default function SharedMedia(props: Props) {
   const [translateX, setTranslateX] = useState(0);
+  const { showMedia, showFiles, showGroups, chatMessages, chatId } = props;
+  const messagesWithMedia = chatMessages.filter((msg) => {
+    if (msg.media.length > 0) {
+      return true
+    } else {
+      return false
+    }
+  });
+  const messagesWithFiles = chatMessages.filter((msg) => {
+    if (msg.file) {
+      return true
+    } else {
+      return false
+    }
+  });
 
-  const media = [
-    {
-      title: "August",
-      media: [
-        "https://www.cheatsheet.com/wp-content/uploads/2015/11/cranston-breaking-bad.png",
-        "https://64.media.tumblr.com/f3b884075d7b19d1c9477bc366e9b550/8d3a8402cfebd1c3-42/s500x750/73b33b294009f79b6877076e034d6fb714984a1d.jpg",
-        "https://i.ytimg.com/vi/gDjMZvYWUdo/hqdefault.jpg",
-      ],
-    },
-    {
-      title: "July",
-      media: [
-        "https://wbijam.pl/grafika/n_wiad_143_logo.jpg",
-        "https://www.looper.com/img/gallery/every-power-sasuke-has-on-naruto-explained/intro-1663193400.jpg",
-      ],
-    },
-    {
-      title: "June",
-      media: [
-        "https://i.pinimg.com/originals/90/a7/f6/90a7f67864acea71fb5ffed6aa6298cb.jpg",
-      ],
-    },
-  ];
 
   const files = [
     { fileName: "cv.doc", size: "1mb", date: "Aug 4, 2023" },
@@ -55,7 +50,7 @@ export default function SharedMedia(props: Props) {
     },
   ];
 
-  const { showMedia, showFiles, showGroups } = props;
+  
 
   useEffect(() => {
     if (showMedia) {
@@ -75,8 +70,8 @@ export default function SharedMedia(props: Props) {
         className="flex w-full ease-in-out duration-500 "
         style={{ transform: `translateX(${translateX}%)` }}
       >
-        <Media media={media} />
-        <Files files={files} />
+        <Media  messages={messagesWithMedia} chatId={chatId} />
+        <Files  messages={messagesWithFiles} chatId={chatId} />
         <Groups groups={groups} />
       </div>
     </div>

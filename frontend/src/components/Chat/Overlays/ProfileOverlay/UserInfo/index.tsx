@@ -1,13 +1,18 @@
 import UserPhotos from "../../../../Widgets/UserPhotos"
-import {HiOutlineMail, HiOutlineAtSymbol, HiBell} from 'react-icons/hi'
 import UserInformation from "../../../../Widgets/Settings/ResponsiveSettings/UserInfo"
-export default function UserInfo() {
-
+interface Props {
+  email: string,
+  bio: string,
+  userName: string,
+  userImages: string[]
+}
+export default function UserInfo(props: Props) {
+  const {email, bio, userName, userImages} = props;
   return (
     <div>
-      <UserPhotos/>
+      <UserPhotos photos={userImages}/>
       <div className="flex flex-col">
-        <UserInformation email="yasv229@gmail.com" bio="bio" userName="lutsiu" />
+        <UserInformation email={email} bio={bio} userName={userName} />
       </div>
       <div className="bg-black h-[1rem]"></div>
     </div>

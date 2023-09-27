@@ -4,12 +4,16 @@ import MainHeader from "./Headers/MainHeader";
 import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";
 import SharedMedia from "./SharedMedia";
+import { IMessage, UserModel } from "../../../../interfaces/models";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
+  user: UserModel,
+  chatHistory: IMessage[]
+  chatId: string
 }
 export default function ProfileOverlay(props: Props) {
-  const { showOverlay, setShowOverlay } = props;
+  const { showOverlay, setShowOverlay, user, chatHistory, chatId} = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -26,7 +30,7 @@ export default function ProfileOverlay(props: Props) {
         />
 
       </div>
-      <UserInfo />
+      <UserInfo bio={user.bio} email={user.email} userName={user.userName} userImages={[user.profilePicture]} />
       <BottomNavigationBar
         setShowFiles={setShowFiles}
         setShowGroups={setShowGroups}
@@ -37,6 +41,8 @@ export default function ProfileOverlay(props: Props) {
         showMedia={showMedia}
         showFiles={showFiles}
         showGroups={showGroups}
+        chatMessages={chatHistory}
+        chatId={chatId}
       />
     </motion.div>
   );

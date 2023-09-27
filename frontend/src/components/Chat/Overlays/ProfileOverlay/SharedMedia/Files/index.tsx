@@ -1,14 +1,19 @@
-import { AiFillFile, AiFillFileAdd } from "react-icons/ai";
-import { useState } from "react";
+import { AiFillFile } from "react-icons/ai";
+import { IFile, IMessage } from "../../../../../../interfaces/models";
+import normalizeDateName from "../../../../../../utils/normalizeDateName";
+import getSizeOfFile from "../../../../../../utils/getSizeOfFile";
 interface Props {
-  files: { fileName: string; size: string; date: string }[];
+  messages: IMessage[]
+  chatId: string
 }
 export default function Files(props: Props) {
-  const { files } = props;
-
+  const { messages, chatId } = props;
   return (
     <div className="min-w-full flex-1">
-      {files.map((file, i) => {
+      {messages.map((msg, i) => {
+        const file = msg.file as IFile;
+        const dateToShow = normalizeDateName(msg.timeStamp);
+        const fileSize = getSizeOfFile(file.fileSize);
         return (
           <div
             key={i}
@@ -22,9 +27,9 @@ export default function Files(props: Props) {
                 {file.fileName}
               </h5>
               <div className="text-gray-300 text-xl flex gap-[0.4rem]">
-                <span>{file.size}</span>
+                <span>{fileSize}</span>
                 <span>·</span>
-                <span>{file.date}</span>
+                <span>{dateToShow}</span>
               </div>
             </div>
           </div>
