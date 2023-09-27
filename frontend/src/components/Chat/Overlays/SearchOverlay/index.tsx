@@ -1,10 +1,8 @@
 import { motion } from "framer-motion";
-
 import { useEffect, useState } from "react";
 import Header from "./Header";
 import { useSocket } from "../../../../context/SocketContext";
 import { IMessage } from "../../../../interfaces/models";
-import months from "../../../../utils/months";
 import { useDispatch, useSelector } from "react-redux";
 import { handleScrollToMessage, setSearchedMessages } from "../../../../state/message";
 import { ReduxState } from "../../../../interfaces/redux";
@@ -16,10 +14,7 @@ interface Props {
   debouncedQuery: string;
   setDebouncedQuery: React.Dispatch<React.SetStateAction<string>>;
 }
-interface Message {
-  message: IMessage;
-  user: { _id: string; fullName: string; profilePicture: string };
-}
+
 export default function SearchOverlay(props: Props) {
   const {
     query,
@@ -97,8 +92,9 @@ export default function SearchOverlay(props: Props) {
         <ul className="w-full px-[1rem] mt-[1.5rem] ">
           {query &&
             searchMessages && searchMessages.map((msg, i) => {
-              const messageToSearchDOM = document.getElementById(msg.message._id as string);
-              const messageToSearchTop = messageToSearchDOM?.offsetTop;
+              const messageToSearchDOM = document.getElementById(msg.message._id as string) as HTMLElement;
+              const messageToSearchParent = messageToSearchDOM?.parentElement as HTMLElement;
+              const messageToSearchTop = messageToSearchDOM?.offsetTop + messageToSearchParent?.offsetTop;
               const {day, month, year, currentDate, currentYear} = getDate(msg.message.timeStamp);
 
               const showYear = currentYear !== year;

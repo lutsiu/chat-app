@@ -58,7 +58,7 @@ export default function FileLoader(props: Props) {
           setShowOverlay={setShowMediaOverlay}
           showOverlay={showMediaOverlay}
           chatId={chatId}
-          messageId={message._id as string}
+          message={message}
         />
       , document.getElementById('overlay') as HTMLElement)}
     </>

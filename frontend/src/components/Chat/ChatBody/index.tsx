@@ -14,15 +14,15 @@ import styles from './styles.module.scss';
 import FoundMessagesBottomBar from "./FoundMessagesBottomBar";
 interface Props {
   chatId: string;
-  chatHistory: IMessage[];
+  chatMessages: IMessage[];
+  setChatMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
 }
 
 export default function ChatBody(props: Props) {
-  const { chatId, chatHistory } = props;
+  const { chatId, chatMessages, setChatMessages } = props;
   const [showFilesPopup, setShowFilesPopup] = useState(false);
   const [showFileOverlay, setShowFileOverlay] = useState(false);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
-  const [chatMessages, setChatMessages] = useState(chatHistory);
   const [media, setMedia] = useState<null | Blob[]>(null);
   const [inputValue, setInputValue] = useState("");
   const [file, setFile] = useState<null | File>(null);
@@ -79,13 +79,13 @@ export default function ChatBody(props: Props) {
     return () => {
       socket.off("send-message");
     };
-  }, [socket]);
+  }, [socket, setChatMessages]);
 
   useEffect(() => {
     socket.on("send-message-with-file", (message: IMessage) => {
       setChatMessages((prev) => [...prev, message]);
     });
-  }, [socket]);
+  }, [socket, setChatMessages]);
   // update messages if one of them was deleted
   useEffect(() => {
     socket.on("delete-message", (messageId: string) => {
@@ -94,7 +94,7 @@ export default function ChatBody(props: Props) {
     return () => {
       socket.off("delete-message");
     };
-  }, [socket]);
+  }, [socket, setChatMessages]);
 
   // update messages if one of them was edited
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function ChatBody(props: Props) {
         });
       }
     );
-  }, [socket]);
+  }, [setChatMessages, socket]);
 
   // update message if media was deleted
   useEffect(() => {
@@ -139,7 +139,7 @@ export default function ChatBody(props: Props) {
         });
       }
     );
-  }, [socket]);
+  }, [setChatMessages, socket]);
   // update messages if one of them was pinned/unpinned
   useEffect(() => {
     socket.on("pin-or-unpin-message", (messageId: string) => {
@@ -156,13 +156,13 @@ export default function ChatBody(props: Props) {
         });
       });
     });
-  }, [socket]);
+  }, [socket, setChatMessages]);
   // fetch replies
   useEffect(() => {
     socket.on("reply-to-message", (reply: IMessage) => {
       setChatMessages((prev) => [...prev, reply]);
     });
-  }, [socket]);
+  }, [socket, setChatMessages]);
 
   // provide socket with id of group in order to create group
   useEffect(() => {
@@ -203,7 +203,7 @@ export default function ChatBody(props: Props) {
       console.log(message);
       setChatMessages((prev) => [...prev, message]);
     });
-  }, [socket]);
+  }, [socket, setChatMessages]);
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden relative">

@@ -45,17 +45,18 @@ export default function MessageActionBar(props: Props) {
   }
   function scrollToMessage() {
     if (replyToMessage.show) {
+      console.log(replyToMessage.messageUpperPoint)
       dispatch(
         handleScrollToMessage({
-          top:
-            (replyToMessage.messageUpperPoint as number)
+          
+          top: replyToMessage.messageUpperPoint as number,
         })
       );
     }
     if (editMessage.show) {
       dispatch(
         handleScrollToMessage({
-          top: (editMessage.messageUpperPoint as number)
+          top: editMessage.messageUpperPoint as number,
         })
       );
     }
@@ -89,16 +90,19 @@ export default function MessageActionBar(props: Props) {
               {replyToMessage.show && "UserName"}
               {editMessage.show && "Editing"}
             </span>
-            <span className="text-lg text-gray-200">
-              {editMessage.message?.message.slice(0, 70)}
-              {editMessage.message &&
-                editMessage.message.message.length > 70 &&
-                "..."}
-              {replyToMessage.message?.message.slice(0, 70)}
-              {replyToMessage.message &&
-                replyToMessage.message.message.length > 70 &&
-                "..."}
-            </span>
+            <div>
+
+              <span className="text-lg text-gray-200">
+                {editMessage.message?.message.slice(0, 70)}
+                {editMessage.message &&
+                  editMessage.message.message.length > 70 &&
+                  "..."}
+                {replyToMessage.message?.message.slice(0, 70)}
+                {replyToMessage.message &&
+                  replyToMessage.message.message.length > 70 &&
+                  "..."}
+              </span>
+            </div>
           </div>
         </div>
         <div>

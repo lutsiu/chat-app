@@ -82,7 +82,7 @@ export default function Media(props: Props) {
       {mediaForOverlay &&
         createPortal(
           <MediaOverlay
-            messageId={message._id as string}
+            message={message}
             setShowOverlay={setShowMediaOverlay}
             showOverlay={showMediaOverlay}
             chatId={chatId}

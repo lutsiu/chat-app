@@ -59,7 +59,6 @@ function App() {
               body,
               headers: { "Content-Type": "application/json" },
             });
-           
             return res;
           } catch (err) {
             console.log(err);

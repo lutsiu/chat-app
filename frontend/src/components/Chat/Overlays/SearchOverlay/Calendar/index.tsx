@@ -39,8 +39,9 @@ export default function CalendarOverlay(props: Props) {
   } 
   useEffect(() => {
     socket.on('find-message-by-date', (message: IMessage) => {
-      const messageDOM = document.getElementById(message._id as string);
-      dispatch(handleScrollToMessage({top: messageDOM?.offsetTop as number}))
+      const messageDOM = document.getElementById(message._id as string) as HTMLElement;
+      const messageParent = messageDOM?.parentElement as HTMLElement;
+      dispatch(handleScrollToMessage({top: messageDOM?.offsetTop + messageParent.offsetTop }))
     });
   }, [socket,dispatch]);
   return (

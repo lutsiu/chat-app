@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import { setMessageContainerScrollTop } from "../../../../state/message";
 import getDate from "../../../../utils/getDate";
+import sortMsgsByDate from "../../../../utils/sortMsgsByDate";
+import normalizeDateName from "../../../../utils/normalizeDateName";
 interface Props {
   messages: IMessage[];
   myUserId: string | undefined;
@@ -14,24 +16,13 @@ interface Props {
 export default function Messages(props: Props) {
   const { messages, myUserId, chatId } = props;
   const chatContainer = useRef<null | HTMLDivElement>(null);
-  const { scrollToMessage} = useSelector((state: ReduxState) => state.message);
+  const { scrollToMessage } = useSelector((state: ReduxState) => state.message);
   const dispatch = useDispatch();
   // create array of objects with date and message of the same date
-  const dates = messages.map((msg) => {
-    const date = new Date(msg.timeStamp).toISOString().split("T")[0];
-    return date;
-  });
-
-  const uniqueDates = [...new Set(dates)];
-  const messagesWithDates = uniqueDates.map((date) => {
-    const messagesWithSameDate = messages.filter((msg) => {
-      return new Date(msg.timeStamp).toISOString().split("T")[0] === date;
-    });
-    return {
-      date,
-      messages: messagesWithSameDate,
-    };
-  });
+  const messagesWithDates = sortMsgsByDate(messages, "day") as {
+    date: string;
+    messages: IMessage[];
+  }[];
 
   // scroll to the end while renderring for the first time
   useEffect(() => {
@@ -101,59 +92,32 @@ export default function Messages(props: Props) {
               ? `${PINNED_MESSAGES_BAR_HEIGHT + 3}px `
               : "",
         }}
-        
       >
         {messagesWithDates.map((msg, i) => {
           const { messages, date } = msg;
-          const { currentDate, currentYear, day, month, year } = getDate(date);
-          const currentDateISO = currentDate.toISOString().split("T")[0];
-          const yesterday = new Date(
-            new Date(currentDate).setDate(currentDate.getDate() - 1)
-          ).toISOString();
-          let dateToShow = date;
-          if (currentDate.getFullYear() === year) {
-            if (currentDateISO === date) {
-              dateToShow = "today";
-            } else if (currentDateISO === yesterday) {
-              dateToShow = "yesterday";
-            } else {
-              dateToShow = `${month} ${day}`;
-            }
-          } else {
-            dateToShow = `${year}/${month}/${day}`;
-          }
+          const dateToShow = normalizeDateName(date);
           return (
             <div
+              key={i}
               className="w-full grid grid-cols-1 gap-y-[0.3rem] relative message-block"
               data-date={date}
             >
               <span
                 className={`${styles["date-header"]} justify-self-center my-[1rem] p-[.5rem] rounded-2xl font-medium text-xl`}
-                id={'message-block-time-span'}
+                id={"message-block-time-span"}
               >
                 {dateToShow}
               </span>
               {messages.map((msg, i) => {
                 const { sender } = msg;
-                if (myUserId && sender === myUserId) {
-                  return (
-                    <Message
-                      key={i}
-                      myUserId={myUserId}
-                      msg={msg}
-                      chatId={chatId}
-                    />
-                  );
-                } else {
-                  return (
-                    <Message
-                      key={i}
-                      myUserId={myUserId}
-                      msg={msg}
-                      chatId={chatId}
-                    />
-                  );
-                }
+                return (
+                  <Message
+                    key={i}
+                    myUserId={myUserId}
+                    msg={msg}
+                    chatId={chatId}
+                  />
+                );
               })}
             </div>
           );

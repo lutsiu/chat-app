@@ -8,12 +8,12 @@ import { IMessage, UserModel } from "../../../../interfaces/models";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
-  user: UserModel,
-  chatHistory: IMessage[]
-  chatId: string
+  user: UserModel;
+  chatHistory: IMessage[];
+  chatId: string;
 }
 export default function ProfileOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, user, chatHistory, chatId} = props;
+  const { showOverlay, setShowOverlay, user, chatHistory, chatId } = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -25,12 +25,14 @@ export default function ProfileOverlay(props: Props) {
       transition={{ duration: 0.25 }}
     >
       <div className="sticky top-0 z-20 py-[0.8rem] bg-slate-800 px-[2rem]">
-        <MainHeader
-          setShowOverlay={setShowOverlay}
-        />
-
+        <MainHeader setShowOverlay={setShowOverlay} />
       </div>
-      <UserInfo bio={user.bio} email={user.email} userName={user.userName} userImages={[user.profilePicture]} />
+      <UserInfo
+        bio={user.bio}
+        email={user.email}
+        userName={user.userName}
+        userImages={[user.profilePicture]}
+      />
       <BottomNavigationBar
         setShowFiles={setShowFiles}
         setShowGroups={setShowGroups}

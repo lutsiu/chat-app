@@ -42,7 +42,7 @@ export default function Media(props: Props) {
             <ul className="mt-[1rem] grid grid-cols-3 gap-[0.2rem]">
               {messages.map((msg, i) => {
                 return msg.media.map((media) => {
-                  return <Content key={i} media={media} chatId={chatId} messageId={msg._id as string} />;
+                  return <Content key={media.filePath} media={media} chatId={chatId} message={msg} />;
                 });
               })}
             </ul>

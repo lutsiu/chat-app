@@ -8,18 +8,17 @@ import styles from "./styles.module.scss";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useEffect, useState } from "react";
 import downloadFile from "../../../../../utils/downloadFile";
-import { IFile } from "../../../../../interfaces/models";
+import { IFile, IMessage } from "../../../../../interfaces/models";
 interface Props {
   setShowOverlay: (show: boolean) => void;
   showOverlay: boolean;
-  file: IFile,
-  messageId: string;
+  file: IFile;
+  message: IMessage;
   chatId: string;
 }
 
 export default function MediaOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, file, messageId, chatId } =
-    props;
+  const { showOverlay, setShowOverlay, file, message, chatId } = props;
   const [mediaScale, setMediaScale] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [progressBarWasTouched, setProgressBarWasTouched] = useState(false);
@@ -36,10 +35,16 @@ export default function MediaOverlay(props: Props) {
     }
   }
   function handleDeleteMessage() {
-    socket.emit("delete-message", { chatId, messageId });
     setShowOverlay(false);
+    if (message.media.length > 1) {
+      return socket.emit("delete-media", {
+        messageId: message._id,
+        chatId,
+        filePath: file.filePath,
+      });
+    }
+    socket.emit("delete-message", { messageId: message._id, chatId });
   }
-
 
   function zoomIn() {
     if (mediaScale > 80) {
@@ -62,13 +67,13 @@ export default function MediaOverlay(props: Props) {
 
   useEffect(() => {
     function handleCloseOverlay(e: KeyboardEvent) {
-      const event = e as KeyboardEventInit
-      if (event.key === 'Escape') {
+      const event = e as KeyboardEventInit;
+      if (event.key === "Escape") {
         setShowOverlay(false);
       }
     }
     if (showOverlay) {
-      document.addEventListener('keydown', handleCloseOverlay);
+      document.addEventListener("keydown", handleCloseOverlay);
     }
   }, [showOverlay, setShowOverlay]);
   return (
@@ -91,7 +96,10 @@ export default function MediaOverlay(props: Props) {
             style={{ transform: "rotateY(180deg)" }}
           />
         </div>
-        <div className={styles["icon-container"]} onClick={() => downloadFile(file)}>
+        <div
+          className={styles["icon-container"]}
+          onClick={() => downloadFile(file)}
+        >
           <LiaDownloadSolid className="w-[2.8rem] h-[2.8rem] text-gray-500 duration-500" />
         </div>
         <div className={styles["icon-container"]}>
@@ -100,16 +108,16 @@ export default function MediaOverlay(props: Props) {
               className="w-[2.4rem] h-[2.4rem] text-gray-500 duration-500"
               onClick={() => {
                 zoomIn();
-                setShowProgressBar(true)
+                setShowProgressBar(true);
               }}
-              />
-              )}
+            />
+          )}
           {showProgressBar && (
             <HiOutlineZoomOut
-            className="w-[2.4rem] h-[2.4rem] text-gray-500 duration-500"
-            onClick={() => {
-              zoomOut()
-              setShowProgressBar(false)
+              className="w-[2.4rem] h-[2.4rem] text-gray-500 duration-500"
+              onClick={() => {
+                zoomOut();
+                setShowProgressBar(false);
               }}
             />
           )}
@@ -122,13 +130,24 @@ export default function MediaOverlay(props: Props) {
         </div>
       </div>
       <div
-        className={`max-w-[35rem] max-h-[40rem] duration-200 ease-out ${styles['media-container']}`}
+        className={`max-w-[35rem] max-h-[40rem] duration-200 ease-out ${styles["media-container"]}`}
         style={{
           scale: `${100 + mediaScale * 3}%`,
         }}
       >
         {file.fileType.includes("image") && (
-          <img className="w-full h-full object-cover" src={`http://localhost:3000/${file.filePath}`} />
+          <img
+            className="w-full h-full object-cover"
+            src={`http://localhost:3000/${file.filePath}`}
+          />
+        )}
+        {file.fileType.includes("video") && (
+          <video className="object-cover h-full w-full" controls>
+            <source
+              src={`http://localhost:3000/${file.filePath}`}
+              type={file.fileType}
+            />
+          </video>
         )}
       </div>
       <div
@@ -136,8 +155,12 @@ export default function MediaOverlay(props: Props) {
         style={{
           transform: `translateX(50%)`,
           backgroundColor: "rgba(0,0,0,.5)",
-          opacity: progressBarWasTouched || showProgressBar ? 1 : 0,
-          pointerEvents: progressBarWasTouched || showProgressBar ? "auto" : "none"
+          opacity:
+            showOverlay && (progressBarWasTouched || showProgressBar) ? 1 : 0,
+          pointerEvents:
+            showOverlay && (progressBarWasTouched || showProgressBar)
+              ? "auto"
+              : "none",
         }}
       >
         <div onClick={zoomOut}>

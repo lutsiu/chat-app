@@ -17,14 +17,14 @@ import ResponsiveCreateGroupStep2 from "../Widgets/Group/CreateGroupResponsive/S
 import ContactsResponsive from "../Widgets/Contacts/ContactsResponsive";
 import ResponsiveSettings from "../Widgets/Settings/ResponsiveSettings";
 import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/PersonalResponsiveSettings";
-import {IMessage} from "../../interfaces/models"
+import {IMessage, UserModel} from "../../interfaces/models"
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
 
   const width = useResponsive();
 
   const location = useLocation();
-  const loaderData = useLoaderData() as {chatId: string, chatHistory: IMessage[]}; 
+  const loaderData = useLoaderData() as {chatId: string, chatHistory: IMessage[], interlocutor: UserModel}; 
 
   return (
     <>

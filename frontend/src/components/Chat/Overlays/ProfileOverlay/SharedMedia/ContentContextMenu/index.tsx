@@ -2,23 +2,25 @@ import { motion } from "framer-motion";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { BsChatLeft, BsFillReplyFill } from "react-icons/bs";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { IMessage } from "../../../../../../interfaces/models";
+import { IFile, IMessage } from "../../../../../../interfaces/models";
 import useResponsive from "../../../../../../hooks/useResponsive";
 import { useSocket } from "../../../../../../context/SocketContext";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import styles from './styles.module.scss'
+import styles from "./styles.module.scss";
+import downloadFile from "../../../../../../utils/downloadFile";
+import { handleScrollToMessage } from "../../../../../../state/message";
 interface Props {
   x: number;
   y: number;
   showMenu: boolean;
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  msgId: string;
+  message: IMessage;
   chatId: string;
-  mediaSrc: string
+  file: IFile;
 }
 export default function ContentContextMenu(props: Props) {
-  const { x, y, showMenu, setShowMenu, msgId, chatId, mediaSrc } = props;
+  const { x, y, showMenu, setShowMenu, message, chatId, file } = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
   const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -32,6 +34,21 @@ export default function ContentContextMenu(props: Props) {
   const width = useResponsive();
   const socket = useSocket();
   const dispatch = useDispatch();
+
+  function deleteMessage() {
+    setShowMenu(false);
+    if (message.media.length > 1) {
+      return socket.emit('delete-media', {messageId: message._id, chatId, filePath: file.filePath});
+    }
+    socket.emit("delete-message", { messageId: message._id, chatId });
+  }
+
+  function scrollToMessage() {
+    const messageDOM = document.getElementById(message._id as string) as HTMLElement;
+    const messageParent = messageDOM?.parentElement as HTMLElement;
+    dispatch(handleScrollToMessage({top: messageParent?.offsetTop + messageDOM.offsetTop}));
+  }
+
   useEffect(() => {
     function preventWindowScroll(e: Event) {
       e.preventDefault();
@@ -56,7 +73,7 @@ export default function ContentContextMenu(props: Props) {
       setShowMenuBelowCursor(true);
     }
   }, [width, x, y]);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -75,24 +92,30 @@ export default function ContentContextMenu(props: Props) {
         className="absolute bg-slate-800 py-[0.7rem] px-[.3rem] rounded-xl flex flex-col gap-[.7rem]"
       >
         <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer">
-          <div  style={{ transform: "rotateY(180deg)" }}>
+          <div style={{ transform: "rotateY(180deg)" }}>
             <BsFillReplyFill className="w-[2rem] h-[2rem]" />
           </div>
           <p className="font-semibold text-xl">Forward</p>
         </div>
-        <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer">
+        <div
+          className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer"
+          onClick={() => downloadFile(file)}
+        >
           <div>
             <LiaDownloadSolid className="w-[2rem] h-[2rem]" />
           </div>
           <p className="font-semibold text-xl">Download</p>
         </div>
-        <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer">
+        <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer" onClick={scrollToMessage}>
           <div>
             <BsChatLeft className="w-[1.4rem] h-[1.4rem] ml-[.4rem]" />
           </div>
           <p className="font-semibold text-xl">Show in chat</p>
         </div>
-        <div className={`${styles.deleteContainer} text-red-500 flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer`}>
+        <div
+          className={`${styles.deleteContainer} text-red-500 flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer`}
+          onClick={deleteMessage}
+        >
           <div>
             <MdOutlineDeleteOutline className="w-[2rem] h-[2rem]" />
           </div>

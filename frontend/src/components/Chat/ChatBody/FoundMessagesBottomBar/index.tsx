@@ -37,7 +37,8 @@ export default function FoundMessagesBottomBar(props: Props) {
     console.log(msg)
     const dom = document.getElementById(msg.message._id as string);
     if (!dom) return
-    const top = dom?.offsetTop as number;
+    const parentEl = dom.parentElement as HTMLElement;
+    const top = dom.offsetTop + parentEl.offsetTop;
     return top;
   }
 

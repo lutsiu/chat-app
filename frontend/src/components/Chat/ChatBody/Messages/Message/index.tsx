@@ -54,14 +54,17 @@ export default function Message(props: Props) {
   function handleScrollToMessageYouReplied() {
     const messageToReply = document.getElementById(
       reply?.messageToReplyId as string
-    );
-    const top = messageToReply?.offsetTop;
+    ) as HTMLElement;
+    const parentEl = messageToReply?.parentElement as HTMLElement;
+    const top = messageToReply?.offsetTop + parentEl.offsetTop;
     dispatch(handleScrollToMessage({ top: top as number }));
   }
 
   useEffect(() => {
     if (messageRef.current) {
-      const upperPoint = messageRef.current.offsetTop;
+      const messageParent = messageRef.current.parentElement as HTMLElement;
+      const upperPoint = messageRef.current.offsetTop + messageParent.offsetTop;
+    
       setMessageUpperPoint(upperPoint);
     }
   }, []);

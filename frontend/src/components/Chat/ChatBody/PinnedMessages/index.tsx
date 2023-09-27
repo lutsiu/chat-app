@@ -36,7 +36,9 @@ export default function PinnedMessages(props: Props) {
       const messageDom = document.getElementById(
         activePinnedMessage._id
       ) as HTMLElement;
-      const upperPoint = messageDom.offsetTop;
+      const offsetChildTop = messageDom.offsetTop;
+      const parent = messageDom.parentElement as HTMLElement;
+      const upperPoint = parent.offsetTop + offsetChildTop;
       setActivePinnedMessageUpperPoint(upperPoint);
     }
   }, [activePinnedMessage, messagesContainerScrollTop]);
@@ -45,11 +47,12 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     const activePinnedMessages = pinnedMessages.map((msg) => {
       const dom = document.getElementById(msg._id as string) as HTMLElement;
+      const parent = dom.parentElement as HTMLElement;
       const rect = dom.getBoundingClientRect();
       const messageRectTop = rect.top;
       const viewportHeight = window.innerHeight;
       const messageTopIsLower =
-        dom.offsetTop <
+        dom.offsetTop + parent.offsetTop <
         messagesContainerScrollTop! + PINNED_MESSAGES_BAR_HEIGHT;
       const stillInViewPort =
         viewportHeight - MESSAGES_BAR_HEIGHT > messageRectTop;

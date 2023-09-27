@@ -73,8 +73,9 @@ export default function ResponsiveSearch(props: Props) {
       const lastSearchMsg = searchMessages.at(-1);
       const lastMsgDOM = document.getElementById(
         lastSearchMsg?.message._id as string
-      );
-      dispatch(handleScrollToMessage({ top: lastMsgDOM?.offsetTop as number }));
+      ) as HTMLElement;
+      const lastMsgParent = lastMsgDOM.parentElement as HTMLElement;
+      dispatch(handleScrollToMessage({ top: lastMsgDOM?.offsetTop + lastMsgParent?.offsetTop }));
     }
   }, [searchMessages, dispatch]);
   return (

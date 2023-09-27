@@ -88,7 +88,7 @@ export default function MessageContextMenu(props: Props) {
     setShowMenu(false);
     if (mediaSrc && msg.media.length > 1) {
       const path = mediaSrc.split('/')[3];
-      console.log(path);
+
       return socket.emit('delete-media', {messageId: msg._id, chatId, filePath: path});
     }
     socket.emit("delete-message", { messageId: msg._id, chatId });

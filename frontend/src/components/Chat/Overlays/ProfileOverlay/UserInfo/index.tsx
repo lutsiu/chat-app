@@ -10,7 +10,7 @@ export default function UserInfo(props: Props) {
   const {email, bio, userName, userImages} = props;
   return (
     <div>
-      <UserPhotos photos={userImages}/>
+      <UserPhotos userName={userName} photos={userImages}/>
       <div className="flex flex-col">
         <UserInformation email={email} bio={bio} userName={userName} />
       </div>

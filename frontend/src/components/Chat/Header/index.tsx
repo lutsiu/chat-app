@@ -1,6 +1,6 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MenuOverlay from "../Overlays/MenuOverlay";
 import ProfileOverlay from "../Overlays/ProfileOverlay";
 import EditProfile from "../Overlays/ProfileOverlay/EditProfile";
@@ -13,10 +13,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
+import { IMessage, UserModel } from "../../../interfaces/models";
 interface Props {
   chatId: string;
+  chatMessages: IMessage[];
+  setChatMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
+  interlocutor: UserModel
 }
 export default function Header(props: Props) {
+  const {chatMessages, chatId, interlocutor} = props
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -26,16 +31,16 @@ export default function Header(props: Props) {
   const navigate = useNavigate();
   const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
   const dispatch = useDispatch();
-  function resetSearch() {
+  const resetSearch = useCallback(() => {
     dispatch(setShowSearchBar());
-    dispatch(setSearchedMessages(null))
-    setQuery('')
-  }
+    dispatch(setSearchedMessages(null));
+    setQuery("");
+  }, [dispatch, setQuery]);
   useEffect(() => {
-    window.addEventListener('beforeunload', resetSearch);
+    window.addEventListener("beforeunload", resetSearch);
     return () => {
-      window.removeEventListener('beforeunload', resetSearch)
-    }
+      window.removeEventListener("beforeunload", resetSearch);
+    };
   }, [resetSearch]);
   return (
     <>
@@ -45,13 +50,13 @@ export default function Header(props: Props) {
             className="block"
             onClick={() => {
               if (showSearchBar) {
-                resetSearch
+                resetSearch();
               } else {
                 navigate("/home");
               }
             }}
           >
-            <HiOutlineArrowLeft className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full text-gray-400 active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer" />
+            <HiOutlineArrowLeft className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full text-gray-400 active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer"  />
           </div>
         )}
 
@@ -59,7 +64,7 @@ export default function Header(props: Props) {
           <>
             <div className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
               <img
-                src="https://sklepotaku.pl/userdata/public/news/images/4.jpg"
+                src={`http://localhost:3000/${interlocutor.profilePicture}`}
                 alt="Avatar"
                 className="w-full h-full object-cover cursor-pointer"
                 onClick={() => setShowProfile((prev) => !prev)}
@@ -68,7 +73,7 @@ export default function Header(props: Props) {
             <div className="flex-1 flex justify-between">
               <div className="flex flex-col justify-center">
                 <span className="text-2xl font-semibold tracking-wide">
-                  {"Username"}
+                  {`${interlocutor.fullName}`}
                 </span>
                 <span className="text-lg font-normal text-gray-300">
                   {"Status"}
@@ -113,6 +118,9 @@ export default function Header(props: Props) {
       <ProfileOverlay
         setShowOverlay={setShowProfile}
         showOverlay={showProfile}
+        chatHistory={chatMessages}
+        user={interlocutor}
+        chatId={chatId}
       />
       <EditProfile setShowProfile={setShowProfile} />
     </>
