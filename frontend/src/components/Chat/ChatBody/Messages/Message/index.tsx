@@ -1,4 +1,4 @@
-import { IMessage } from "../../../../../interfaces/models";
+import { IMessage, MediaType } from "../../../../../interfaces/models";
 import { useEffect, useRef, useState } from "react";
 import MessageContextMenu from "../ContextMenu";
 import { BsPinAngleFill } from "react-icons/bs";
@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { handleScrollToMessage } from "../../../../../state/message";
 import FileLoader from "./FileLoader";
 import Media from "./Media";
+import Reply from "./Reply";
 interface Props {
   msg: IMessage;
   myUserId: string | undefined;
@@ -20,7 +21,9 @@ export default function Message(props: Props) {
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
-  const [mediaSrcForContextMenu, setMediaSrcForContextMenu] = useState('')
+  const [mediaSrcForContextMenu, setMediaSrcForContextMenu] = useState("");
+  const [mediaTypeForContextMenu, setMediaTypeForContextMenu] =
+    useState<MediaType>(null);
   const [messageUpperPoint, setMessageUpperPoint] = useState<
     undefined | number
   >(undefined);
@@ -32,14 +35,16 @@ export default function Message(props: Props) {
     e: React.MouseEvent<HTMLLIElement, MouseEvent>
   ) => {
     const target = e.target as HTMLLIElement;
-    if (target.hasAttribute('src')) {
-      setMediaSrcForContextMenu(target.getAttribute('src') as string);
+    if (target.hasAttribute("src")) {
+      setMediaSrcForContextMenu(target.getAttribute("src") as string);
+      setMediaTypeForContextMenu("image");
     }
-    if (target.tagName === 'VIDEO') {
-      const sourceEl = target.getElementsByTagName('source').item(0);
+    if (target.tagName === "VIDEO") {
+      const sourceEl = target.getElementsByTagName("source").item(0);
       if (sourceEl) {
-        const src = sourceEl.getAttribute('src');
+        const src = sourceEl.getAttribute("src");
         setMediaSrcForContextMenu(src as string);
+        setMediaTypeForContextMenu("video");
       }
     }
     if (!target.closest(".message")) return;
@@ -64,7 +69,7 @@ export default function Message(props: Props) {
     if (messageRef.current) {
       const messageParent = messageRef.current.parentElement as HTMLElement;
       const upperPoint = messageRef.current.offsetTop + messageParent.offsetTop;
-    
+
       setMessageUpperPoint(upperPoint);
     }
   }, []);
@@ -89,36 +94,33 @@ export default function Message(props: Props) {
           {media.length > 0 && <Media chatId={chatId} message={msg} />}
           {file && <FileLoader file={file} message={msg} chatId={chatId} />}
           {reply && reply.isReply && (
-            <div
-              className={`${styles.reply} duration-200 flex flex-col border-l-[.3rem] border-l-white pl-[0.8rem] mb-[0.4rem] cursor-pointer`}
-              onClick={handleScrollToMessageYouReplied}
-            >
-              <span className="font-semibold text-lg">
-                {reply.messageToReplyRecipientName.slice(0, 11)}
-                {reply.messageToReplyRecipientName.length > 11 ? "..." : ""}
-              </span>
-              <span className="text-lg font-medium">
-                {reply.messageToReplyMessage.slice(0, 13)}
-                {reply.messageToReplyMessage.length > 13 ? "..." : ""}
-              </span>
-            </div>
+            <Reply
+              handleScrollToMessageYouReplied={handleScrollToMessageYouReplied}
+              reply={reply}
+            />
           )}
           <div className="flex items-end gap-[0.4rem] flex-wrap">
             {message && (
               <p
                 className={`text-xl font-medium pb-[0.3rem] ${
                   media.length > 0 ? styles.messageContentWithMedia : ""
-                } ${media.length > 0 && isEdited ? styles.messageContentPaddingRightBig :"" }`}
+                } ${
+                  media.length > 0 && isEdited
+                    ? styles.messageContentPaddingRightBig
+                    : ""
+                }`}
               >
                 {message}
               </p>
             )}
             <div
               className={`flex justify-end flex-1
-               ${
-                media.length > 0 ? styles.messageInfoAbsolute : ""
-              }
-                ${media.length > 0 && message ? styles.messageInfoAbsoluteWithMessage : ""}
+               ${media.length > 0 ? styles.messageInfoAbsolute : ""}
+                ${
+                  media.length > 0 && message
+                    ? styles.messageInfoAbsoluteWithMessage
+                    : ""
+                }
               `}
             >
               <div className="flex gap-[0.7rem] items-center">
@@ -148,6 +150,7 @@ export default function Message(props: Props) {
           messageUpperPoint={messageUpperPoint}
           myUserId={myUserId as string}
           mediaSrc={mediaSrcForContextMenu}
+          mediaType={mediaTypeForContextMenu}
         />
       </>
     </>

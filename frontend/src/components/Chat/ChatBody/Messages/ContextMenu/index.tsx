@@ -7,7 +7,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import useResponsive from "../../../../../hooks/useResponsive";
-import { IFile, IMessage } from "../../../../../interfaces/models";
+import { IFile, IMessage, MediaType } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { LiaDownloadSolid } from "react-icons/lia";
@@ -18,6 +18,7 @@ import {
 } from "../../../../../state/message";
 import { ReduxState } from "../../../../../interfaces/redux";
 import downloadFile from "../../../../../utils/downloadFile";
+import { closeEditMessage, closeReplyMessage } from "../../../../../utils/reduxHelpers";
 
 interface Props {
   x: number;
@@ -29,7 +30,8 @@ interface Props {
   chatId: string;
   messageUpperPoint: number | undefined;
   myUserId: string;
-  mediaSrc: string
+  mediaSrc: string;
+  mediaType: MediaType;
 }
 
 export default function MessageContextMenu(props: Props) {
@@ -43,7 +45,8 @@ export default function MessageContextMenu(props: Props) {
     chatId,
     messageUpperPoint,
     myUserId,
-    mediaSrc
+    mediaSrc,
+    mediaType
   } = props;
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
@@ -58,7 +61,7 @@ export default function MessageContextMenu(props: Props) {
   const width = useResponsive();
   const socket = useSocket();
   const dispatch = useDispatch();
-  /* const {replyToMessage: reply, editMessage: edit, forwardMessage: forward} = useSelector((state: ReduxState) => state.ui) */
+  const {replyToMessage: replyToMsgState, editMessage: editMsgState} = useSelector((state: ReduxState) => state.message)
   useEffect(() => {
     function preventWindowScroll(e: Event) {
       e.preventDefault();
@@ -87,27 +90,45 @@ export default function MessageContextMenu(props: Props) {
   function deleteMessage() {
     setShowMenu(false);
     if (mediaSrc && msg.media.length > 1) {
-      const path = mediaSrc.split('/')[3];
+      const path = mediaSrc.split("/")[3];
 
-      return socket.emit('delete-media', {messageId: msg._id, chatId, filePath: path});
+      return socket.emit("delete-media", {
+        messageId: msg._id,
+        chatId,
+        filePath: path,
+      });
     }
     socket.emit("delete-message", { messageId: msg._id, chatId });
   }
 
   function editMessage() {
     setShowMenu(false);
+    if (replyToMsgState.show) {
+      dispatch(closeReplyMessage());
+    }
     dispatch(
-      handleEditMessage({ message: msg, show: true, messageUpperPoint })
+      handleEditMessage({
+        message: msg,
+        show: true,
+        messageUpperPoint,
+        mediaPath: mediaSrc ? mediaSrc : null,
+        mediaType: mediaType ? mediaType : null
+      })
     );
   }
   function replyToMessage() {
     setShowMenu(false);
+    if (editMsgState.show) {
+      dispatch(closeEditMessage());
+    }
     dispatch(
       handleReplytoMessage({
         message: msg,
         show: true,
         messageUpperPoint,
         senderId: myUserId,
+        mediaPath: mediaSrc ? mediaSrc : null,
+        mediaType: mediaType ? mediaType : null
       })
     );
   }

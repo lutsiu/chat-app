@@ -10,7 +10,12 @@ import {
   handleReplytoMessage,
   handleScrollToMessage,
 } from "../../../../../state/message";
-
+import getActionBarMessageContent from "../../../../../utils/getActionBarMessageContent";
+import renderMediaContent from "../../../../../utils/renderActionBarMediaContent";
+import {
+  closeEditMessage,
+  closeReplyMessage,
+} from "../../../../../utils/reduxHelpers";
 interface Props {
   setInputValue: (value: string) => void;
 }
@@ -21,34 +26,20 @@ export default function MessageActionBar(props: Props) {
     (state: ReduxState) => state.message
   );
   const dispatch = useDispatch();
+
   function handleCloseActionBar() {
     if (replyToMessage.show) {
-      dispatch(
-        handleReplytoMessage({
-          message: null,
-          show: false,
-          messageUpperPoint: undefined,
-          senderId: "",
-        })
-      );
+      dispatch(closeReplyMessage());
     }
     if (editMessage.show) {
-      dispatch(
-        handleEditMessage({
-          message: null,
-          show: false,
-          messageUpperPoint: undefined,
-        })
-      );
+      dispatch(closeEditMessage());
     }
     setInputValue("");
   }
   function scrollToMessage() {
     if (replyToMessage.show) {
-      console.log(replyToMessage.messageUpperPoint)
       dispatch(
         handleScrollToMessage({
-          
           top: replyToMessage.messageUpperPoint as number,
         })
       );
@@ -85,22 +76,22 @@ export default function MessageActionBar(props: Props) {
           onClick={scrollToMessage}
         >
           <span className="inline-block w-[0.25rem] h-full bg-purple-500"></span>
+          {(replyToMessage.mediaPath || editMessage.mediaPath) && (
+            <div className="w-[3rem] h-[3rem] rounded-lg overflow-hidden">
+              {renderMediaContent(replyToMessage)}
+              {renderMediaContent(editMessage)}
+            </div>
+          )}
+
           <div className="flex flex-col justify-between">
             <span className="text-purple-500 font-semibold text-xl">
               {replyToMessage.show && "UserName"}
               {editMessage.show && "Editing"}
             </span>
             <div>
-
               <span className="text-lg text-gray-200">
-                {editMessage.message?.message.slice(0, 70)}
-                {editMessage.message &&
-                  editMessage.message.message.length > 70 &&
-                  "..."}
-                {replyToMessage.message?.message.slice(0, 70)}
-                {replyToMessage.message &&
-                  replyToMessage.message.message.length > 70 &&
-                  "..."}
+                {getActionBarMessageContent(replyToMessage)}
+                {getActionBarMessageContent(editMessage)}
               </span>
             </div>
           </div>

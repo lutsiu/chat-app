@@ -32,7 +32,7 @@ export default function Content(props: Props) {
   return (
     <>
       <li
-        className="content h-[16rem] md:h-[12rem]"
+        className="content h-[16rem] md:h-[12rem] cursor-pointer"
         onClick={handleShowOverlay}
         onContextMenu={handleShowContextMenu}
       >

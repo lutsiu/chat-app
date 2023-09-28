@@ -13,12 +13,16 @@ const initialState: MessageInitialState = {
     show: false,
     message: null,
     messageUpperPoint: undefined,
+    mediaPath: null,
+    mediaType: null,
     senderId: "",
   },
   editMessage: {
     show: false,
     message: null,
     messageUpperPoint: undefined,
+    mediaType: null,
+    mediaPath: null,
   },
   forwardMessage: {
     show: false,
@@ -35,18 +39,22 @@ const messageSlice = createSlice({
   reducers: {
     handleReplytoMessage: (state, action: ActionWithReply) => {
       const { payload } = action;
-      const { show, message, messageUpperPoint, senderId } = payload;
+      const { show, message, messageUpperPoint, senderId, mediaPath, mediaType } = payload;
       state.replyToMessage.show = show;
       state.replyToMessage.message = message;
       state.replyToMessage.messageUpperPoint = messageUpperPoint;
       state.replyToMessage.senderId = senderId;
+      state.replyToMessage.mediaPath = mediaPath;
+      state.replyToMessage.mediaType= mediaType
     },
     handleEditMessage: (state, action: UIActionWithMessage) => {
       const { payload } = action;
-      const { show, message, messageUpperPoint } = payload;
+      const { show, message, messageUpperPoint, mediaPath, mediaType } = payload;
       state.editMessage.show = show;
       state.editMessage.message = message;
       state.editMessage.messageUpperPoint = messageUpperPoint;
+      state.editMessage.mediaPath = mediaPath;
+      state.editMessage.mediaType= mediaType
     },
     handleForwardMessage: (state, action: UIActionWithMessage) => {
       const { payload } = action;

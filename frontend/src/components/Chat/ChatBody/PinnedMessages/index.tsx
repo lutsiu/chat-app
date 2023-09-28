@@ -5,6 +5,7 @@ import { ReduxState } from "../../../../interfaces/redux";
 import { useState, useEffect } from "react";
 import { handleScrollToMessage } from "../../../../state/message";
 import TextTransition from "react-text-transition";
+import { getPinnedbarMessageContent } from "../../../../utils/getActionBarMessageContent";
 interface Props {
   pinnedMessages: IMessage[];
 }
@@ -29,7 +30,7 @@ export default function PinnedMessages(props: Props) {
   function handleScrollToPinnedMessage() {
     dispatch(handleScrollToMessage({ top: activePinnedMessageUpperPoint }));
   }
-  
+
   // setting upper point of pinned message
   useEffect(() => {
     if (activePinnedMessage && activePinnedMessage._id) {
@@ -74,21 +75,48 @@ export default function PinnedMessages(props: Props) {
         : 0
     );
   }, [messagesContainerScrollTop, pinnedMessages]);
-
+  const activePinnedMessageMedia = activePinnedMessage && activePinnedMessage.media.length > 0
+    ? {
+        path: activePinnedMessage.media[0].filePath,
+        type: activePinnedMessage.media[0].fileType,
+      }
+    : null;
   return (
     <ul className="absolute w-full py-[.4rem] bg-slate-700 z-[2] flex justify-between px-[1rem] items-center">
-      <div onClick={handleScrollToPinnedMessage} className="flex-1 cursor-pointer">
-        <span className="text-purple-400 font-medium text-lg flex items-center">
-          Pinned message
-          <TextTransition className="ml-[0.3rem]">{`#${
-            indexOfPinnedMessage + 1
-          }`}</TextTransition>
-        </span>
-        <TextTransition className="text-lg">
-          {`${activePinnedMessage?.message.slice(0, 70)}${activePinnedMessage?.message.length && "..."}`}
-          
-        </TextTransition>
+      <div className="flex gap-[1rem]">
+        {activePinnedMessageMedia && (
+          <div className="w-[3.5rem] h-[3.5rem] object-cover rounded-lg overflow-hidden">
+            {activePinnedMessageMedia.type.includes("image") && (
+              <img className="w-full h-full object-cover"
+                src={`http://localhost:3000/${activePinnedMessageMedia.path}`}
+              />
+            )}
+            {activePinnedMessageMedia.type.includes("video") && (
+              <video className="w-full h-full object-cover">
+                <source
+                  src={`http://localhost:3000/${activePinnedMessageMedia.path}`}
+                  type={activePinnedMessageMedia.type}
+                />
+              </video>
+            )}
+          </div>
+        )}
+        <div
+          onClick={handleScrollToPinnedMessage}
+          className="flex-1 cursor-pointer"
+        >
+          <span className="text-purple-400 font-medium text-lg flex items-center">
+            Pinned message
+            <TextTransition className="ml-[0.3rem]">{`#${
+              indexOfPinnedMessage + 1
+            }`}</TextTransition>
+          </span>
+          <TextTransition className="text-lg">
+           {getPinnedbarMessageContent(activePinnedMessage!)}
+          </TextTransition>
+        </div>
       </div>
+
       <div>
         <BsPinAngleFill className="text-gray-400 w-[1.5rem] h-[1.5rem] hover:text-white cursor-pointer" />
       </div>

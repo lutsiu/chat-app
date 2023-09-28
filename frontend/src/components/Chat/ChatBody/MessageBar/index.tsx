@@ -8,12 +8,11 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import MessageActionBar from "./MessageActionBar";
-import {
-  handleEditMessage,
-  handleReplytoMessage,
-} from "../../../../state/message";
 import { MessageType } from "../../../../interfaces/message";
-import { IMessage } from "../../../../interfaces/models";
+import {
+  closeEditMessage,
+  closeReplyMessage,
+} from "../../../../utils/reduxHelpers";
 interface Props {
   sendMessage: (
     action: MessageType,
@@ -61,20 +60,15 @@ export default function MessageBar(props: Props) {
           reply: {
             messageToReplyId: replyToMessage.message?._id as string,
             senderId: replyToMessage.senderId,
+            mediaPath: replyToMessage.mediaPath,
+            mediaType: replyToMessage.mediaType,
           },
           editMessage: null,
           sendMessage: false,
         },
         e
       );
-      dispatch(
-        handleReplytoMessage({
-          message: null,
-          show: false,
-          messageUpperPoint: undefined,
-          senderId: "",
-        })
-      );
+      dispatch(closeReplyMessage());
     }
     if (editMessage.show) {
       sendMessage(
@@ -85,13 +79,7 @@ export default function MessageBar(props: Props) {
         },
         e
       );
-      dispatch(
-        handleEditMessage({
-          message: null,
-          show: false,
-          messageUpperPoint: undefined,
-        })
-      );
+      dispatch(closeEditMessage());
     }
     if (!replyToMessage.show && !editMessage.show) {
       sendMessage({ editMessage: null, reply: null, sendMessage: true }, e);

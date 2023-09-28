@@ -1,4 +1,4 @@
-import { IMessage, SearchedMessage, UserModel } from "./models";
+import { IMessage, SearchedMessage, UserModel, MediaType } from "./models";
 import { Socket } from "socket.io-client";
 export interface UserInitialState {
   user: null | UserModel;
@@ -37,11 +37,15 @@ export interface MessageInitialState {
     message: IMessage | null;
     senderId: string;
     messageUpperPoint: undefined | number;
+    mediaPath: null | string,
+    mediaType: MediaType
   };
   editMessage: {
     show: boolean;
     message: IMessage | null;
     messageUpperPoint: undefined | number;
+    mediaPath: null | string,
+    mediaType: MediaType
   };
   forwardMessage: {
     show: boolean;
@@ -84,14 +88,18 @@ export interface UIActionWithMessage {
     message: IMessage | null;
     show: boolean;
     messageUpperPoint: undefined | number;
+    mediaPath: null | string,
+    mediaType: MediaType
   };
 }
-export interface ActionWithReply extends ActionWithMessage {
+export interface ActionWithReply{
   payload: {
     message: IMessage | null;
     show: boolean;
     messageUpperPoint: undefined | number;
     senderId: string;
+    mediaPath: null | string,
+    mediaType: MediaType
   };
 }
 export interface ActionWithScroll {

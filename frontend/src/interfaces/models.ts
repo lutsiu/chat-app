@@ -19,6 +19,14 @@ export interface IFile {
   fileSize: number;
   fileType: string;
 }
+export interface IReply {
+  isReply: boolean;
+  messageToReplyId: string;
+  messageToReplyMessage: string;
+  messageToReplyRecipientName: string;
+  mediaPath: string,
+  mediaType: MediaType
+}
 export interface IMessage {
   _id?: string;
   sender: string;
@@ -27,15 +35,11 @@ export interface IMessage {
   media: IFile[];
   file?: IFile;
   pinned?: boolean;
-  reply?: {
-    isReply: boolean;
-    messageToReplyId: string;
-    messageToReplyMessage: string;
-    messageToReplyRecipientName: string;
-  };
+  reply?: IReply;
   isEdited?: boolean;
 }
 
+export type MediaType = null | 'video' | 'image'; 
 export interface SearchedMessage {
   message: IMessage;
   user: { _id: string; fullName: string; profilePicture: string };

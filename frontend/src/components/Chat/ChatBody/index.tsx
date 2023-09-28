@@ -56,12 +56,14 @@ export default function ChatBody(props: Props) {
           });
         }
         if (action.reply) {
-          const { messageToReplyId, senderId } = action.reply;
+          const { messageToReplyId, senderId, mediaPath, mediaType } = action.reply;
           socket.emit("reply-to-message", {
             message: inputValue,
             messageToReplyId,
             senderId,
             chatId,
+            mediaPath, 
+            mediaType
           });
         }
         setInputValue("");

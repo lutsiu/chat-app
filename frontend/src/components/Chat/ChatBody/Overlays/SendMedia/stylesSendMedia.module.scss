@@ -24,7 +24,7 @@
   @apply grid-cols-2 h-[80rem];
 }
 .img {
-  @apply object-cover block;
+  @apply object-cover block cursor-pointer;
 }
 .one-img {
   @apply max-h-[25rem]
