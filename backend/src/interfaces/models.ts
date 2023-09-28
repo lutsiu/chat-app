@@ -24,8 +24,7 @@ export interface IMessage {
   sender: string;
   message: string;
   timeStamp: Date;
-  images?: IFile[];
-  videos?: IFile[];
+  media?: IFile[],
   file?: IFile;
   pinned?: boolean;
   reply?: {
@@ -33,6 +32,8 @@ export interface IMessage {
     messageToReplyId: string;
     messageToReplyMessage: string;
     messageToReplyRecipientName: string;
+    mediaPath?: string,
+    mediaType?: string
   };
   isEdited?: boolean;
 }

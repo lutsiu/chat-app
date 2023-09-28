@@ -9,13 +9,7 @@ interface IChat {
 const messageSchema = new mongoose.Schema<IMessage>({
   sender: String,
   message: String,
-  images: [{
-    filePath: String,
-    fileName: String,
-    fileType: String,
-    fileSize: Number
-  }],
-  videos: [{
+  media: [{
     filePath: String,
     fileName: String,
     fileType: String,
@@ -43,7 +37,15 @@ const messageSchema = new mongoose.Schema<IMessage>({
       default: null,
     },
     messageToReplyMessage: String,
-    messageToReplyRecipientName: String
+    messageToReplyRecipientName: String,
+    mediaPath: {
+      required: false,
+      type: String
+    },
+    mediaType: {
+      required: false,
+      type: String
+    }
   },
   isEdited: {
     type: Boolean,

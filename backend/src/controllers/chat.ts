@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/User.ts";
 import Chat from "../models/Chat.ts";
 import { IMessage } from "../interfaces/models.ts";
+import { deleteFileFromDevice } from "../utils/manageDirs.ts";
+import getMessageToReplyMessage from "../utils/getMessageToReplyMessage.ts";
 
 export const deleteChat = async (req, res) => {
   try {
@@ -50,7 +52,9 @@ export const findOrCreateChat = async (req, res) => {
   try {
     const { myUserName, interlocutorUserName } = req.body;
     const myUser = await User.findOne({ userName: myUserName });
-    const interlocutor = await User.findOne({ userName: interlocutorUserName });
+    const interlocutor = await User.findOne({
+      userName: interlocutorUserName,
+    }).select(["-password", "-contacts", "-userIsVerified", "-chats", '-confirmationCode']);
     if (!myUser || !interlocutor) {
       return res.status(404).json("One of users wasn't found");
     }
@@ -61,17 +65,19 @@ export const findOrCreateChat = async (req, res) => {
     if (chat) {
       return res
         .status(200)
-        .json({ chatId: chat._id, chatHistory: chat.messages });
+        .json({ chatId: chat._id, chatHistory: chat.messages, interlocutor });
     }
+
     if (!chat) {
       const newChat = new Chat({
         participants: [myUser._id, interlocutor._id],
       });
       await newChat.save();
-
-      return res
-        .status(201)
-        .json({ chatId: newChat._id, chatHistory: newChat.messages });
+      return res.status(201).json({
+        chatId: newChat._id,
+        chatHistory: newChat.messages,
+        interlocutor,
+      });
     }
   } catch (err) {
     res.status(409).json("Internal error occured");
@@ -85,17 +91,27 @@ export const deleteMessage = async (req, res) => {
     if (!chat) {
       return res.status(404).json("Chat wasn't found");
     }
-    const message = await Chat.findOne({ "messages._id": messageId });
+    const message = chat.messages.find(
+      (msg) => msg._id.toString() === messageId
+    );
     if (!message) {
       return res.status(404).json("Message wasn't found");
+    }
+    if (message.file.filePath) {
+      await deleteFileFromDevice(message.file.filePath);
+    }
+    if (message.media.length > 0) {
+      message.media.forEach(async (md) => {
+        await deleteFileFromDevice(md.filePath);
+      });
     }
     chat.messages = chat.messages.filter(
       (msg) => msg._id.toString() !== messageId
     );
     await chat.save();
-    console.log(chat.messages);
     return res.status(200).json("Message was deleted");
   } catch (err) {
+    /*     console.log(err); */
     res.status(409).json("Some internal error occured");
   }
 };
@@ -130,7 +146,7 @@ export const editMessage = async (req, res) => {
 
 export const replyToMessage = async (req, res) => {
   try {
-    const { message, messageToReplyId, chatId, senderId } = req.body;
+    const { message, messageToReplyId, chatId, senderId, mediaType, mediaPath } = req.body;
     const chat = await Chat.findById(chatId);
     if (!chat) {
       return res.status(404).json("Chat wasn't found");
@@ -149,6 +165,7 @@ export const replyToMessage = async (req, res) => {
     if (!sender) {
       return res.status(404).json("Sender wasn't found");
     }
+    const messageToReplyMessage = getMessageToReplyMessage(messageToReply, mediaType);
     const reply: IMessage = {
       message,
       sender: senderId,
@@ -156,8 +173,10 @@ export const replyToMessage = async (req, res) => {
       reply: {
         isReply: true,
         messageToReplyId,
-        messageToReplyMessage: messageToReply.message,
+        messageToReplyMessage: messageToReplyMessage,
         messageToReplyRecipientName: recipient.fullName,
+        mediaPath: mediaPath ? mediaPath : "",
+        mediaType: mediaType ? mediaType: ''
       },
     };
     chat.messages.push(reply);
@@ -171,28 +190,30 @@ export const replyToMessage = async (req, res) => {
 
 export const pinOrUnpin = async (req, res) => {
   try {
-    const {messageId, chatId} = req.body;
+    const { messageId, chatId } = req.body;
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json("Chat wasn't found")
+      return res.status(404).json("Chat wasn't found");
     }
-    const message = chat.messages.find((msg) => msg._id.toString() === messageId)
+    const message = chat.messages.find(
+      (msg) => msg._id.toString() === messageId
+    );
     if (!message) {
-      return res.status(404).json("Message wasn't found")
-    };
+      return res.status(404).json("Message wasn't found");
+    }
     chat.messages.map((msg) => {
       if (msg._id.toString() !== messageId) {
-        return msg
+        return msg;
       } else {
-        msg.pinned = !msg.pinned
+        msg.pinned = !msg.pinned;
       }
-    })
+    });
     await chat.save();
-    return res.status(200).json('done')
+    return res.status(200).json("done");
   } catch (err) {
-    res.status(409).json('Internal server error occured');
+    res.status(409).json("Internal server error occured");
   }
-}
+};
 
 export const findMessage = async (req, res) => {
   try {
@@ -220,6 +241,7 @@ export const findMessage = async (req, res) => {
       const { _id, profilePicture, fullName } = user;
       return { message: msg, user: { _id, profilePicture, fullName } };
     });
+
     res.status(200).json(result);
   } catch (err) {
     res.status(409).json("Internal error occured");
@@ -228,7 +250,7 @@ export const findMessage = async (req, res) => {
 
 export const findMessageByDate = async (req, res) => {
   try {
-    const {chatId, date} = req.query;
+    const { chatId, date } = req.query;
     console.log(chatId, date);
     const chat = await Chat.findById(chatId);
     if (!chat) {
@@ -239,14 +261,14 @@ export const findMessageByDate = async (req, res) => {
     }
     const messagesAndTime = chat.messages.map((msg) => {
       const msgDate = new Date(msg.timeStamp).getTime();
-      const timeDifference = Math.abs(+date - msgDate)
-      return {msg, timeDifference}
+      const timeDifference = Math.abs(+date - msgDate);
+      return { msg, timeDifference };
     });
     const closestDate = messagesAndTime.reduce((prev, cur) => {
       return prev.timeDifference < cur.timeDifference ? prev : cur;
     });
     res.status(200).json(closestDate.msg);
-  } catch(err) {
-    res.status(409).json('Internal error occured');
+  } catch (err) {
+    res.status(409).json("Internal error occured");
   }
-}
+};
