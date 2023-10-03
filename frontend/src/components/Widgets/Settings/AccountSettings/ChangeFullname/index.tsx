@@ -3,6 +3,9 @@ import * as Yup from "yup";
 import { motion } from "framer-motion";
 import { mediumPurple, pink } from "../../../../../utils/colors";
 import styles from "../styles.module.scss";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
+import { useSocket } from "../../../../../context/SocketContext";
 interface Props {
   showPopup: boolean;
   setShowPopup: (show: boolean) => void;
@@ -10,20 +13,19 @@ interface Props {
 
 export default function ChangeFullname(props: Props) {
   const { setShowPopup, showPopup } = props;
+  const { user } = useSelector((state: ReduxState) => state.user);
+  const socket = useSocket();
   const initialValues = {
-    fullName: "fullname",
+    fullName: user!.fullName,
   };
 
   const validationSchema = Yup.object({
     fullName: Yup.string().min(2).max(30).required("Required field"),
   });
 
-  async function onSubmit(values: { fullName: string }): Promise<void> {
-    try {
-      setShowPopup(false);
-    } catch (err) {
-      console.log(err);
-    }
+  function onSubmit(values: { fullName: string }) {
+    socket.emit('change-full-name', {userId: user?._id, fullName: values.fullName});
+    setShowPopup(false);
   }
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
   return (
@@ -77,6 +79,9 @@ export default function ChangeFullname(props: Props) {
                   className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
                   onClick={(e) => {
                     setShowPopup(false);
+                    setTimeout(() => {
+                      formik.setValues({ fullName: user?.fullName as string });
+                    }, 300);
                   }}
                 >
                   Cancel
@@ -85,7 +90,7 @@ export default function ChangeFullname(props: Props) {
                   type="submit"
                   className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
                 >
-                  Next
+                  Save
                 </button>
               </div>
             </div>

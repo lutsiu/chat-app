@@ -64,7 +64,7 @@ export default function Header(props: Props) {
           <>
             <div className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
               <img
-                src={`http://localhost:3000/${interlocutor.profilePicture}`}
+                src={`http://localhost:3000/${interlocutor.profilePictures.at(-1)}`}
                 alt="Avatar"
                 className="w-full h-full object-cover cursor-pointer"
                 onClick={() => setShowProfile((prev) => !prev)}

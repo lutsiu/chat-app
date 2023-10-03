@@ -83,7 +83,7 @@ export default function AccountSettings() {
                 <PiUserCircleLight className="text-4xl" />
                 <span className="text-xl">Name</span>
               </div>
-              <span className="text-purple-500 text-xl">{"Fullname"}</span>
+              <span className="text-purple-500 text-xl">{user?.fullName}</span>
             </div>
             <div className="flex items-center justify-between pl-[1.6rem] pr-[2rem] py-[0.8rem] hover:bg-gray-800 cursor-pointer">
               <div className="flex items-center gap-[1.5rem]">
@@ -91,7 +91,7 @@ export default function AccountSettings() {
                 <span className="text-xl">Email</span>
               </div>
               <span className="text-purple-500 text-xl">
-                {"username@gmail.com"}
+                {user?.email}
               </span>
             </div>
             <div
@@ -102,7 +102,7 @@ export default function AccountSettings() {
                 <HiOutlineAtSymbol className="text-4xl" />
                 <span className="text-xl">Username</span>
               </div>
-              <span className="text-purple-500 text-xl">{"@username"}</span>
+              <span className="text-purple-500 text-xl">@{user?.userName}</span>
             </div>
           </div>
           <div className="bg-gray-800 mt-[0.5rem] pt-[1rem] pl-[2rem] pb-[1.5rem] flex flex-col text-gray-400 text-xl">

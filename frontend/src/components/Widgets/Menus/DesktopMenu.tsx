@@ -31,7 +31,7 @@ export default function DesktopMenu() {
           <div className="w-[4.5rem] h-[4.5rem]">
             <img
               src={
-              `http://localhost:3000/${user?.profilePicture}`
+              `http://localhost:3000/${user?.profilePictures.at(-1)}`
               }
               className="w-full h-full rounded-full object-cover"
               alt="User avatar"

@@ -20,7 +20,7 @@ import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/P
 import {IMessage, UserModel} from "../../interfaces/models"
 import { useEffect } from "react";
 import { useSocket } from "../../context/SocketContext";
-import {setBio} from '../../state/user'
+import {setBio, setFullName, setProfilePicture, setUserName} from '../../state/user'
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
   const dispatch = useDispatch();
@@ -33,6 +33,15 @@ export default function MainWrapper() {
   useEffect(() => {
     socket.on('change-bio', (bio: string) => {
       dispatch(setBio(bio));
+    });
+    socket.on('change-full-name', (fullName: string) => {
+      dispatch(setFullName(fullName))
+    })
+    socket.on('change-user-name', (userName: string) => {
+      dispatch(setUserName(userName))
+    });
+    socket.on('change-profile-picture', (filePath: string) => {
+      dispatch(setProfilePicture(filePath));
     })
   }, [socket, dispatch]);
 
