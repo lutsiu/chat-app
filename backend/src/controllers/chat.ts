@@ -238,8 +238,8 @@ export const findMessage = async (req, res) => {
       const user = users.find(
         (user) => user._id.toString() === msg.sender.toString()
       );
-      const { _id, profilePicture, fullName } = user;
-      return { message: msg, user: { _id, profilePicture, fullName } };
+      const { _id, profilePictures, fullName } = user;
+      return { message: msg, user: { _id, profilePictures, fullName } };
     });
 
     res.status(200).json(result);

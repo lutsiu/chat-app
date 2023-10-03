@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { UserModel } from "../interfaces/models.ts";
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema<UserModel>({
   fullName: {
     type: String,
     required: false, 
@@ -19,9 +20,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  profilePicture: {
-    type: String,
-    default: ''
+  profilePictures: {
+    type: [String],
+    default: []
   },
   bio: {
     type: String,

@@ -5,7 +5,7 @@ export interface UserModel {
   userName: string;
   email: string;
   password: string;
-  profilePicture: string;
+  profilePictures: string[];
   bio: string;
   status: string;
   contacts: string[];

@@ -11,7 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.ts";
 import chatRouter from "./routes/chat.ts";
-import settingsRouter from './routes/settings.ts'
+import settingsRouter from "./routes/settings.ts";
 import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
@@ -69,7 +69,7 @@ app.put(
 /* ROUTES */
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
-app.use('/settings', settingsRouter)
+app.use("/settings", settingsRouter);
 /* MONGO */
 
 const PORT = process.env.PORT;
@@ -173,8 +173,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         messageToReplyId: string;
         chatId: string;
         senderId: string;
-        mediaPath: string,
-        mediaType: null | 'video' | 'image'
+        mediaPath: string;
+        mediaType: null | "video" | "image";
       }) => {
         try {
           socket.join(data.chatId);
@@ -392,49 +392,135 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             (msg) => msg._id.toString() === messageId
           );
           if (!message) {
-            return socket.emit(
-              "delete-media",
-              "Message wasn't found"
-            );
+            return socket.emit("delete-media", "Message wasn't found");
           }
           const updatedMessageMedia = message.media.filter((md) => {
             if (md.filePath === filePath) {
-              return false
+              return false;
             } else {
-              return true
+              return true;
             }
-          })
+          });
           message.media = updatedMessageMedia;
           chat.messages = chat.messages.map((msg) => {
             if (msg._id.toString() === message._id.toString()) {
-              return message
+              return message;
             } else {
-              return msg
+              return msg;
             }
           });
           await chat.save();
           await deleteFileFromDevice(filePath);
-          io.in(chatId).emit("delete-media", {messageId, message});
+          io.in(chatId).emit("delete-media", { messageId, message });
         } catch (err) {
           console.log(err);
         }
       }
     );
-    socket.on('change-bio', async (data: {userId: string, bio: string}) => {
+    socket.on("change-bio", async (data: { userId: string; bio: string }) => {
       try {
         const body = JSON.stringify(data);
-        console.log(body)
         const res = await fetch(`http://localhost:3000/settings/change-bio`, {
-          headers: {'Content-Type': 'application/json'} ,body, method: 'PUT'
+          headers: { "Content-Type": "application/json" },
+          body,
+          method: "PUT",
         });
         if (res.ok) {
           const bio = await res.json();
-          socket.emit('change-bio', bio);
+          socket.emit("change-bio", bio);
         }
       } catch (err) {
         console.log(err);
       }
     });
+    socket.on(
+      "change-full-name",
+      async (data: { userId: string; bio: string }) => {
+        try {
+          const body = JSON.stringify(data);
+          console.log(body);
+          const res = await fetch(
+            `http://localhost:3000/settings/change-full-name`,
+            {
+              headers: { "Content-Type": "application/json" },
+              body,
+              method: "PUT",
+            }
+          );
+          if (res.ok) {
+            const fullName = await res.json();
+            socket.emit("change-full-name", fullName);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on("check-user-name-uniqueness", async (userName: string) => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/settings/check-user-name-uniqueness?userName=${userName}`
+        );
+        const status = res.status;
+        socket.emit("check-user-name-uniqueness", { userName, status });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    socket.on(
+      "change-user-name",
+      async (data: { userId: string; bio: string }) => {
+        try {
+          const body = JSON.stringify(data);
+          const res = await fetch(
+            `http://localhost:3000/settings/change-user-name`,
+            {
+              headers: { "Content-Type": "application/json" },
+              body,
+              method: "PUT",
+            }
+          );
+          if (res.ok) {
+            const bio = await res.json();
+            socket.emit("change-user-name", bio);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "change-profile-picture",
+      async (data: {
+        userId: string;
+        picture: {
+          file: Buffer;
+          fileName: string;
+        };
+      }) => {
+        const {userId, picture} = data;
+        const user = await User.findById(userId);
+          if (!user) {
+            console.log("user wasnt found");
+            return socket.emit("change-profile-picture", "User wasn't found");
+          }
+          const baseDir = createBaseDir();
+          const userDir = await createUserDir(userId, baseDir);
+          const fileDir = await createFileDir(
+            userDir,
+            picture.fileName,
+            picture.file
+          );
+          const filePath = createFilePathForDB(fileDir);
+          user.profilePictures.push(filePath);
+          await user.save();
+          socket.emit('change-profile-picture', filePath);
+        try {
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

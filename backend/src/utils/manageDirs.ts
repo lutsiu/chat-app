@@ -4,29 +4,29 @@ import generateNumber from './generateNumber.ts';
 export const createBaseDir = () => {
   return path.join(process.cwd(), "public", "uploads");
 }
-export  const createChatDir = async (chatId: string, baseDir: string) => {
-  const chatDir = path.join(baseDir, `chat-${chatId}`);
+export  const createChatDir = async (chatId: string, dir: string) => {
+  const chatDir = path.join(dir, `chat-${chatId}`);
   await fs.mkdir(chatDir, { recursive: true });
   return chatDir
 }
 
-export const createUserDir = async (userId: string, chatDir: string) => {
-  const userDir = path.join(chatDir, `user-${userId}`)
+export const createUserDir = async (userId: string, dir: string) => {
+  const userDir = path.join(dir, `user-${userId}`)
   await fs.mkdir(userDir, { recursive: true });
   return userDir;
 };  
 
-export const createFileDir = async (userDir: string, fileName: string, file: Buffer) => {
+export const createFileDir = async (dir: string, fileName: string, file: Buffer) => {
   const filePath = path.join(
-    userDir,
+    dir,
     `${fileName.replace(".", `-${generateNumber()}.`)}`
   );
   await fs.writeFile(filePath, file);
   return filePath;
 }
 
-export const createFilePathForDB = (fileDir: string) => {
-  const filePathToReturn = path.relative(process.cwd(), fileDir);
+export const createFilePathForDB = (dir: string) => {
+  const filePathToReturn = path.relative(process.cwd(), dir);
   return filePathToReturn;
 } 
 

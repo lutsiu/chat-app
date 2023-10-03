@@ -118,7 +118,7 @@ export const signUpStep3 = async (req: Request, res: Response) => {
     user.fullName = fullName;
     user.userName = userName;
     user.bio = bio;
-    user.profilePicture = path;
+    user.profilePictures.push( path);
     await user.save();
     return res.status(201).json("Sign up is done");
   } catch (err) {
