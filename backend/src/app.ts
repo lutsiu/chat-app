@@ -11,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.ts";
 import chatRouter from "./routes/chat.ts";
+import settingsRouter from './routes/settings.ts'
 import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
@@ -68,6 +69,7 @@ app.put(
 /* ROUTES */
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
+app.use('/settings', settingsRouter)
 /* MONGO */
 
 const PORT = process.env.PORT;
@@ -418,6 +420,21 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on('change-bio', async (data: {userId: string, bio: string}) => {
+      try {
+        const body = JSON.stringify(data);
+        console.log(body)
+        const res = await fetch(`http://localhost:3000/settings/change-bio`, {
+          headers: {'Content-Type': 'application/json'} ,body, method: 'PUT'
+        });
+        if (res.ok) {
+          const bio = await res.json();
+          socket.emit('change-bio', bio);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

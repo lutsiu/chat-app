@@ -15,4 +15,7 @@ export default function getMessageToReplyMessage(message: IMessage, mediaType: n
   if (message.media.length > 1) {
     return 'Album'
   }
+  if (message.file && !message.message) {
+    return message.file.fileName
+  }
 }
