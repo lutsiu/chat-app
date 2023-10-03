@@ -76,45 +76,44 @@ export default function Message(props: Props) {
 
   return (
     <>
-      <>
-        <li
-          className={
-            sender === myUserId
-              ? `message ${styles.myMessage}`
-              : `message ${styles.recipientMessage}`
-          }
-          onContextMenu={handleShowContextMenu}
-          ref={messageRef}
-          id={msg._id}
-          style={{
-            padding: media.length > 0 ? "0" : "0.8rem",
-            overflow: media.length > 0 ? "hidden" : "auto",
-          }}
-        >
-          {media.length > 0 && <Media chatId={chatId} message={msg} />}
-          {file && <FileLoader file={file} message={msg} chatId={chatId} />}
-          {reply && reply.isReply && (
-            <Reply
-              handleScrollToMessageYouReplied={handleScrollToMessageYouReplied}
-              reply={reply}
-            />
+      <li
+        className={
+          sender === myUserId
+            ? `message ${styles.myMessage}`
+            : `message ${styles.recipientMessage}`
+        }
+        onContextMenu={handleShowContextMenu}
+        ref={messageRef}
+        id={msg._id}
+        style={{
+          padding: media.length > 0 ? "0" : "0.8rem",
+          overflow: media.length > 0 ? "hidden" : "auto",
+        }}
+      >
+        {media.length > 0 && <Media chatId={chatId} message={msg} />}
+        {file && <FileLoader file={file} message={msg} chatId={chatId} />}
+        {reply && reply.isReply && (
+          <Reply
+            handleScrollToMessageYouReplied={handleScrollToMessageYouReplied}
+            reply={reply}
+          />
+        )}
+        <div className="flex items-end gap-[0.4rem] flex-wrap">
+          {message && (
+            <p
+              className={`text-xl font-medium pb-[0.3rem] ${
+                media.length > 0 ? styles.messageContentWithMedia : ""
+              } ${
+                media.length > 0 && isEdited
+                  ? styles.messageContentPaddingRightBig
+                  : ""
+              }`}
+            >
+              {message}
+            </p>
           )}
-          <div className="flex items-end gap-[0.4rem] flex-wrap">
-            {message && (
-              <p
-                className={`text-xl font-medium pb-[0.3rem] ${
-                  media.length > 0 ? styles.messageContentWithMedia : ""
-                } ${
-                  media.length > 0 && isEdited
-                    ? styles.messageContentPaddingRightBig
-                    : ""
-                }`}
-              >
-                {message}
-              </p>
-            )}
-            <div
-              className={`flex justify-end flex-1
+          <div
+            className={`flex justify-end flex-1
                ${media.length > 0 ? styles.messageInfoAbsolute : ""}
                 ${
                   media.length > 0 && message
@@ -122,37 +121,34 @@ export default function Message(props: Props) {
                     : ""
                 }
               `}
-            >
-              <div className="flex gap-[0.7rem] items-center">
-                {pinned && <BsPinAngleFill />}
-                {isEdited && (
-                  <span className="italic text-gray-100">edited</span>
-                )}
-                <span className="text-gray-100">{`${new Date(
-                  timeStamp
-                ).getHours()}: ${
-                  new Date(timeStamp).getMinutes() < 10
-                    ? `0${new Date(timeStamp).getMinutes()}`
-                    : new Date(timeStamp).getMinutes()
-                }`}</span>
-              </div>
+          >
+            <div className="flex gap-[0.7rem] items-center">
+              {pinned && <BsPinAngleFill />}
+              {isEdited && <span className="italic text-gray-100">edited</span>}
+              <span className="text-gray-100">{`${new Date(
+                timeStamp
+              ).getHours()}: ${
+                new Date(timeStamp).getMinutes() < 10
+                  ? `0${new Date(timeStamp).getMinutes()}`
+                  : new Date(timeStamp).getMinutes()
+              }`}</span>
             </div>
           </div>
-        </li>
-        <MessageContextMenu
-          x={contextMenuX}
-          y={contextMenuY}
-          showMenu={showContextMenu}
-          setShowMenu={setShowContextMenu}
-          editable={true}
-          msg={msg}
-          chatId={chatId}
-          messageUpperPoint={messageUpperPoint}
-          myUserId={myUserId as string}
-          mediaSrc={mediaSrcForContextMenu}
-          mediaType={mediaTypeForContextMenu}
-        />
-      </>
+        </div>
+      </li>
+      <MessageContextMenu
+        x={contextMenuX}
+        y={contextMenuY}
+        showMenu={showContextMenu}
+        setShowMenu={setShowContextMenu}
+        editable={true}
+        msg={msg}
+        chatId={chatId}
+        messageUpperPoint={messageUpperPoint}
+        myUserId={myUserId as string}
+        mediaSrc={mediaSrcForContextMenu}
+        mediaType={mediaTypeForContextMenu}
+      />
     </>
   );
 }

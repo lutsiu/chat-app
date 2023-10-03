@@ -17,6 +17,7 @@ import {
 } from "../../../state/ui";
 export default function DesktopMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
+  const {user} = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
   return (
     <Overlay>
@@ -30,12 +31,12 @@ export default function DesktopMenu() {
           <div className="w-[4.5rem] h-[4.5rem]">
             <img
               src={
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6Ed3n9AgfvH7vN99xUGOCrwqSgLNq-dLDAg&usqp=CAU"
+              `http://localhost:3000/${user?.profilePicture}`
               }
               className="w-full h-full rounded-full object-cover"
               alt="User avatar"
             />
-            <p className="mt-[1rem] text-xl font-normal">{"Fullname"}</p>
+            <p className="mt-[1rem] text-xl font-normal">{user?.fullName}</p>
           </div>
         </div>
         <ul className="h-[85%] bg-slate-800 pt-[0.4rem]">

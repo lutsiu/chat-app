@@ -4,7 +4,7 @@ import { ReduxState } from "../../../../interfaces/redux";
 import { AiOutlineMail } from "react-icons/ai";
 import { HiOutlineAtSymbol } from "react-icons/hi";
 import { PiUserCircleLight } from "react-icons/pi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Panel from "./Panel";
 import PhotoUpload from "./PhotoUpload";
 import ChangeFullname from "./ChangeFullname";
@@ -15,11 +15,26 @@ export default function AccountSettings() {
   const { showMyAccountSettings } = useSelector(
     (state: ReduxState) => state.ui
   );
+  const {user} = useSelector((state: ReduxState) => state.user);
+  const [bio, setBio] = useState(user?.bio);
+  const [initialBioValue, setInitialBioValue] = useState(user?.bio);
+  const [bioBeingChanged, setBioBeingChanged] = useState(false);
   const [showChangeFullnamePopup, setShowChangeFullnamePopup] = useState(false);
   const [showChangeUsernamePopup, setShowChangeUsernamePopup] = useState(false);
   const [profileImage, setProfileImage] = useState<null | Blob>(null);
   const dispatch = useDispatch();
 
+  function handleChangeBio(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setBio(e.target.value);
+  }
+
+  useEffect(() =>{ 
+    if (initialBioValue !== bio) {
+      setBioBeingChanged(true);
+    } else {
+      setBioBeingChanged(false);
+    }
+  }, [initialBioValue, bio]);
   return (
     <>
       <motion.div
@@ -31,14 +46,14 @@ export default function AccountSettings() {
           pointerEvents: showMyAccountSettings ? "auto" : "none",
         }}
       >
-        <Panel />
+        <Panel bio={bio as string} bioBeingChanged={bioBeingChanged} />
         <div>
           <PhotoUpload
             profileImage={profileImage}
             setProfileImage={setProfileImage}
           />
           <div className="flex flex-col pt-[0.6rem] ">
-            <span className="text-center text-2xl">{"Username"}</span>
+            <span className="text-center text-2xl">{user?.fullName}</span>
             <span className="text-center text-purple-500 text-xl">
               {"Status"}
             </span>
@@ -47,10 +62,12 @@ export default function AccountSettings() {
             <textarea
               className="w-full resize-none bg-transparent outline-none text-2xl mt-[2rem] pt-[0.5rem] h-[4rem] pl-[2rem] pr-[4rem]"
               placeholder="Bio"
+              value={bio}
+              onChange={handleChangeBio}
               maxLength={50}
             ></textarea>
             <span className="absolute right-[2rem] top-[40.5%] text-gray-400 text-lg">
-              50
+              {bio && 50 - bio.length}
             </span>
           </div>
           <div className="bg-gray-800 pt-[1rem] pl-[2rem] pb-[1.5rem] flex flex-col text-gray-400 text-xl">

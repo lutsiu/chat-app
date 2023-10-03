@@ -5,6 +5,7 @@ import { ReduxState } from "../../../../../../interfaces/redux";
 import { createPortal } from "react-dom";
 import MediaOverlay from "../../../Overlays/MediaOverlay";
 import { useState } from "react";
+
 interface Props {
   chatId: string;
   message: IMessage;

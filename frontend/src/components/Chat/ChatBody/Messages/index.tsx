@@ -57,28 +57,7 @@ export default function Messages(props: Props) {
     }
     chatContainer.current?.addEventListener("scroll", handleScroll);
   }, [dispatch]);
-  /* useEffect(() => {
-    function scroll(e:Event) {
-      const target = e.target as HTMLElement;
-      const viewportHeight = window.innerHeight;
-      const messageBlocks = document.querySelectorAll('.message-block') ;
-      const rectTops: {rectTop: number, date:string}[] = []
-      messageBlocks.forEach((block) => {
-        const blockAsHTML = block as HTMLElement;
-        const date = block.getAttribute('data-date') as string;
-        const offsetTop = blockAsHTML.offsetTop;
-        const rectTop = blockAsHTML.getBoundingClientRect().top;
-        console.log('date', date,'rect:', rectTop, 'offset:', offsetTop, 'container', messagesContainerScrollTop, 'viewport:', viewportHeight - 52);
-        const belowViewPort = rectTop > viewportHeight - 52;
-        console.log(offsetTop < messagesContainerScrollTop! + 43, 'date', date);
-        rectTops.push({date ,rectTop})
-      })
-      const closest = rectTops.filter((rect) => rect.rectTop < viewportHeight).at(-2);
-      console.log(closest)
-      setDateForStickyheader(closest?.date as string)
-    }
-    chatContainer.current?.addEventListener('scroll', scroll);
-  }, [messagesContainerScrollTop]); */
+
   return (
     <div
       className={`${styles.containerHeight} overflow-y-scroll box-border`}
@@ -109,7 +88,6 @@ export default function Messages(props: Props) {
                 {dateToShow}
               </span>
               {messages.map((msg, i) => {
-                const { sender } = msg;
                 return (
                   <Message
                     key={i}

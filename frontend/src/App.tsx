@@ -9,19 +9,18 @@ import SignupPage from "./pages/Signup";
 import { useSelector, useDispatch } from "react-redux/";
 import { ReduxState } from "./interfaces/redux";
 import MainWrapper from "./components/Wrappers/MainWrapper";
-import { useEffect, useMemo } from "react"; // Changed from useState to useMemo
-import { hideEverything } from "./state/ui";
+import { useEffect, useMemo, useState } from "react"; // Changed from useState to useMemo
+import { hideEverything, setDataIsLoading } from "./state/ui";
 import ChatPage from "./pages/Chat";
 import useResponsive from "./hooks/useResponsive";
 import { SocketProvider } from "./context/SocketContext";
 
 function App() {
   const dispatch = useDispatch();
-
   const isAuthenticated = useSelector(
     (state: ReduxState) => Boolean(state.user.token)
   );
-
+  
   const {user} = useSelector((state: ReduxState) => state.user);
 
   const width = useResponsive();

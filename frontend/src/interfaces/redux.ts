@@ -14,7 +14,8 @@ export interface ReduxState {
   user: UserInitialState;
   ui: UiInitialState;
   createGroup: CreateGroupInitial;
-  message: MessageInitialState
+  message: MessageInitialState;
+  peopleSearch: SearchPeopleInitial
 }
 
 export interface UiInitialState {
@@ -28,7 +29,8 @@ export interface UiInitialState {
   showMyAccountSettings: boolean;
   showEditContactProfile: boolean;
   showWarningPopup: boolean;
-  showSearchBar: boolean
+  showSearchBar: boolean;
+  dataIsLoading: boolean
 }
 
 export interface MessageInitialState {
@@ -62,6 +64,11 @@ export interface CreateGroupInitial {
   groupName: string;
   groupImg: null | Blob;
   groupUsers: string[];
+}
+
+export interface SearchPeopleInitial {
+  searchBarIsActive: boolean,
+  searchBarValue: string
 }
 
 export interface ActionWithGroup {

@@ -9,7 +9,7 @@ export default function ChatListItem() {
   const [contextMenuLeft, setContextMenuLeft] = useState(0);
   const [contextMenuTop, setContextMenuTop] = useState(0);
   const user = {
-    userName: "sasha",
+    userName: "greenday",
     fullName: "Sanka",
   };
   const location = useLocation();

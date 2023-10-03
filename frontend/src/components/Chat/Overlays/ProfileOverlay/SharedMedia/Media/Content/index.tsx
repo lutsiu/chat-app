@@ -1,8 +1,9 @@
 import { createPortal } from "react-dom";
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import MediaOverlay from "../../../../../ChatBody/Overlays/MediaOverlay";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ContentContextMenu from "../../ContentContextMenu";
+import tailSpin from '../../../../../../../assets/tail-spin.svg'
 interface Props {
   media: IFile;
   chatId: string;
@@ -14,6 +15,7 @@ export default function Content(props: Props) {
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   function handleShowOverlay() {
     setShowOverlay((prev) => !prev);
   }
@@ -29,6 +31,19 @@ export default function Content(props: Props) {
     setContextMenuY(y);
     setShowContextMenu(true);
   };
+  
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = `http://localhost:3000/${media.filePath}`;
+    image.onload = handleLoad;
+    image.onerror = handleLoad; // Handle error as well, for example, if the image fails to load
+  }, [media.filePath]);
+  console.log(isLoading)
   return (
     <>
       <li

@@ -22,6 +22,7 @@ export default function MenuOverlay(props: Props) {
   return (
     <motion.div
       className="menu-overlay fixed  w-full h-full top-0 right-0 bottom-0 left-0 z-[20]"
+      initial={{opacity: 0, pointerEvents: 'none'}}
       animate={{
         opacity: showOverlay ? 1 : 0,
         pointerEvents: showOverlay ? "auto" : "none",

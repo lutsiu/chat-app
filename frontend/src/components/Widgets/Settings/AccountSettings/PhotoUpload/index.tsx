@@ -1,5 +1,8 @@
 import { useDropzone } from "react-dropzone";
 import { BsFillCameraFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
+import { UserModel } from "../../../../../interfaces/models";
 interface Props {
   profileImage: null | Blob
   setProfileImage: (img: Blob) => void
@@ -7,6 +10,7 @@ interface Props {
 
 export default function PhotoUpload(props: Props) {
   const {profileImage, setProfileImage} = props;
+  const {user} = useSelector((state: ReduxState) => state.user);
   const onDrop = (acceptedFiles: Blob[]) => {
     setProfileImage(acceptedFiles[0]);
   };
@@ -25,9 +29,9 @@ export default function PhotoUpload(props: Props) {
         src={
           profileImage
             ? URL.createObjectURL(profileImage)
-            : "https://sklepotaku.pl/userdata/public/news/images/4.jpg"
+            : `http://localhost:3000/${user?.profilePicture}`
         }
-        alt=""
+        alt="user's avatar"
         className="w-full h-full object-cover rounded-full"
       />
       <div

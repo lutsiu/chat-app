@@ -2,10 +2,18 @@
 import { IoMdClose } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { setSearchBarIsActive, setSearchBarValue } from "../../../../state/peopleSearch";
+import { ReduxState } from "../../../../interfaces/redux";
+import { useSelector } from "react-redux";
 export default function SearchBar() {
   const [showCross, setShowCross] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const {searchBarValue: inputValue} = useSelector((state: ReduxState) => state.peopleSearch);
+  const dispatch = useDispatch();
 
+  function handleShowSearchList() {
+    dispatch(setSearchBarIsActive(true))
+  }
   useEffect(() => {
     if (inputValue) {
       setShowCross(true);
@@ -20,8 +28,9 @@ export default function SearchBar() {
         type="text"
         name="query"
         placeholder="Search"
+        onFocus={handleShowSearchList}
         onChange={(e) => {
-          setInputValue(e.target.value);
+          dispatch(setSearchBarValue(e.target.value));
         }}
         value={inputValue}
         className="py-[0.7rem] pl-[1.2rem] pr-[4rem] w-full bg-slate-700 text-2xl rounded-3xl outline-none"
@@ -44,7 +53,7 @@ export default function SearchBar() {
         <IoMdClose
           className="w-full h-full text-zinc-400 hover:text-white duration-200 cursor-pointer"
           onClick={() => {
-            setInputValue("");
+            dispatch(setSearchBarValue(''))
           }}
         />
       </motion.div>

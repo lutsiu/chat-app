@@ -24,7 +24,7 @@ export default function ResponsiveSettings() {
       transition={{ease: 'easeOut'}}
     >
       <Header />
-      <UserPhotos/>
+      {/* <UserPhotos/> */}
       <UserInfo email={`yasv229@gmail.com`} userName={`lutsiu`} bio={`creator of this app`}/>
       <div className="mt-[1rem]">
         <SettingsList/>

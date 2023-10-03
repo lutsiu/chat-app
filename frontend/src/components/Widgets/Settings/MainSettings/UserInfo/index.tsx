@@ -4,12 +4,16 @@ import { BsFillCameraFill } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { hideEverything } from "../../../../../state/ui";
 
 import InfoPopup from "./Popup";
+import { ReduxState } from "../../../../../interfaces/redux";
 export default function UserInfo() {
+
+  const {user} = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
+  
   const [setNewPhoto, setSetNewPhoto] = useState(false);
   const [profileImage, setProfileImage] = useState<null | Blob>(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -90,7 +94,7 @@ export default function UserInfo() {
             src={
               profileImage
                 ? URL.createObjectURL(profileImage)
-                : "https://sklepotaku.pl/userdata/public/news/images/4.jpg"
+                : `http://localhost:3000/${user?.profilePicture}`
             }
             alt="User's avatar"
             className="w-full h-full rounded-full object-cover"
@@ -111,9 +115,9 @@ export default function UserInfo() {
         </div>
 
         <div className="pt-[0.4rem] flex flex-col gap-[0.2rem]">
-          <h3 className="text-2xl font-medium">{"Full name"}</h3>
-          <p className="text-xl">{"someemail@gmail.com"}</p>
-          <p className="text-gray-400 text-lg">{`@${"UserName"}`}</p>
+          <h3 className="text-2xl font-medium">{user?.fullName}</h3>
+          <p className="text-xl">{user?.email}</p>
+          <p className="text-gray-400 text-lg">@{user?.fullName}</p>
         </div>
       </div>
     </div>

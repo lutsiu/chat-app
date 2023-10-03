@@ -3,7 +3,7 @@ import LeftSide from "../LeftSide";
 import { createPortal } from "react-dom";
 import DesktopMenu from "../Widgets/Menus/DesktopMenu";
 import CreateGroupStep1 from "../Widgets/Group/CreateGroup/Step1";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../interfaces/redux";
 import CreateGroupStep2 from "../Widgets/Group/CreateGroup/Step2";
 import ContactsPopup from "../Widgets/Contacts/ContactsPopup";
@@ -18,22 +18,32 @@ import ContactsResponsive from "../Widgets/Contacts/ContactsResponsive";
 import ResponsiveSettings from "../Widgets/Settings/ResponsiveSettings";
 import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/PersonalResponsiveSettings";
 import {IMessage, UserModel} from "../../interfaces/models"
+import { useEffect } from "react";
+import { useSocket } from "../../context/SocketContext";
+import {setBio} from '../../state/user'
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
-
+  const dispatch = useDispatch();
+  const socket = useSocket();
   const width = useResponsive();
 
   const location = useLocation();
   const loaderData = useLoaderData() as {chatId: string, chatHistory: IMessage[], interlocutor: UserModel}; 
 
+  useEffect(() => {
+    socket.on('change-bio', (bio: string) => {
+      dispatch(setBio(bio));
+    })
+  }, [socket, dispatch]);
+
   return (
     <>
-      <main className="flex h-full">
-        <div className="md:flex-[3.5] flex-1">
+      <main className="flex h-full ">
+        <div className="md:flex-[2.5] md:max-w-[25%] flex-1">
           <LeftSide />
         </div>
         {width > 768 && (
-          <div className="flex-[6.5]">
+          <div className="flex-1">
             <Outlet context={location.pathname == '/home' ? '' : loaderData}/>
           </div>
         )}

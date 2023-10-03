@@ -202,7 +202,6 @@ export default function ChatBody(props: Props) {
   }, []);
   useEffect(() => {
     socket.on("send-message-with-media", (message: IMessage) => {
-      console.log(message);
       setChatMessages((prev) => [...prev, message]);
     });
   }, [socket, setChatMessages]);

@@ -26,6 +26,11 @@
 .img {
   @apply object-cover block cursor-pointer;
 }
+.loading {
+  width: 30% !important;
+  height: 30% !important;
+  
+}
 .one-img {
   @apply max-h-[25rem]
 }

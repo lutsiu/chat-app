@@ -9,6 +9,9 @@ interface Message {
 }
 const getActionBarMessageContent = (message: Message) => {
   if (message.message) {
+    if (message.message.file) {
+      return message.message.file.fileName
+    }
     if (message.message.media.length === 0) {
       const truncatedMessage = message.message.message.slice(0, 70);
       return message.message.message.length > 70
@@ -25,38 +28,37 @@ const getActionBarMessageContent = (message: Message) => {
     if (message.message.media.length > 1) {
       return "Album";
     }
-  }
+    
+  } 
 
   return "";
 };
 
 export const getPinnedbarMessageContent = (message: IMessage) => {
+  const width = window.innerWidth;
+
   if (message.message) {
-    const width = window.innerWidth;
-    const truncatedMessage =
-      width >= 768
-        ? message.message.slice(0, 70)
-        : message.message.slice(0, 30);
-    let threeDots= '';
-    if (width >= 768 && message.message.length > 70) {
-      threeDots = "...";
-    }
-    if (width < 768 && message.message.length > 30) {
-      threeDots = "...";
-    }
+    const maxLength = width >= 768 ? 70 : 30;
+    const truncatedMessage = message.message.slice(0, maxLength);
+    const threeDots = message.message.length > maxLength ? "..." : "";
+
     return truncatedMessage + threeDots;
   }
-  if (!message.message) {
-    if (message.media.length === 1) {
-      if (message.media[0].fileType.includes("video")) {
-        return "Video";
-      } else {
-        return "Image";
-      }
-    }
-    if (message.media.length > 1) {
-      return "Album";
-    }
+
+  if (message.media.length === 1) {
+    return message.media[0].fileType.includes("video") ? "Video" : "Image";
+  }
+
+  if (message.media.length > 1) {
+    return "Album";
+  }
+
+  if (message.file) {
+    const maxLength = width >= 768 ? 70 : 30;
+    const truncatedMessage = message.file.fileName.slice(0, maxLength);
+    const threeDots = message.file.fileName.length > maxLength ? "..." : "";
+
+    return truncatedMessage + threeDots;
   }
 
   return "";

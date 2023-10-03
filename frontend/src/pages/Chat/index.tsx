@@ -7,6 +7,7 @@ import { useLoaderData, useOutletContext } from "react-router-dom";
 import { IMessage, UserModel } from "../../interfaces/models";
 import useResponsive from "../../hooks/useResponsive";
 import { useState } from "react";
+
 export default function ChatPage() {
   const { ui } = useSelector((state: ReduxState) => state);
   const width = useResponsive();
@@ -20,20 +21,29 @@ export default function ChatPage() {
     chatHistory: IMessage[];
     interlocutor: UserModel;
   };
-  const [chatMessages, setChatMessages] = useState(data? data.chatHistory: loaderData.chatHistory);
+  const [chatMessages, setChatMessages] = useState(
+    data ? data.chatHistory : loaderData.chatHistory
+  );
   return (
     <div className="bg-gray-900 min-h-screen max-h-screen relative flex flex-col">
-      <Header
-        chatId={width >= 768 ? data.chatId : loaderData.chatId}
-        chatMessages={chatMessages}
-        setChatMessages={setChatMessages}
-        interlocutor={width >= 768 ? data.interlocutor : loaderData.interlocutor}
-      />
-      <ChatBody
-        chatId={width >= 768 ? data.chatId : loaderData.chatId}
-        chatMessages={chatMessages}
-        setChatMessages={setChatMessages}
-      />
+      {chatMessages && (
+        <>
+          <Header
+            chatId={width >= 768 ? data.chatId : loaderData.chatId}
+            chatMessages={chatMessages}
+            setChatMessages={setChatMessages}
+            interlocutor={
+              width >= 768 ? data.interlocutor : loaderData.interlocutor
+            }
+          />
+
+          <ChatBody
+            chatId={width >= 768 ? data.chatId : loaderData.chatId}
+            chatMessages={chatMessages}
+            setChatMessages={setChatMessages}
+          />
+        </>
+      )}
       {ui.showWarningPopup && <WarningPopup />}
     </div>
   );

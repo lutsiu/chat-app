@@ -12,6 +12,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import thunk from "redux-thunk";
+import peopleSearchReducer from "./state/peopleSearch.ts";
 
 const persistConfig = { key: "root", storage, version: 1 };
 
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   ui: uiReducer,
   createGroup: createGroupReducer,
-  message: messageReducer
+  message: messageReducer,
+  peopleSearch: peopleSearchReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
