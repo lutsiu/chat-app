@@ -43,7 +43,7 @@ export default function Content(props: Props) {
     image.onload = handleLoad;
     image.onerror = handleLoad; // Handle error as well, for example, if the image fails to load
   }, [media.filePath]);
-  console.log(isLoading)
+
   return (
     <>
       <li

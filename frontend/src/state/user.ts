@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UserInitialState, LoginState } from "../interfaces/redux";
+import { UserInitialState, LoginState, ActionWithContact } from "../interfaces/redux";
 
 const initialState: UserInitialState = {
   user: null,
@@ -38,9 +38,15 @@ const userSlice = createSlice({
         state.user.profilePictures.push(action.payload);
       }
 
-    }
+    },
+    setContact(state, action: ActionWithContact) {
+      if (state.user) {
+        state.user.contacts.push(action.payload);
+      }
+
+    },
   }
 });
 
 export default userSlice.reducer;
-export const {setLogin, setLogout, setBio, setFullName, setUserName, setProfilePicture} = userSlice.actions;
+export const {setLogin, setLogout, setBio, setFullName, setUserName, setProfilePicture, setContact} = userSlice.actions;

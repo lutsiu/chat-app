@@ -7,10 +7,16 @@ export interface UserModel {
   profilePictures: string[];
   bio: string;
   status: string;
-  contacts: string[];
+  contacts: IContact[];
   chats: string[];
   confirmationCode: number | null;
   userIsVerified: boolean;
+}
+
+export interface IContact {
+  name: string,
+  _id: string, 
+  email: string
 }
 
 export interface IFile {

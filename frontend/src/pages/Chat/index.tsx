@@ -26,24 +26,23 @@ export default function ChatPage() {
   );
   return (
     <div className="bg-gray-900 min-h-screen max-h-screen relative flex flex-col">
-      {chatMessages && (
-        <>
-          <Header
-            chatId={width >= 768 ? data.chatId : loaderData.chatId}
-            chatMessages={chatMessages}
-            setChatMessages={setChatMessages}
-            interlocutor={
-              width >= 768 ? data.interlocutor : loaderData.interlocutor
-            }
-          />
+      <>
+        <Header
+          chatId={width >= 768 ? data.chatId : loaderData.chatId}
+          chatMessages={chatMessages}
+          setChatMessages={setChatMessages}
+          interlocutor={
+            width >= 768 ? data.interlocutor : loaderData.interlocutor
+          }
+        />
 
-          <ChatBody
-            chatId={width >= 768 ? data.chatId : loaderData.chatId}
-            chatMessages={chatMessages}
-            setChatMessages={setChatMessages}
-          />
-        </>
-      )}
+        <ChatBody
+          chatId={width >= 768 ? data.chatId : loaderData.chatId}
+          chatMessages={chatMessages}
+          setChatMessages={setChatMessages}
+        />
+      </>
+
       {ui.showWarningPopup && <WarningPopup />}
     </div>
   );

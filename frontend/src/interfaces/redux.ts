@@ -1,4 +1,4 @@
-import { IMessage, SearchedMessage, UserModel, MediaType } from "./models";
+import { IMessage, SearchedMessage, UserModel, MediaType, IContact } from "./models";
 import { Socket } from "socket.io-client";
 export interface UserInitialState {
   user: null | UserModel;
@@ -117,4 +117,8 @@ export interface ActionWithScroll {
 
 export interface ActionWithSearch {
   payload: SearchedMessage[] | null
+}
+
+export interface ActionWithContact {
+  payload: IContact
 }

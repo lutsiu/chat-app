@@ -5,38 +5,55 @@ import { gray, mediumPurple, pink } from "../../../../utils/colors";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import styles from "../styles.module.scss";
-import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState, useCallback } from "react";
 import {
   hideEverything,
   setShowContacts,
   setShowCreateContact,
 } from "../../../../state/ui";
+import { useSocket } from "../../../../context/SocketContext";
+import { ReduxState } from "../../../../interfaces/redux";
+import { IContact } from "../../../../interfaces/models";
+import { setContact } from "../../../../state/user";
 export default function CreateContact() {
   const dispatch = useDispatch();
+  const { user } = useSelector((state: ReduxState) => state.user);
   const [nameColor, setNameColor] = useState(gray);
   const [emailColor, setEmailColor] = useState(gray);
   const initialValues = {
     contactName: "",
     contactEmail: "",
   };
-
+  const socket = useSocket();
   const validationSchema = Yup.object({
-    contactName: Yup.string().required(),
+    contactName: Yup.string().required().min(2),
     contactEmail: Yup.string().required().email("Enter valid email address"),
   });
 
-  async function onSubmit(values: {
-    contactName: string;
-    contactEmail: string;
-  }): Promise<void> {
-    try {
-    } catch (err) {
-      console.log(err);
-    }
+  function onSubmit(values: { contactName: string; contactEmail: string }) {
+    const { contactName, contactEmail } = values;
+    socket.emit("add-contact", {
+      name: contactName,
+      email: contactEmail,
+      userId: user?._id,
+    });
+    switchContactComponents();
   }
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
+  const switchContactComponents = useCallback(() => {
+    dispatch(setShowCreateContact());
+    dispatch(setShowContacts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    socket.on("add-contact", (data: IContact | null) => {
+      if (data) {
+        dispatch(setContact(data));
+      }
+    });
+  }, [socket, dispatch, switchContactComponents]);
 
   useEffect(() => {
     if (!formik.touched.contactName && !formik.errors.contactName) {
@@ -63,6 +80,7 @@ export default function CreateContact() {
     <form
       className="absolute top-[50%] left-[50%] bg-gray-900 pt-[1.5rem] pb-[1rem] pl-[2rem] rounded-2xl 2xl:w-[35rem] z-[50]"
       style={{ transform: "translate(-50%, -50%)" }}
+      onSubmit={formik.handleSubmit}
     >
       <h3 className="text-2xl font-medium">New Contact</h3>
       <div className="flex items-end gap-[2.5rem] mt-[1rem]">
@@ -123,8 +141,7 @@ export default function CreateContact() {
           className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
           onClick={(e) => {
             e.preventDefault();
-            dispatch(setShowCreateContact());
-            dispatch(setShowContacts());
+            switchContactComponents();
           }}
         >
           Cancel
@@ -132,7 +149,6 @@ export default function CreateContact() {
         <button
           type="submit"
           className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
-          onClick={() => dispatch(hideEverything())}
         >
           Create
         </button>
