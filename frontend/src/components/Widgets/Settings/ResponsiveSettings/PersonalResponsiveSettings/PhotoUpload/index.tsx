@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { BiSolidCamera } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../../interfaces/redux";
 interface Props {
   image: null | Blob;
   setImage: (img: null | Blob) => void;
@@ -8,6 +10,7 @@ interface Props {
 
 export default function PhotoUpload(props: Props) {
   const { image, setImage } = props;
+  const {user} = useSelector((state: ReduxState) => state.user);
   const [isActive, setIsActive] = useState(false);
   const onDrop = useCallback(
     (acceptedImage: Blob[]) => {
@@ -37,32 +40,25 @@ export default function PhotoUpload(props: Props) {
         onTouchStart={() => setIsActive(true)}
         onTouchEnd={() => setIsActive(false)}
       >
-        {!image && (
-          <BiSolidCamera
-            className="duration-300"
-            style={{
-              width: isActive ? "4.5rem" : "3.5rem",
-              height: isActive ? "4.5rem" : "3.5rem",
-            }}
+        <>
+          <img
+            src={image ? URL.createObjectURL(image) : `http://localhost:3000/${user?.profilePictures.at(-1) as string}`}
+            className="w-full h-full rounded-full object-cover"
           />
-        )}
-        {image && (
-          <>
-            <img
-              src={URL.createObjectURL(image)}
-              className="w-full h-full rounded-full object-cover"
+          <div
+            className="absolute w-full h-full flex items-center rounded-full justify-center"
+            style={{ background: "rgba(0,0,0,.3)" }}
+          >
+            <BiSolidCamera
+              className="duration-300"
+              style={{
+                width: isActive ? "4.5rem" : "3.5rem",
+                height: isActive ? "4.5rem" : "3.5rem",
+              }}
             />
-            <div className="absolute w-full h-full flex items-center rounded-full justify-center" style={{background: 'rgba(0,0,0,.3)'}}>
-              <BiSolidCamera
-                className="duration-300"
-                style={{
-                  width: isActive ? "4.5rem" : "3.5rem",
-                  height: isActive ? "4.5rem" : "3.5rem",
-                }}
-              />
-            </div>
-          </>
-        )}
+          </div>
+        </>
+
         <input {...getInputProps()} />
       </div>
     </>

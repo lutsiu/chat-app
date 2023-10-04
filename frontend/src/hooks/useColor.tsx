@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { lightGray, pink, mediumPurple } from "../utils/colors";
 
 export default function useColor(
-  error: string | undefined,
+  error: string | undefined | boolean,
   touched: boolean | undefined
 ) {
   const [color, setColor] = useState(lightGray);

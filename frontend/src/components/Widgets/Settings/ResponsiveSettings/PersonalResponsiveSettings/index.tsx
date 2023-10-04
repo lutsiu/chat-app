@@ -9,7 +9,7 @@ export default function PersonalResponsiveSettings() {
 
   return (
     <motion.div
-    className="fixed top-0 bottom-0 w-full h-full bg-gray-800 rounded-xl overflow-y-scroll"
+    className="fixed top-0 bottom-0 w-full h-full bg-gray-800 rounded-xl overflow-y-scroll z-[30]"
     initial={{opacity: 0, x: 50, pointerEvents: 'none'}}
       animate={{
         opacity: ui.showMyAccountSettings ? 1 : 0,

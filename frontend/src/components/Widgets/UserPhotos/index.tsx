@@ -7,7 +7,17 @@ interface Props {
   userName: string
 }
 export default function UserPhotos(props: Props) {
-  const {photos, userName} = props;
+  const {photos: pictures, userName} = props;
+
+  // array.reverse() doens't work properly
+  function reverseArray(arr: string[]) {
+    const reversed: string[] = [];
+    for (let i = arr.length - 1; i >= 0; i--) {
+      reversed.push(arr[i]);
+    }
+    return reversed;
+  }
+  const photos = reverseArray(pictures);
   const [activePhoto, setActivePhoto] = useState(0);
   const [photoIsHovered, setPhotoIsHovered] = useState(false);
 
@@ -30,7 +40,7 @@ export default function UserPhotos(props: Props) {
   }
   return (
     <div
-      className="w-full h-[50rem] md:h-[42rem] relative flex "
+      className="w-full h-[50rem] md:h-[42rem] relative flex overflow-x-hidden"
       onMouseEnter={() => setPhotoIsHovered(true)}
       onMouseLeave={() => setPhotoIsHovered(false)}
       onTouchStart={() => setPhotoIsHovered(true)}

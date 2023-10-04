@@ -18,7 +18,9 @@ import {
 } from "../../../state/ui";
 export default function DeviceMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
+  const {user} = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
+
   return (
     <Overlay>
       <motion.div
@@ -31,15 +33,13 @@ export default function DeviceMenu() {
           <div className=" w-[5.5rem] h-[5.5rem]">
             <img
               src={
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6Ed3n9AgfvH7vN99xUGOCrwqSgLNq-dLDAg&usqp=CAU"
+                `http://localhost:3000/${user?.profilePictures.at(-1)}`
               }
               className="w-full h-full rounded-full object-cover"
               alt="User avatar"
             />
-            <p className="mt-[1rem] text-xl font-normal">{"Fullname"}</p>
-            <p className="mt-[0.4rem] text-lg font-normal text-slate-400">
-              {"@email"}
-            </p>
+            <p className="mt-[1rem] text-xl font-normal">{user?.fullName}</p>
+           
           </div>
         </div>
         <ul className="flex-[8.5] bg-slate-800 pt-[0.4rem]">

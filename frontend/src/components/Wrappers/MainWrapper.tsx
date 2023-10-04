@@ -32,6 +32,7 @@ export default function MainWrapper() {
 
   useEffect(() => {
     socket.on('change-bio', (bio: string) => {
+      console.log('change bio', bio);
       dispatch(setBio(bio));
     });
     socket.on('change-full-name', (fullName: string) => {
