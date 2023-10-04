@@ -12,12 +12,12 @@ import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.ts";
 import chatRouter from "./routes/chat.ts";
 import settingsRouter from "./routes/settings.ts";
-import contactRouter from './routes/contact.ts'
+import contactRouter from "./routes/contact.ts";
 import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
 import fetch from "node-fetch";
-import { IFile, IMessage } from "./interfaces/models.ts";
+import { Contact, IFile, IMessage } from "./interfaces/models.ts";
 import { signUpStep3 } from "./controllers/auth.ts";
 import { FormData } from "formdata-polyfill/esm.min.js";
 import { Blob } from "fetch-blob";
@@ -71,7 +71,7 @@ app.put(
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
 app.use("/settings", settingsRouter);
-app.use('/contact', contactRouter)
+app.use("/contact", contactRouter);
 /* MONGO */
 
 const PORT = process.env.PORT;
@@ -527,7 +527,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       "add-contact",
       async (data: { name: string; email: string; userId: string }) => {
         try {
-          const {name, email} = data
+          const { name, email } = data;
           const body = JSON.stringify(data);
           const res = await fetch(`http://localhost:3000/contact/add-contact`, {
             headers: { "Content-Type": "application/json" },
@@ -536,12 +536,45 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           });
           if (res.ok) {
             const _id = await res.json();
-            socket.emit("add-contact", {_id, name, email});
-            return {_id, name, email}
+            socket.emit("add-contact", { _id, name, email });
+            return { _id, name, email };
           } else {
             socket.emit("add-contact", null);
-            return null
+            return null;
           }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "get-contacts-info",
+      async (data: { userId: string; contacts: Contact[] }) => {
+        try {
+          const { userId, contacts } = data;
+          const user = await User.findById(userId);
+          if (!user) {
+            socket.emit("get-contacts-info", null);
+          }
+          const contactsInfoPromise = contacts.map((contact) => {
+            return User.findById(contact._id);
+          });
+          const contactsInfo = await Promise.all(contactsInfoPromise);
+          const contactsToReturn = contactsInfo.map((contact) => {
+            const contactToReturn = contacts.find(
+              (con) => con._id.toString() === contact._id.toString()
+            );
+            const { _id, name, email } = contactToReturn;
+            return {
+              _id,
+              name,
+              email,
+              profilePicture: contact.profilePictures.at(-1),
+              status: contact.status,
+              userName: contact.userName,
+            };
+          });
+          socket.emit("get-contacts-info", contactsToReturn);
         } catch (err) {
           console.log(err);
         }
