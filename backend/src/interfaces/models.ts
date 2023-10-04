@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+export interface Contact {
+  name: string,
+  _id: string;
+  email:string
+}
+
 export interface UserModel {
   fullName: string;
   userName: string;
@@ -8,7 +14,7 @@ export interface UserModel {
   profilePictures: string[];
   bio: string;
   status: string;
-  contacts: string[];
+  contacts: Contact[];
   chats: string[];
   confirmationCode: number | null;
   userIsVerified: boolean;

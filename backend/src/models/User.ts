@@ -33,7 +33,10 @@ const userSchema = new mongoose.Schema<UserModel>({
     type: String,
     default: ''
   },
-  contacts: [{type: mongoose.Schema.Types.ObjectId, ref: 'User', default: []}],
+  contacts: {
+    type: [{name: String, _id: String, email: String}],
+    default: []
+  },
   chats: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chat', default: []}],
   confirmationCode: Number, 
   userIsVerified: {

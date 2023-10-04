@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.ts";
 import chatRouter from "./routes/chat.ts";
 import settingsRouter from "./routes/settings.ts";
+import contactRouter from './routes/contact.ts'
 import { body, validationResult } from "express-validator";
 import generateNumber from "./utils/generateNumber.ts";
 import User from "./models/User.ts";
@@ -70,6 +71,7 @@ app.put(
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
 app.use("/settings", settingsRouter);
+app.use('/contact', contactRouter)
 /* MONGO */
 
 const PORT = process.env.PORT;
@@ -498,24 +500,48 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           fileName: string;
         };
       }) => {
-        const {userId, picture} = data;
+        const { userId, picture } = data;
         const user = await User.findById(userId);
-          if (!user) {
-            console.log("user wasnt found");
-            return socket.emit("change-profile-picture", "User wasn't found");
-          }
-          const baseDir = createBaseDir();
-          const userDir = await createUserDir(userId, baseDir);
-          const fileDir = await createFileDir(
-            userDir,
-            picture.fileName,
-            picture.file
-          );
-          const filePath = createFilePathForDB(fileDir);
-          user.profilePictures.push(filePath);
-          await user.save();
-          socket.emit('change-profile-picture', filePath);
+        if (!user) {
+          console.log("user wasnt found");
+          return socket.emit("change-profile-picture", "User wasn't found");
+        }
+        const baseDir = createBaseDir();
+        const userDir = await createUserDir(userId, baseDir);
+        const fileDir = await createFileDir(
+          userDir,
+          picture.fileName,
+          picture.file
+        );
+        const filePath = createFilePathForDB(fileDir);
+        user.profilePictures.push(filePath);
+        await user.save();
+        socket.emit("change-profile-picture", filePath);
         try {
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    );
+    socket.on(
+      "add-contact",
+      async (data: { name: string; email: string; userId: string }) => {
+        try {
+          const {name, email} = data
+          const body = JSON.stringify(data);
+          const res = await fetch(`http://localhost:3000/contact/add-contact`, {
+            headers: { "Content-Type": "application/json" },
+            body,
+            method: "PUT",
+          });
+          if (res.ok) {
+            const _id = await res.json();
+            socket.emit("add-contact", {_id, name, email});
+            return {_id, name, email}
+          } else {
+            socket.emit("add-contact", null);
+            return null
+          }
         } catch (err) {
           console.log(err);
         }

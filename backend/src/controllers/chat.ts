@@ -51,10 +51,13 @@ export const sendMessage = async (req, res) => {
 export const findOrCreateChat = async (req, res) => {
   try {
     const { myUserName, interlocutorUserName } = req.body;
+    console.log(myUserName)
     const myUser = await User.findOne({ userName: myUserName });
+
     const interlocutor = await User.findOne({
       userName: interlocutorUserName,
     }).select(["-password", "-contacts", "-userIsVerified", "-chats", '-confirmationCode']);
+
     if (!myUser || !interlocutor) {
       return res.status(404).json("One of users wasn't found");
     }
