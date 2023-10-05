@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { IoMdClose } from "react-icons/io";
-import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";

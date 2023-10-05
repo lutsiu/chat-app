@@ -9,7 +9,6 @@ import { setSearchContact } from "../../../../state/createContact";
 
 export default function ContactsSearchBar() {
   const [showCross, setShowCross] = useState(false);
-  const {user} = useSelector((state: ReduxState) => state.user);  
   const {contactQuery} = useSelector((state: ReduxState) => state.createContact);
   const dispatch = useDispatch();
   useEffect(() => {

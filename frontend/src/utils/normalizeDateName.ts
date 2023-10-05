@@ -1,20 +1,21 @@
+
 import getDate from "./getDate";
 export default function normalizeDateName(date: string | Date) {
-  const { currentDate, currentYear, day, month, year } = getDate(date);
+  const { currentDate,  day, month, year } = getDate(date);
   const currentDateISO = currentDate.toISOString().split("T")[0];
   const yesterday = new Date(
     new Date(currentDate).setDate(currentDate.getDate() - 1)
   ).toISOString();
-  let dateToShow = date;
+
   if (currentDate.getFullYear() === year) {
     if (currentDateISO === date) {
-      return dateToShow = "today";
+      return "today";
     } else if (currentDateISO === yesterday) {
-      return dateToShow = "yesterday";
+      return  "yesterday";
     } else {
-     return  dateToShow = `${month} ${day}`;
+     return   `${month} ${day}`;
     }
   } else {
-   return  dateToShow = `${year}/${month}/${day}`;
+   return  `${year}/${month}/${day}`;
   }
 }

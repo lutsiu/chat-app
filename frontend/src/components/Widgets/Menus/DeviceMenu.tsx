@@ -9,11 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import Overlay from "../Overlay";
 import {
-  hideEverything,
   setShowContacts,
   setShowCreateGroupStep1,
   setShowLeftMenu,
-  setShowOverlay,
   setShowSettings,
 } from "../../../state/ui";
 export default function DeviceMenu() {

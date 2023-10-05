@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { ReduxState } from "../../../../interfaces/redux";
-import { setShowContacts, setShowCreateContact } from "../../../../state/ui";
+import {  setShowCreateContact } from "../../../../state/ui";
 
 import MobileStickyButton from "../../Buttons/MobileStickyButton";
 import { FaUserPlus } from "react-icons/fa";

@@ -1,12 +1,11 @@
 import styles from "./styles.module.scss";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import {
-  hideEverything,
+
   setShowCreateGroupStep1,
   setShowCreateGroupStep2,
 } from "../../../../state/ui";
 import Contacts from "../../Contacts/GroupAddContactsElement";
-import { useState } from "react";
 export default function CreateGroupStep2() {
   const dispatch = useDispatch();
 

@@ -1,11 +1,10 @@
 import { IMessage } from "../../../../interfaces/models";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import styles from "./styles.module.scss";
 import Message from "./Message";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import { setMessageContainerScrollTop } from "../../../../state/message";
-import getDate from "../../../../utils/getDate";
 import sortMsgsByDate from "../../../../utils/sortMsgsByDate";
 import normalizeDateName from "../../../../utils/normalizeDateName";
 interface Props {

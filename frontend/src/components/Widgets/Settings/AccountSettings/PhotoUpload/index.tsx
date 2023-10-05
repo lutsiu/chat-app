@@ -2,7 +2,6 @@ import { useDropzone } from "react-dropzone";
 import { BsFillCameraFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
-import { UserModel } from "../../../../../interfaces/models";
 import ImagePreview from "../../MainSettings/UserInfo/ImagePreview";
 import { useState } from "react";
 interface Props {

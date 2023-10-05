@@ -1,7 +1,6 @@
-import { useSelector } from "react-redux";
 import { IFile, IMessage } from "../../../../../../interfaces/models";
 import styles from "../../../Overlays/SendMedia/stylesSendMedia.module.scss";
-import { ReduxState } from "../../../../../../interfaces/redux";
+
 import { createPortal } from "react-dom";
 import MediaOverlay from "../../../Overlays/MediaOverlay";
 import { useState } from "react";
@@ -11,7 +10,6 @@ interface Props {
   message: IMessage;
 }
 export default function Media(props: Props) {
-  const { user } = useSelector((state: ReduxState) => state.user);
   const [mediaForOverlay, setMediaForOverlay] = useState<null | IFile>(null);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
   const { chatId, message } = props;

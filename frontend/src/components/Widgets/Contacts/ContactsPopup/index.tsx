@@ -1,7 +1,7 @@
 import Contacts from "../ContactsMainElement";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useCallback } from "react";
+
 import { ReduxState } from "../../../../interfaces/redux";
 import styles from "../styles.module.scss";
 import {

@@ -9,12 +9,11 @@ import { hideEverything } from "../../../../../state/ui";
 
 import InfoPopup from "./Popup";
 import { ReduxState } from "../../../../../interfaces/redux";
-import { useSocket } from "../../../../../context/SocketContext";
 import ImagePreview from "./ImagePreview";
 export default function UserInfo() {
   const { user } = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
-  const socket = useSocket();
+
   const [setNewPhoto, setSetNewPhoto] = useState(false);
   const [profileImage, setProfileImage] = useState<null | Blob>(null);
 

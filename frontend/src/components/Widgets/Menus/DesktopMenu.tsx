@@ -8,16 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import Overlay from "../Overlay";
 import {
-  hideEverything,
   setShowContacts,
   setShowCreateGroupStep1,
   setShowLeftMenu,
-  setShowOverlay,
   setShowSettings,
 } from "../../../state/ui";
 export default function DesktopMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
-  const {user} = useSelector((state: ReduxState) => state.user);
+  const { user } = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
   return (
     <Overlay>
@@ -30,9 +28,7 @@ export default function DesktopMenu() {
         <div className="h-[15%] bg-slate-800 pt-[2rem] pl-[1.7rem]">
           <div className="w-[4.5rem] h-[4.5rem]">
             <img
-              src={
-              `http://localhost:3000/${user?.profilePictures.at(-1)}`
-              }
+              src={`http://localhost:3000/${user?.profilePictures.at(-1)}`}
               className="w-full h-full rounded-full object-cover"
               alt="User avatar"
             />

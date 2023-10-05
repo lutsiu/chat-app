@@ -31,7 +31,7 @@ export default function EditProfile(props: Props) {
 
   async function onSubmit(values: { fullName: string }) {
     try {
-      console.log("");
+      console.log(values);
     } catch (err) {
       console.log(err);
     }

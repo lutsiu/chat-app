@@ -1,7 +1,6 @@
 import { IMessage } from "../../../../../../interfaces/models";
 import { fullMonth } from "../../../../../../utils/months";
 import sortMsgsByDate from "../../../../../../utils/sortMsgsByDate";
-import MediaOverlay from "../../../../ChatBody/Overlays/MediaOverlay";
 import Content from "./Content";
 interface Props {
   messages: IMessage[];
@@ -40,7 +39,7 @@ export default function Media(props: Props) {
               {dateToReturn}
             </h3>
             <ul className="mt-[1rem] grid grid-cols-3 gap-[0.2rem]">
-              {messages.map((msg, i) => {
+              {messages.map((msg) => {
                 return msg.media.map((media) => {
                   return <Content key={media.filePath} media={media} chatId={chatId} message={msg} />;
                 });

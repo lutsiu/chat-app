@@ -1,6 +1,5 @@
 import {  motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useCallback } from "react";
+import {  useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import UserInfo from "./UserInfo";
 import SettingsList from "./SettingsList";

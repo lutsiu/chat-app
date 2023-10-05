@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UiInitialState, ActionWithMessage, ActionWithScroll, ActionWithReply } from "../interfaces/redux";
+import { UiInitialState } from "../interfaces/redux";
 
 const initialState: UiInitialState = {
   showOverlay: false,

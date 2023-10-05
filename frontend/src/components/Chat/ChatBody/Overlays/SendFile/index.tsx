@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { IoCloseOutline } from "react-icons/io5";
 import { AiFillFile } from "react-icons/ai";
 import { useRef } from "react";

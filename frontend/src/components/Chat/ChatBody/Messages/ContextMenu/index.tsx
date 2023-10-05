@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { LiaDownloadSolid } from "react-icons/lia";
 import {
   handleEditMessage,
-  handleForwardMessage,
   handleReplytoMessage,
 } from "../../../../../state/message";
 import { ReduxState } from "../../../../../interfaces/redux";

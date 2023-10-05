@@ -1,8 +1,5 @@
-import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setGroupUsers } from "../../../../state/createGroup";
-import { ReduxState } from "../../../../interfaces/redux";
-import { useState, useEffect } from "react";
+/* import { useDispatch } from "react-redux"; */
+
 import { Link } from "react-router-dom";
 import { ContactSocketData } from "../ContactsMainElement";
 interface Props {
@@ -10,7 +7,7 @@ interface Props {
 }
 export default function ContactListItem(props: Props) {
   const {contact} = props;
-  const dispatch = useDispatch();
+  /* const dispatch = useDispatch(); */
   /* const { groupUsers } = useSelector((state: ReduxState) => state.createGroup);
   const [userIsInGroup, setUserIsInGroup] = useState(false);
   const user = {

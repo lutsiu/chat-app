@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MainHeader from "./Headers/MainHeader";
 import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";

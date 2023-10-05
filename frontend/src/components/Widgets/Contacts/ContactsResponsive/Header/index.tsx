@@ -1,7 +1,4 @@
-import {
-  AiOutlineSortAscending,
-  AiOutlineSortDescending,
-} from "react-icons/ai";
+
 import { HiMiniArrowLeft, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io";
 import { motion } from "framer-motion";

@@ -1,5 +1,5 @@
 import { IoCloseOutline } from "react-icons/io5";
-import { PiArrowLeftLight, PiUserCircleLight } from "react-icons/pi";
+import { PiArrowLeftLight } from "react-icons/pi";
 import {
   hideEverything,
   setShowMyAccountSettings,
@@ -8,7 +8,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../../../../../context/SocketContext";
 import { ReduxState } from "../../../../../interfaces/redux";
-import { useEffect } from "react";
 
 interface Props {
   bio: string,

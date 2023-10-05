@@ -9,7 +9,7 @@ export default function Files(props: Props) {
   const { messages, chatId } = props;
   return (
     <div className="min-w-full flex-1">
-      {messages.map((msg, i) => {
+      {messages.map((msg) => {
         const file = msg.file as IFile;
 
         return (

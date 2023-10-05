@@ -1,5 +1,5 @@
 import { FaCheck } from "react-icons/fa6";
-import { useLocation } from "react-router-dom";
+/* import { useLocation } from "react-router-dom"; */
 import { useDispatch, useSelector } from "react-redux";
 import { setGroupUsers } from "../../../../state/createGroup";
 import { ReduxState } from "../../../../interfaces/redux";
@@ -14,8 +14,8 @@ export default function GroupAddContactListItem(props: { id: string }) {
     userName: "sasha",
     fullName: "Sanka",
   };
-  const location = useLocation();
-  const isActive = user.userName === location.pathname.slice(0, -1);
+/*   const location = useLocation(); */
+
   
   useEffect(() => {
     if (groupUsers.some((user) => user === props.id)) {

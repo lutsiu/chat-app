@@ -30,11 +30,6 @@ export default function SharedMedia(props: Props) {
   });
 
 
-  const files = [
-    { fileName: "cv.doc", size: "1mb", date: "Aug 4, 2023" },
-    { fileName: "project.zip", size: "2mb", date: "Jun 8, 2023" },
-  ];
-
   const groups = [
     {
       title: "Movies",

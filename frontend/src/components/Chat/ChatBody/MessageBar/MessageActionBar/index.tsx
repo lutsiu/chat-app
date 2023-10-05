@@ -5,11 +5,7 @@ import styles from "../styles.module.scss";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
-import {
-  handleEditMessage,
-  handleReplytoMessage,
-  handleScrollToMessage,
-} from "../../../../../state/message";
+import { handleScrollToMessage } from "../../../../../state/message";
 import getActionBarMessageContent from "../../../../../utils/getActionBarMessageContent";
 import renderMediaContent from "../../../../../utils/renderActionBarMediaContent";
 import {

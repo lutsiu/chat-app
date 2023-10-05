@@ -10,7 +10,6 @@ import { IMessage } from "../../../interfaces/models";
 import Messages from "./Messages";
 import { MessageType } from "../../../interfaces/message";
 import PinnedMessages from "./PinnedMessages";
-import styles from './styles.module.scss';
 import FoundMessagesBottomBar from "./FoundMessagesBottomBar";
 interface Props {
   chatId: string;

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import { AiOutlineMail } from "react-icons/ai";
 import { HiOutlineAtSymbol } from "react-icons/hi";
@@ -17,12 +17,11 @@ export default function AccountSettings() {
   );
   const {user} = useSelector((state: ReduxState) => state.user);
   const [bio, setBio] = useState(user?.bio);
-  const [initialBioValue, setInitialBioValue] = useState(user?.bio);
+  const initialBioValue = user?.bio;
   const [bioBeingChanged, setBioBeingChanged] = useState(false);
   const [showChangeFullnamePopup, setShowChangeFullnamePopup] = useState(false);
   const [showChangeUsernamePopup, setShowChangeUsernamePopup] = useState(false);
   const [profileImage, setProfileImage] = useState<null | Blob>(null);
-  const dispatch = useDispatch();
 
   function handleChangeBio(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setBio(e.target.value);

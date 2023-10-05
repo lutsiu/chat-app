@@ -4,7 +4,6 @@ import CalendarOverlay from "../../Overlays/SearchOverlay/Calendar";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
-import useResponsive from "../../../../hooks/useResponsive";
 import styles from "./style.module.scss";
 import { createPortal } from "react-dom";
 import { handleScrollToMessage } from "../../../../state/message";

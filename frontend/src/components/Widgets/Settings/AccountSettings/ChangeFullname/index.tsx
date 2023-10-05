@@ -77,7 +77,7 @@ export default function ChangeFullname(props: Props) {
               <div className="flex gap-[1rem] text-purple-500 text-xl font-medium">
                 <button
                   className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
-                  onClick={(e) => {
+                  onClick={() => {
                     setShowPopup(false);
                     setTimeout(() => {
                       formik.setValues({ fullName: user?.fullName as string });

@@ -1,4 +1,3 @@
-import { FormikErrors } from "formik";
 import { useState, useEffect } from "react";
 import { gray, pink, mediumPurple } from "../utils/colors";
 

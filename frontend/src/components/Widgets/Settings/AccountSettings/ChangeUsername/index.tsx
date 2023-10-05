@@ -27,7 +27,7 @@ export default function ChangeUsername(props: Props) {
 
   function onSubmit(values: { userName: string }) {
     if (error) return
-    socket.emit('change-user-name', {userId: user?._id, userName: formik.values.userName.trim()});
+    socket.emit('change-user-name', {userId: user?._id, userName: values.userName.trim()});
   }
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
   
@@ -108,7 +108,7 @@ export default function ChangeUsername(props: Props) {
             <div className="flex gap-[1rem] text-purple-500 text-xl font-medium">
               <button
                 className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
-                onClick={(e) => {
+                onClick={() => {
                   setShowPopup(false);
                   setTimeout(() => {
                     formik.setValues({ userName: user?.userName as string });

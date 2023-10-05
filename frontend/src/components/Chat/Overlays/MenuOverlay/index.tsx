@@ -3,14 +3,12 @@ import { PiBellSlashLight, PiShareFat } from "react-icons/pi";
 import { HiMiniGift, HiMagnifyingGlass } from "react-icons/hi2";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { BiSolidLockAlt } from "react-icons/bi";
-import { BsUnlockFill } from "react-icons/bs";
 import { TbUserPlus } from "react-icons/tb";
 import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useState } from "react";
 import useResponsive from "../../../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setShowContacts,
   setShowCreateContact,
   setShowSearchBar,
 } from "../../../../state/ui";
@@ -28,7 +26,6 @@ interface Props {
 export default function MenuOverlay(props: Props) {
   const { showOverlay, setShowOverlay, interlocutor } = props;
   const { user } = useSelector((state: ReduxState) => state.user);
-  const { ui } = useSelector((state: ReduxState) => state);
   const [deleteIsActive, setDeleteIsActive] = useState(false);
   const width = useResponsive();
   const dispatch = useDispatch();
@@ -41,7 +38,6 @@ export default function MenuOverlay(props: Props) {
 
     if (width >= 768) {
       dispatch(showMainOverlay());
-      dispatch(setShowCreateContact());
     }
     dispatch(setShowCreateContact());
 

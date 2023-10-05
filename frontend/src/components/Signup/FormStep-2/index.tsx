@@ -3,8 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import SubmitButton from "../../Widgets/Buttons/Submit";
 import { useState, useEffect, FormEvent } from "react";
-import { createPortal } from "react-dom";
-import Popup from "../../Widgets/Popup";
+
 interface Props {
   setStep: (step: number) => void;
   userId: string;
@@ -53,6 +52,7 @@ export default function FormStep2(props: Props) {
       }
     } catch (err) {
       console.log(err);
+      console.log(responseError)
     }
   }
 
@@ -158,11 +158,11 @@ export default function FormStep2(props: Props) {
           </SubmitButton>
         </div>
       </form>
-      {responseError &&
+      {/* {responseError &&
         createPortal(
           <Popup bottom={10}>AAAA</Popup>,
           document.getElementById("overlay") as HTMLElement
-        )}
+        )} */}
       {resendCode && (
         <form className="mx-auto w-fit mt-[1rem]" onSubmit={sendCodeAgain}>
           <button type="submit" className=" text-emerald-400 text-xl">

@@ -8,15 +8,14 @@ import styles from "../styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useCallback } from "react";
 import {
-  hideEverything,
+
   setShowContacts,
   setShowCreateContact,
   setShowOverlay,
 } from "../../../../state/ui";
 import { useSocket } from "../../../../context/SocketContext";
 import { ReduxState } from "../../../../interfaces/redux";
-import { IContact } from "../../../../interfaces/models";
-import { setContact } from "../../../../state/user";
+
 import { addContactEmail } from "../../../../state/createContact";
 export default function CreateContact() {
   const dispatch = useDispatch();

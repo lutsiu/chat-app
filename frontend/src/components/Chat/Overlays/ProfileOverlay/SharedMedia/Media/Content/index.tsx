@@ -3,7 +3,6 @@ import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import MediaOverlay from "../../../../../ChatBody/Overlays/MediaOverlay";
 import { useState, useEffect } from "react";
 import ContentContextMenu from "../../ContentContextMenu";
-import tailSpin from '../../../../../../../assets/tail-spin.svg'
 interface Props {
   media: IFile;
   chatId: string;
@@ -35,6 +34,7 @@ export default function Content(props: Props) {
 
   const handleLoad = () => {
     setIsLoading(false);
+
   };
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Content(props: Props) {
     image.src = `http://localhost:3000/${media.filePath}`;
     image.onload = handleLoad;
     image.onerror = handleLoad; // Handle error as well, for example, if the image fails to load
-  }, [media.filePath]);
+  }, [handleLoad, media.filePath]);
 
   return (
     <>

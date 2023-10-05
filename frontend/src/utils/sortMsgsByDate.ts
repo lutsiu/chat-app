@@ -1,4 +1,3 @@
-import { string } from "yup";
 import { IMessage } from "../interfaces/models";
 
 export default function sortMsgsByDate(

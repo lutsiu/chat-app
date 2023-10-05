@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import styles from "./styles.module.scss";
 interface Props {
@@ -66,7 +65,7 @@ export default function UserPhotos(props: Props) {
         <span className="text-xl font-medium text-gray-300">{`User status`}</span>
       </div>
       <div className="absolute  flex top-[0.6rem] w-full gap-[0.4rem] px-[0.5rem]">
-        {photos.map((photo, i) => {
+        {photos.map((_, i) => {
           return (
             <div
               key={i}

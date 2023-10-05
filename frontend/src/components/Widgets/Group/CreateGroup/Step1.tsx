@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
 import { ReduxState } from "../../../../interfaces/redux";
 import { useDropzone } from "react-dropzone";
-import { hideEverything, setShowCreateGroupStep1, setShowCreateGroupStep2 } from "../../../../state/ui";
+import { setShowCreateGroupStep1, setShowCreateGroupStep2 } from "../../../../state/ui";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { mediumPurple, pink } from "../../../../utils/colors";
@@ -25,7 +25,7 @@ export default function CreateGroupStep1() {
     [setImage]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps} = useDropzone({
     onDrop,
     accept: {
       "image/png": [".png"],

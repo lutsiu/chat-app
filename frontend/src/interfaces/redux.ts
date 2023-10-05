@@ -1,5 +1,4 @@
 import { IMessage, SearchedMessage, UserModel, MediaType, IContact } from "./models";
-import { Socket } from "socket.io-client";
 export interface UserInitialState {
   user: null | UserModel;
   token: null | string;

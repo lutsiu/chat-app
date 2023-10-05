@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { mediumPurple, gray } from "../../../../../utils/colors";
 import { IoMdClose } from "react-icons/io";
-import { IMessage, SearchedMessage } from "../../../../../interfaces/models";
+import { IMessage } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import {
