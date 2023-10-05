@@ -19,9 +19,9 @@ export default function Contacts() {
   const [searchedContacts, setSearchedContacts] = useState<ContactSocketData[]>(
     []
   );
-  const [searchQuery, setSearchQuery] = useState("");
-  const socket = useSocket();
   const { user } = useSelector((state: ReduxState) => state.user);
+  const { contactQuery} = useSelector((state: ReduxState) => state.createContact);
+  const socket = useSocket();
   const width = useResponsive();
 
   useEffect(() => {
@@ -40,22 +40,20 @@ export default function Contacts() {
   }, [socket]);
 
   useEffect(() => {
-    if (contacts && searchQuery) {
+    if (contacts && contactQuery) {
       const matchingContacts = contacts.filter((contact) => {
-        return contact.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return contact.name.toLowerCase().includes(contactQuery.toLowerCase());
       });
       setSearchedContacts(matchingContacts);
     }
-    if (searchQuery === '') {
+    if (contactQuery === '') {
       setSearchedContacts([])
     }
-  }, [searchQuery, contacts]);
+  }, [contactQuery, contacts]);
   return (
     <div>
       {width >= 768 && (
         <ContactsSearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
         />
       )}
       <ul className={`${styles.contactsList} `}>

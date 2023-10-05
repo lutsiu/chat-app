@@ -35,7 +35,7 @@ const uiSlice = createSlice({
     setShowContacts: (state) => {
       state.showContacts = state.showContacts ? false : true;
     },
-    setShowCreateContact: (state) => {
+    setShowCreateContact: (state,) => {
       state.showCreateContact = state.showCreateContact ? false : true;
     },
     setShowSettings: (state) => {

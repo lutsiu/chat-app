@@ -11,26 +11,33 @@ import {
   hideEverything,
   setShowContacts,
   setShowCreateContact,
+  setShowOverlay,
 } from "../../../../state/ui";
 import { useSocket } from "../../../../context/SocketContext";
 import { ReduxState } from "../../../../interfaces/redux";
 import { IContact } from "../../../../interfaces/models";
 import { setContact } from "../../../../state/user";
+import { addContactEmail } from "../../../../state/createContact";
 export default function CreateContact() {
   const dispatch = useDispatch();
   const { user } = useSelector((state: ReduxState) => state.user);
+  const {contactEmail} = useSelector((state:ReduxState) => state.createContact);
   const [nameColor, setNameColor] = useState(gray);
   const [emailColor, setEmailColor] = useState(gray);
   const initialValues = {
     contactName: "",
-    contactEmail: "",
+    contactEmail: contactEmail ? contactEmail : '',
   };
   const socket = useSocket();
   const validationSchema = Yup.object({
     contactName: Yup.string().required().min(2),
     contactEmail: Yup.string().required().email("Enter valid email address"),
   });
-
+  const switchContactComponents = useCallback(() => {
+    dispatch(setShowCreateContact());
+    dispatch(setShowContacts());
+    dispatch(addContactEmail(''))
+  }, [dispatch]);
   function onSubmit(values: { contactName: string; contactEmail: string }) {
     const { contactName, contactEmail } = values;
     socket.emit("add-contact", {
@@ -38,22 +45,15 @@ export default function CreateContact() {
       email: contactEmail,
       userId: user?._id,
     });
-    switchContactComponents();
+    dispatch(setShowCreateContact());
+    dispatch(setShowOverlay())
+    dispatch(addContactEmail(''))
   }
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
-  const switchContactComponents = useCallback(() => {
-    dispatch(setShowCreateContact());
-    dispatch(setShowContacts());
-  }, [dispatch]);
+  
 
-  useEffect(() => {
-    socket.on("add-contact", (data: IContact | null) => {
-      if (data) {
-        dispatch(setContact(data));
-      }
-    });
-  }, [socket, dispatch, switchContactComponents]);
+  
 
   useEffect(() => {
     if (!formik.touched.contactName && !formik.errors.contactName) {

@@ -105,6 +105,7 @@ export default function Header(props: Props) {
       <MenuOverlay
         showOverlay={showMenuOverlay}
         setShowOverlay={setShowMenuOverlay}
+        interlocutor={interlocutor}
       />
       {width >= 768 && (
         <SearchOverlay

@@ -15,7 +15,8 @@ export interface ReduxState {
   ui: UiInitialState;
   createGroup: CreateGroupInitial;
   message: MessageInitialState;
-  peopleSearch: SearchPeopleInitial
+  peopleSearch: SearchPeopleInitial;
+  createContact: CreateContactInitial
 }
 
 export interface UiInitialState {
@@ -64,6 +65,11 @@ export interface CreateGroupInitial {
   groupName: string;
   groupImg: null | Blob;
   groupUsers: string[];
+}
+
+export interface CreateContactInitial {
+  contactEmail: string
+  contactQuery: string
 }
 
 export interface SearchPeopleInitial {

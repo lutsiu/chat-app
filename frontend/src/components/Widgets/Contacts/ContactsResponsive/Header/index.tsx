@@ -6,40 +6,32 @@ import { HiMiniArrowLeft, HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { hideEverything } from "../../../../../state/ui";
+import { ReduxState } from "../../../../../interfaces/redux";
+import { setSearchContact } from "../../../../../state/createContact";
 interface Props {
-  sort: {
-    sortDescending: boolean;
-    setSortDescending: (show: boolean) => void;
-  };
-  searchBar: {
-    showSearchBar: boolean;
-    setShowSearchBar: (show: boolean) => void;
-    inputValue: string;
-    setInputValue: (query: string) => void;
-  };
+  showSearchBar: boolean;
+  setShowSearchBar: (show: boolean) => void;
+
 }
 
 export default function Header(props: Props) {
-  const { sort, searchBar } = props;
-  const { setInputValue, setShowSearchBar, inputValue, showSearchBar } =
-    searchBar;
+  const {contactQuery} = useSelector((state: ReduxState) => state.createContact);
+  const { setShowSearchBar, showSearchBar } = props;
   const [leftArrowIsActive, setLeftArrowIsActive] = useState(false);
   const [searchIsActive, setSearchIsActive] = useState(false);
-  const [sortIsActive, setSortIsActive] = useState(false);
   const [showCross, setShowCross] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (inputValue) {
+    if (contactQuery) {
       setShowCross(true);
     } else {
-      setShowCross(false)
+      setShowCross(false);
     }
-    
-  }, [inputValue]);
+  }, [contactQuery]);
   return (
     <div className="flex items-center pl-[1.3rem] py-[0.5rem]  gap-[1.5rem]  mb-[1rem]  bg-gray-800">
       <div className="flex items-center ">
@@ -58,6 +50,7 @@ export default function Header(props: Props) {
                 dispatch(hideEverything());
               } else {
                 setShowSearchBar(false);
+                dispatch(setSearchContact(''));
               }
             }}
           />
@@ -65,9 +58,8 @@ export default function Header(props: Props) {
       </div>
       <motion.div
         animate={{
-          display: !showSearchBar ? 'flex' : 'none'
+          display: !showSearchBar ? "flex" : "none",
         }}
-
         className="flex-1  justify-between items-center gap-[2rem] pr-[1rem] text-3xl"
       >
         <div className="flex flex-col gap-[0.3rem]">
@@ -87,43 +79,18 @@ export default function Header(props: Props) {
               onClick={() => setShowSearchBar(true)}
             />
           </div>
-
-          {sort.sortDescending ? (
-            <div
-              className="p-[0.7rem] rounded-full"
-              style={{
-                backgroundColor: sortIsActive ? "rgba(55, 65, 81, 0.5)" : "",
-              }}
-            >
-              <AiOutlineSortDescending
-                onTouchStart={() => setSortIsActive(true)}
-                onTouchEnd={() => setSortIsActive(false)}
-                onClick={() => sort.setSortDescending(false)}
-              />
-            </div>
-          ) : (
-            <div
-              className="p-[0.7rem] rounded-full"
-              style={{
-                backgroundColor: sortIsActive ? "rgba(55, 65, 81, 0.5)" : "",
-              }}
-            >
-              <AiOutlineSortAscending
-                onTouchStart={() => setSortIsActive(true)}
-                onTouchEnd={() => setSortIsActive(false)}
-                onClick={() => sort.setSortDescending(true)}
-              />
-            </div>
-          )}
         </div>
       </motion.div>
-      <motion.div animate={{display: showSearchBar? 'block':'none'}} className="w-full relative flex-1">
+      <motion.div
+        animate={{ display: showSearchBar ? "block" : "none" }}
+        className="w-full relative flex-1"
+      >
         <input
           type="text"
           name="contactQuery"
-          className="w-full bg-transparent outline-none text-xl pr-[4rem]"
-          onChange={(e) => setInputValue(e.target.value)}
-          value={inputValue}
+          className="w-full bg-transparent outline-none text-2xl pr-[4rem]"
+          onChange={(e) => dispatch(setSearchContact(e.target.value))}
+          value={contactQuery}
           placeholder="Search"
         />
 
@@ -144,7 +111,7 @@ export default function Header(props: Props) {
           <IoMdClose
             className="w-full h-full text-zinc-400 hover:text-white duration-200 cursor-pointer"
             onClick={() => {
-              setInputValue("");
+              dispatch(setSearchContact(''));
             }}
           />
         </motion.div>

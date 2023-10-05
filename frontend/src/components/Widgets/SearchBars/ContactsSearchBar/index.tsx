@@ -3,21 +3,22 @@ import { IoMdClose } from "react-icons/io";
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
-import GroupAddedUser from "../../Group/GroupAddedUser";
+import { setSearchContact } from "../../../../state/createContact";
+
 export default function ContactsSearchBar() {
   const [showCross, setShowCross] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const { groupUsers } = useSelector((state: ReduxState) => state.createGroup);
-
+  const {user} = useSelector((state: ReduxState) => state.user);  
+  const {contactQuery} = useSelector((state: ReduxState) => state.createContact);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (inputValue) {
+    if (contactQuery) {
       setShowCross(true);
     } else {
       setShowCross(false);
     }
-  }, [inputValue]);
+  }, [contactQuery]);
 
   return (
     <form className="w-full relative box-border">
@@ -33,9 +34,9 @@ export default function ContactsSearchBar() {
             placeholder="Search"
             autoFocus
             onChange={(e) => {
-              setInputValue(e.target.value);
+              dispatch(setSearchContact(e.target.value));
             }}
-            value={inputValue}
+            value={contactQuery}
             className="py-[0.7rem] px-[0.8rem] w-full  bg-slate-900 text-xl rounded-3xl outline-none pr-[3rem]"
           />
           <motion.div
@@ -56,7 +57,7 @@ export default function ContactsSearchBar() {
             <IoMdClose
               className="w-full h-full text-zinc-400 hover:text-white duration-200 cursor-pointer"
               onClick={() => {
-                setInputValue("");
+                dispatch(setSearchContact(""));
               }}
             />
           </motion.div>

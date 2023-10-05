@@ -21,6 +21,8 @@ import {IMessage, UserModel} from "../../interfaces/models"
 import { useEffect } from "react";
 import { useSocket } from "../../context/SocketContext";
 import {setBio, setFullName, setProfilePicture, setUserName} from '../../state/user'
+import { setContact } from "../../state/user";
+import { IContact } from "../../interfaces/models";
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
   const dispatch = useDispatch();
@@ -45,7 +47,13 @@ export default function MainWrapper() {
       dispatch(setProfilePicture(filePath));
     })
   }, [socket, dispatch]);
-
+  useEffect(() => {
+    socket.on("add-contact", (data: IContact | null) => {
+      if (data) {
+        dispatch(setContact(data));
+      }
+    });
+  }, [socket, dispatch]);
   return (
     <>
       <main className="flex h-full ">
