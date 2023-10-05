@@ -580,6 +580,20 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on('get-chats', async (userId: string) => {
+      try {
+        const res = await fetch(`http://localhost:3000/chat/get-chats/${userId}`)
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          socket.emit('get-chats', data)
+        } else [
+          socket.emit('get-chats', [])
+        ]
+      } catch (err) {
+        console.log(err);
+      }
+    })
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

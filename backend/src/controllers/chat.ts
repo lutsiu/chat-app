@@ -4,7 +4,7 @@ import Chat from "../models/Chat.ts";
 import { IMessage } from "../interfaces/models.ts";
 import { deleteFileFromDevice } from "../utils/manageDirs.ts";
 import getMessageToReplyMessage from "../utils/getMessageToReplyMessage.ts";
-
+import path from "path";
 export const deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
@@ -51,7 +51,6 @@ export const sendMessage = async (req, res) => {
 export const findOrCreateChat = async (req, res) => {
   try {
     const { myUserName, interlocutorUserName } = req.body;
-    console.log(myUserName)
     const myUser = await User.findOne({ userName: myUserName });
 
     const interlocutor = await User.findOne({
@@ -76,6 +75,10 @@ export const findOrCreateChat = async (req, res) => {
         participants: [myUser._id, interlocutor._id],
       });
       await newChat.save();
+      myUser.chats.push(newChat.id);
+      interlocutor.chats.push(newChat.id);
+      await myUser.save();
+      await interlocutor.save();
       return res.status(201).json({
         chatId: newChat._id,
         chatHistory: newChat.messages,
@@ -275,3 +278,18 @@ export const findMessageByDate = async (req, res) => {
     res.status(409).json("Internal error occured");
   }
 };
+
+export const downloadFile = async (req, res) => {
+  try {
+    const {fileName, filePath} = req.query as {fileName: string, filePath: string};
+    const fullFilePath = path.join(process.cwd(), filePath);
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`)
+    return res.sendFile(fullFilePath ,(err) => {
+      if (err) {
+        return res.status(404).json("error occurred"); 
+      }
+    })
+  } catch (err) {
+    console.log(err);
+  }
+}
