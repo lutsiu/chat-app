@@ -13,6 +13,7 @@ interface Props {
 }
 export default function ProfileOverlay(props: Props) {
   const {interlocutor} = useSelector((state: ReduxState) => state.chat);
+  const {user} = useSelector((state: ReduxState) => state.user)
   const { showOverlay, setShowOverlay} = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
