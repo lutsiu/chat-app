@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import styles from "./styles.module.scss";
 interface Props {
-  photos: string[]
-  userName: string
+  photos: string[] | undefined
+  userName: string | undefined
 }
 export default function UserPhotos(props: Props) {
   const {photos: pictures, userName} = props;
-
-  // array.reverse() doens't work properly
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [photoIsLoaded, setPhotoIsLoaded] = useState(false);
   function reverseArray(arr: string[]) {
     const reversed: string[] = [];
     for (let i = arr.length - 1; i >= 0; i--) {
@@ -16,7 +16,7 @@ export default function UserPhotos(props: Props) {
     }
     return reversed;
   }
-  const photos = reverseArray(pictures);
+ 
   const [activePhoto, setActivePhoto] = useState(0);
   const [photoIsHovered, setPhotoIsHovered] = useState(false);
 
@@ -37,6 +37,13 @@ export default function UserPhotos(props: Props) {
       setActivePhoto(photos.length - 1);
     }
   }
+
+  useEffect(() => {
+    if (pictures && pictures.length > 0) {
+      const reversedPhotos = reverseArray(pictures);
+      setPhotos(reversedPhotos);
+    }
+  }, [pictures]);
   return (
     <div
       className="w-full h-[50rem] md:h-[42rem] relative flex overflow-x-hidden"

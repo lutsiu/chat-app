@@ -10,7 +10,6 @@ import getDate from "../../../../utils/getDate";
 interface Props {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
-  chatId: string;
   debouncedQuery: string;
   setDebouncedQuery: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -23,10 +22,11 @@ export default function SearchOverlay(props: Props) {
     setDebouncedQuery,
   } = props;
   const {searchMessages} = useSelector((state: ReduxState) => state.message);
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [selectedDate, setSelectedDate] = useState<null | Date>(null);
   const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
   const socket = useSocket();
-  const { chatId } = props;
+
   const dispatch = useDispatch();
   const {showSearchBar} = useSelector((state: ReduxState) => state.ui);
   useEffect(() => {
@@ -83,7 +83,6 @@ export default function SearchOverlay(props: Props) {
         setQuery={setQuery}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        chatId={chatId}
       />
       <div className="pt-[2rem]">
         {query && (

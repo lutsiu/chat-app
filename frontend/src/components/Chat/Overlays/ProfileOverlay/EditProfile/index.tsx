@@ -10,19 +10,23 @@ import * as Yup from "yup";
 import useColor from "../../../../../hooks/useColor";
 import MobileStickyButton from "../../../../Widgets/Buttons/MobileStickyButton";
 import styles from "./styles.module.scss";
-import { UserModel } from "../../../../../interfaces/models";
+import { IContact } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
+import { useEffect, useState } from "react";
+import spinner from "../../../../../assets/tail-spin.svg";
+import SkeletonElement from "../../../../Widgets/SkeletonElement";
 interface Props {
   setShowProfile: (show: boolean) => void;
-  interlocutor: UserModel;
 }
 
 export default function EditProfile(props: Props) {
-  const { setShowProfile, interlocutor } = props;
+  const { setShowProfile } = props;
   const { user } = useSelector((state: ReduxState) => state.user);
-  const contactInfo = user?.contacts.find(
-    (cont) => cont._id === interlocutor._id
+  const { interlocutor, dataIsLoading } = useSelector((state: ReduxState) => state.chat);
+  const [contactInfo, setContactInfo] = useState<undefined | IContact>(
+    undefined
   );
+
   const dispatch = useDispatch();
   const { showEditContactProfile } = useSelector(
     (state: ReduxState) => state.ui
@@ -40,6 +44,7 @@ export default function EditProfile(props: Props) {
   });
 
   function onSubmit(values: { fullName: string }) {
+    if (dataIsLoading || !interlocutor) return; 
     const { fullName } = values;
     socket.emit("change-contact-name", {
       userId: user?._id,
@@ -55,6 +60,17 @@ export default function EditProfile(props: Props) {
     formik.touched.fullName
   );
 
+  useEffect(() => {
+    if (user?.contacts && interlocutor) {
+      const contact = user?.contacts.find(
+        (cont) => cont._id === interlocutor._id
+      );
+      if (contact) {
+        setContactInfo(contact);
+        formik.initialValues.fullName = contact.name;
+      }
+    }
+  }, [interlocutor, user?.contacts, formik]);
   return (
     <motion.form
       onSubmit={formik.handleSubmit}
@@ -70,14 +86,24 @@ export default function EditProfile(props: Props) {
         <h4 className="text-3xl font-semibold">Edit</h4>
       </div>
       <div className="flex flex-col gap-[2rem] items-center pt-[4rem] bg-gray-800">
-        <div className="w-[14rem] h-[14rem] rounded-full overflow-hidden">
+        <div className="w-[14rem] h-[14rem] rounded-full overflow-hidden flex items-center justify-center">
           <img
-            src={`http://localhost:3000/${interlocutor.profilePictures.at(-1)}`}
+            src={
+              interlocutor
+                ? `http://localhost:3000/${interlocutor.profilePictures.at(-1)}`
+                : spinner
+            }
             alt="Avatar"
-            className="w-full h-full object-cover"
+            className="object-cover"
+            style={{
+              width: interlocutor ? "100%" : "50%",
+              height: interlocutor ? "100%" : "50%",
+            }}
           />
         </div>
-        <p className="text-4xl font-semibold">{`Username`}</p>
+        {dataIsLoading && <SkeletonElement count={1} className="w-[10rem] h-[3rem]"/>}
+        
+        {!dataIsLoading && interlocutor && <p className="text-4xl font-semibold">{interlocutor.userName}</p>}
       </div>
       <div className="py-[2rem] px-[2.5rem] flex flex-col gap-[2rem] bg-gray-800">
         <div className="flex relative">

@@ -31,7 +31,6 @@ export default function MainWrapper() {
 
   const location = useLocation();
   const loaderData = useLoaderData() as {chatId: string, chatHistory: IMessage[], interlocutor: UserModel}; 
-
   useEffect(() => {
     socket.on('change-bio', (bio: string) => {
       console.log('change bio', bio);

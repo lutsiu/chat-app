@@ -6,21 +6,22 @@ import { IFile, IMessage } from "../../../../../../interfaces/models";
 import useResponsive from "../../../../../../hooks/useResponsive";
 import { useSocket } from "../../../../../../context/SocketContext";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./styles.module.scss";
 import downloadFile from "../../../../../../utils/downloadFile";
 import { handleScrollToMessage } from "../../../../../../state/message";
+import { ReduxState } from "../../../../../../interfaces/redux";
 interface Props {
   x: number;
   y: number;
   showMenu: boolean;
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
   message: IMessage;
-  chatId: string;
   file: IFile;
 }
 export default function ContentContextMenu(props: Props) {
-  const { x, y, showMenu, setShowMenu, message, chatId, file } = props;
+  const { x, y, showMenu, setShowMenu, message,file } = props;
+  const {chatId} = useSelector((state:ReduxState) => state.chat)
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
   const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

@@ -1,10 +1,10 @@
 import UserPhotos from "../../../../Widgets/UserPhotos"
 import UserInformation from "../../../../Widgets/Settings/ResponsiveSettings/UserInfo"
 interface Props {
-  email: string,
-  bio: string,
-  userName: string,
-  userImages: string[]
+  email: string | undefined,
+  bio: string | undefined,
+  userName: string | undefined,
+  userImages: string[] | undefined
 }
 export default function UserInfo(props: Props) {
   const {email, bio, userName, userImages} = props;

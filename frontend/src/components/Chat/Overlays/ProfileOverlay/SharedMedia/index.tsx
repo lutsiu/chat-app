@@ -2,18 +2,19 @@ import Media from "./Media";
 import Groups from "./Groups";
 import Files from "./Files";
 import { useState, useEffect } from "react";
-import { IMessage } from "../../../../../interfaces/models";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   showMedia: boolean;
   showFiles: boolean;
   showGroups: boolean;
-  chatMessages: IMessage[]
-  chatId:string
+
 }
 
 export default function SharedMedia(props: Props) {
   const [translateX, setTranslateX] = useState(0);
-  const { showMedia, showFiles, showGroups, chatMessages, chatId } = props;
+  const {chatMessages, chatId} = useSelector((state: ReduxState) => state.chat);
+  const { showMedia, showFiles, showGroups } = props;
   const messagesWithMedia = chatMessages.filter((msg) => {
     if (msg.media.length > 0) {
       return true
@@ -65,8 +66,8 @@ export default function SharedMedia(props: Props) {
         className="flex w-full ease-in-out duration-500 "
         style={{ transform: `translateX(${translateX}%)` }}
       >
-        <Media  messages={messagesWithMedia} chatId={chatId} />
-        <Files  messages={messagesWithFiles} chatId={chatId} />
+        <Media  messages={messagesWithMedia}  />
+        <Files  messages={messagesWithFiles}  />
         <Groups groups={groups} />
       </div>
     </div>

@@ -15,7 +15,8 @@ export interface ReduxState {
   createGroup: CreateGroupInitial;
   message: MessageInitialState;
   peopleSearch: SearchPeopleInitial;
-  createContact: CreateContactInitial
+  createContact: CreateContactInitial,
+  chat: ChatStateInitial
 }
 
 export interface UiInitialState {
@@ -74,6 +75,13 @@ export interface CreateContactInitial {
 export interface SearchPeopleInitial {
   searchBarIsActive: boolean,
   searchBarValue: string
+}
+
+export interface ChatStateInitial {
+  dataIsLoading: boolean,
+  chatId: string | null, 
+  interlocutor: null | UserModel,
+  chatMessages: IMessage[]
 }
 
 export interface ActionWithGroup {

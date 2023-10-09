@@ -5,7 +5,7 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { BiSolidLockAlt } from "react-icons/bi";
 import { TbUserPlus } from "react-icons/tb";
 import { RiDeleteBin7Fill } from "react-icons/ri";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useResponsive from "../../../../hooks/useResponsive";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,20 +20,21 @@ import CreateContactResponsive from "../../../Widgets/Contacts/ContactsResponsiv
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
-  interlocutor: UserModel;
+
 }
 
 export default function MenuOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, interlocutor } = props;
+  const { showOverlay, setShowOverlay } = props;
+  const {interlocutor} = useSelector((state: ReduxState) => state.chat);
   const { user } = useSelector((state: ReduxState) => state.user);
+  const {dataIsLoading} = useSelector((state: ReduxState) => state.chat);
   const [deleteIsActive, setDeleteIsActive] = useState(false);
+  const [interlocutorIsContact, setInterlocutorIsContact] = useState(false)
   const width = useResponsive();
   const dispatch = useDispatch();
-  const interlocutorIsContact = user?.contacts.some(
-    (contact) => contact._id === interlocutor._id
-  );
 
   function handleCreateNewContact() {
+    if (!interlocutor) return;
     setShowOverlay(false);
 
     if (width >= 768) {
@@ -43,6 +44,15 @@ export default function MenuOverlay(props: Props) {
 
     dispatch(addContactEmail(interlocutor.email));
   }
+  useEffect(() => {
+    if (user?.contacts && interlocutor) {
+      const isContact = user?.contacts.some(
+        (contact) => contact._id === interlocutor._id
+      );
+      setInterlocutorIsContact(isContact);
+    }
+  }, [interlocutor, user?.contacts]);
+  console.log(dataIsLoading)
   return (
     <>
       <motion.div
@@ -87,13 +97,13 @@ export default function MenuOverlay(props: Props) {
             <IoIosCheckmarkCircleOutline className="text-3xl" />
             <span className="font-bold text-xl">Select Messages</span>
           </div>
-          {interlocutorIsContact && (
+          {interlocutor && interlocutorIsContact && (
             <div className="py-[0.6rem] px-[1rem] flex items-center gap-[1rem] rounded-lg hover:bg-gray-700 duration-200 cursor-pointer">
               <PiShareFat className="text-3xl" />
               <span className="font-bold text-xl">Share Contact</span>
             </div>
           )}
-          {!interlocutorIsContact && (
+          {interlocutor && !interlocutorIsContact && (
             <div
               className="py-[0.6rem] px-[1rem] flex items-center gap-[1rem] rounded-lg hover:bg-gray-700 duration-200 cursor-pointer"
               onClick={handleCreateNewContact}

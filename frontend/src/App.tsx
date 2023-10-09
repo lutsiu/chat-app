@@ -48,25 +48,10 @@ function App() {
         path: "/:userName",
         element: chatElement,
         children: width >= 768 ? [{ index: true, element: <ChatPage /> }] : [],
-        loader: async function ({ params }) {
-          try {
-
-            const myUserName = user?.userName;
-            const { userName: interlocutorUserName } = params;
-            const body = JSON.stringify({ myUserName, interlocutorUserName });
-            const res = await fetch("http://localhost:3000/chat/findOrCreateChat", {
-              method: "POST",
-              body,
-              headers: { "Content-Type": "application/json" },
-            });
-            return res;
-          } catch (err) {
-            console.log(err);
-          }
-        },
+      
       },
     ]);
-  }, [isAuthenticated, user?.userName, chatElement, width]);
+  }, [isAuthenticated, chatElement, width]);
 
   useEffect(() => {
     dispatch(hideEverything());

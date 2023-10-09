@@ -8,11 +8,12 @@ import { useEffect } from "react";
 import { IMessage } from "../../../../../interfaces/models";
 import { useDispatch } from "react-redux";
 import { handleScrollToMessage } from "../../../../../state/message";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   showCalendar: boolean;
   setShowCalendar: (show: boolean) => void;
   setSelectedDate: (date: Date) => void;
-  chatId: string;
   selectedDate: null | Date;
 }
 
@@ -21,9 +22,9 @@ export default function CalendarOverlay(props: Props) {
     showCalendar,
     setShowCalendar,
     setSelectedDate,
-    chatId,
     selectedDate,
   } = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat)
 
   const INITIAL_DATE = new Date(2023, 8, 8);
   const socket = useSocket();

@@ -7,11 +7,10 @@ import ContentContextMenu from "../../ContentContextMenu";
 import { useState } from "react";
 interface Props {
   file: IFile;
-  chatId: string;
   message: IMessage;
 }
 export default function Content(props: Props) {
-  const { file, chatId, message } = props;
+  const { file, message } = props;
   const dateToShow = normalizeDateName(message.timeStamp);
   const fileSize = getSizeOfFile(file.fileSize);
   const [contextMenuX, setContextMenuX] = useState(0);
@@ -55,7 +54,6 @@ export default function Content(props: Props) {
           setShowMenu={setShowContextMenu}
           showMenu={showContextMenu}
           message={message}
-          chatId={chatId}
           file={file}
         />,
         document.getElementById("overlay") as HTMLElement

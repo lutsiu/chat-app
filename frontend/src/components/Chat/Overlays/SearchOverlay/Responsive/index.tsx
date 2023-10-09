@@ -15,11 +15,11 @@ interface Props {
   setQuery: (query: string) => void;
   debouncedQuery: string;
   setDebouncedQuery: React.Dispatch<React.SetStateAction<string>>;
-  chatId: string;
 }
 
 export default function ResponsiveSearch(props: Props) {
-  const { query, setQuery, debouncedQuery, setDebouncedQuery, chatId } = props;
+  const { query, setQuery, debouncedQuery, setDebouncedQuery } = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const { searchMessages } = useSelector((state: ReduxState) => state.message);
   const [timer, setTimer] = useState<NodeJS.Timer | null>(null);

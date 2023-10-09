@@ -1,20 +1,18 @@
 import { createPortal } from "react-dom";
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import MediaOverlay from "../../../../../ChatBody/Overlays/MediaOverlay";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ContentContextMenu from "../../ContentContextMenu";
 interface Props {
   media: IFile;
-  chatId: string;
   message: IMessage;
 }
 export default function Content(props: Props) {
-  const { media, chatId, message } = props;
+  const { media,  message } = props;
   const [showOverlay, setShowOverlay] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   function handleShowOverlay() {
     setShowOverlay((prev) => !prev);
   }
@@ -32,17 +30,6 @@ export default function Content(props: Props) {
   };
   
 
-  const handleLoad = () => {
-    setIsLoading(false);
-
-  };
-
-  useEffect(() => {
-    const image = new Image();
-    image.src = `http://localhost:3000/${media.filePath}`;
-    image.onload = handleLoad;
-    image.onerror = handleLoad; // Handle error as well, for example, if the image fails to load
-  }, [handleLoad, media.filePath]);
 
   return (
     <>
@@ -59,7 +46,7 @@ export default function Content(props: Props) {
           />
         )}
         {media.fileType.includes('video') && (
-          <video className="object-cover h-full w-full">
+          <video className="object-cover h-full w-full" >
             <source src={`http://localhost:3000/${media.filePath}`} type={media.fileType} />
           </video>
         )}
@@ -70,7 +57,6 @@ export default function Content(props: Props) {
         setShowMenu={setShowContextMenu}
         showMenu={showContextMenu}
         message={message}
-        chatId={chatId}
         file={media}
       />, document.getElementById('overlay') as HTMLElement)}
       {createPortal(
@@ -78,7 +64,6 @@ export default function Content(props: Props) {
           setShowOverlay={setShowOverlay}
           showOverlay={showOverlay}
           file={media}
-          chatId={chatId}
           message={message}
         />,
         document.getElementById("overlay") as HTMLElement

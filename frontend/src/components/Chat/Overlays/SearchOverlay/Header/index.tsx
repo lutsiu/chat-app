@@ -4,20 +4,21 @@ import { IoMdClose } from "react-icons/io";
 import { mediumPurple, gray } from "../../../../../utils/colors";
 import { useState } from "react";
 import Calendar from "../Calendar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShowSearchBar } from "../../../../../state/ui";
 import { setSearchedMessages } from "../../../../../state/message";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   query: string;
   setQuery: (query: string) => void;
   selectedDate: Date | null;
   setSelectedDate: (date: Date) => void;
-  chatId: string
 }
 export default function Header(props: Props) {
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const { setQuery,  query, setSelectedDate, chatId, selectedDate } = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat)
+  const { setQuery,  query, setSelectedDate,selectedDate } = props;
   const dispatch = useDispatch();
   function handleCloseAndClear() {
     dispatch(setShowSearchBar());
@@ -67,7 +68,6 @@ export default function Header(props: Props) {
         showCalendar={showCalendar}
         setSelectedDate={setSelectedDate}
         selectedDate={selectedDate}
-        chatId={chatId}
       />
     </>
   );

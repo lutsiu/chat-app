@@ -13,24 +13,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
-import { IMessage, UserModel } from "../../../interfaces/models";
-import { useSocket } from "../../../context/SocketContext";
-interface Props {
-  chatId: string;
-  chatMessages: IMessage[];
-  setChatMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
-  interlocutor: UserModel
-}
-export default function Header(props: Props) {
-  const {chatMessages, chatId, interlocutor} = props
+import { IContact, IMessage, UserModel } from "../../../interfaces/models";
+import SkeletonElement from "../../Widgets/SkeletonElement";
+import loader from "../../../assets/tail-spin.svg";
+
+export default function Header() {
+  const { interlocutor, chatId, chatMessages } = useSelector(
+    (state: ReduxState) => state.chat
+  );
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
-  const {user} = useSelector((state: ReduxState) => state.user);
+  const { user } = useSelector((state: ReduxState) => state.user);
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [isContact, setIsContact] = useState<undefined | IContact>(undefined);
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const width = useResponsive();
-  const socket = useSocket();
   const navigate = useNavigate();
   const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
   const dispatch = useDispatch();
@@ -45,7 +43,14 @@ export default function Header(props: Props) {
       window.removeEventListener("beforeunload", resetSearch);
     };
   }, [resetSearch]);
-  const isContact = user?.contacts.find(contact => contact._id === interlocutor._id);
+  useEffect(() => {
+    if (user?.contacts && interlocutor) {
+      const contact = user.contacts.find(
+        (contact) => contact._id === interlocutor._id
+      );
+      setIsContact(contact);
+    }
+  }, [interlocutor, user?.contacts]);
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -60,25 +65,40 @@ export default function Header(props: Props) {
               }
             }}
           >
-            <HiOutlineArrowLeft className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full text-gray-400 active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer"  />
+            <HiOutlineArrowLeft className="p-[0.7rem] min-h-[3.5rem] min-w-[3.5rem] rounded-full text-gray-400 active:bg-gray-700 hover:bg-gray-700 duration-200 cursor-pointer" />
           </div>
         )}
 
         {showNavContent && (
           <>
-            <div className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
+            <div className="w-[4rem] h-[4rem] rounded-full overflow-hidden flex items-center justify-center">
               <img
-                src={`http://localhost:3000/${interlocutor.profilePictures.at(-1)}`}
+                src={
+                  interlocutor
+                    ? `http://localhost:3000/${interlocutor.profilePictures.at(
+                        -1
+                      )}`
+                    : loader
+                }
                 alt="Avatar"
-                className="w-full h-full object-cover cursor-pointer"
+                className="object-cover cursor-pointer"
                 onClick={() => setShowProfile((prev) => !prev)}
+                style={{
+                  width: interlocutor ? "100%" : "50%",
+                  height: interlocutor ? "100%" : "50%",
+                }}
               />
             </div>
             <div className="flex-1 flex justify-between">
               <div className="flex flex-col justify-center">
-                <span className="text-2xl font-semibold tracking-wide">
-                  {!isContact ? `${interlocutor.fullName}` : isContact.name} 
-                </span>
+                {!interlocutor && (
+                  <SkeletonElement count={1} className="w-[10rem] h-[1rem]" />
+                )}
+                {interlocutor && (
+                  <span className="text-2xl font-semibold tracking-wide">
+                    {!isContact ? `${interlocutor.fullName}` : isContact.name}
+                  </span>
+                )}
                 <span className="text-lg font-normal text-gray-300">
                   {"Status"}
                 </span>
@@ -100,7 +120,6 @@ export default function Header(props: Props) {
           <ResponsiveSearch
             query={query}
             setQuery={setQuery}
-            chatId={props.chatId}
             debouncedQuery={debouncedQuery}
             setDebouncedQuery={setDebouncedQuery}
           />
@@ -109,11 +128,9 @@ export default function Header(props: Props) {
       <MenuOverlay
         showOverlay={showMenuOverlay}
         setShowOverlay={setShowMenuOverlay}
-        interlocutor={interlocutor}
       />
       {width >= 768 && (
         <SearchOverlay
-          chatId={props.chatId}
           query={query}
           setQuery={setQuery}
           debouncedQuery={debouncedQuery}
@@ -121,14 +138,10 @@ export default function Header(props: Props) {
         />
       )}
       <ProfileOverlay
-      interlocutor={interlocutor}
         setShowOverlay={setShowProfile}
         showOverlay={showProfile}
-        chatHistory={chatMessages}
-        user={interlocutor}
-        chatId={chatId}
       />
-      <EditProfile setShowProfile={setShowProfile} interlocutor={interlocutor} />
+      <EditProfile setShowProfile={setShowProfile}  />
     </>
   );
 }

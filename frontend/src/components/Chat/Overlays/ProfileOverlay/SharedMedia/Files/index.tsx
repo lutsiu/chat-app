@@ -3,10 +3,9 @@ import { IFile, IMessage } from "../../../../../../interfaces/models";
 import Content from "./Content";
 interface Props {
   messages: IMessage[];
-  chatId: string;
 }
 export default function Files(props: Props) {
-  const { messages, chatId } = props;
+  const { messages } = props;
   return (
     <div className="min-w-full flex-1">
       {messages.map((msg) => {
@@ -16,7 +15,6 @@ export default function Files(props: Props) {
           <Content
             key={file.fileName}
             file={file}
-            chatId={chatId}
             message={msg}
           />
         );

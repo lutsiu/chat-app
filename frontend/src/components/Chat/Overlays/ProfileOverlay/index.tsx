@@ -5,16 +5,15 @@ import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";
 import SharedMedia from "./SharedMedia";
 import { IMessage, UserModel } from "../../../../interfaces/models";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../interfaces/redux";
 interface Props {
   showOverlay: boolean;
   setShowOverlay: (show: boolean) => void;
-  user: UserModel;
-  chatHistory: IMessage[];
-  chatId: string;
-  interlocutor: UserModel
 }
 export default function ProfileOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, user, chatHistory, chatId, interlocutor} = props;
+  const {interlocutor} = useSelector((state: ReduxState) => state.chat);
+  const { showOverlay, setShowOverlay} = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -26,13 +25,13 @@ export default function ProfileOverlay(props: Props) {
       transition={{ duration: 0.25 }}
     >
       <div className="sticky top-0 z-20 py-[0.8rem] bg-slate-800 px-[2rem]">
-        <MainHeader interlocutor={interlocutor} setShowOverlay={setShowOverlay} />
+        <MainHeader setShowOverlay={setShowOverlay} />
       </div>
       <UserInfo
-        bio={user.bio}
-        email={user.email}
-        userName={user.userName}
-        userImages={user.profilePictures}
+        bio={interlocutor?.bio}
+        email={interlocutor?.email}
+        userName={interlocutor?.userName}
+        userImages={interlocutor?.profilePictures}
       />
       <BottomNavigationBar
         setShowFiles={setShowFiles}
@@ -44,8 +43,6 @@ export default function ProfileOverlay(props: Props) {
         showMedia={showMedia}
         showFiles={showFiles}
         showGroups={showGroups}
-        chatMessages={chatHistory}
-        chatId={chatId}
       />
     </motion.div>
   );

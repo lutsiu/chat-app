@@ -37,6 +37,7 @@ export default function PinnedMessages(props: Props) {
       const messageDom = document.getElementById(
         activePinnedMessage._id
       ) as HTMLElement;
+      if (!messageDom) return
       const offsetChildTop = messageDom.offsetTop;
       const parent = messageDom.parentElement as HTMLElement;
       const upperPoint = parent.offsetTop + offsetChildTop;
@@ -48,6 +49,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     const activePinnedMessages = pinnedMessages.map((msg) => {
       const dom = document.getElementById(msg._id as string) as HTMLElement;
+      if (!dom) return
       const parent = dom.parentElement as HTMLElement;
       const rect = dom.getBoundingClientRect();
       const messageRectTop = rect.top;

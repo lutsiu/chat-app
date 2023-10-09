@@ -9,16 +9,18 @@ import { useSocket } from "../../../../../context/SocketContext";
 import { useEffect, useState } from "react";
 import downloadFile from "../../../../../utils/downloadFile";
 import { IFile, IMessage } from "../../../../../interfaces/models";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   setShowOverlay: (show: boolean) => void;
   showOverlay: boolean;
   file: IFile;
   message: IMessage;
-  chatId: string;
 }
 
 export default function MediaOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, file, message, chatId } = props;
+  const { showOverlay, setShowOverlay, file, message,  } = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [mediaScale, setMediaScale] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [progressBarWasTouched, setProgressBarWasTouched] = useState(false);

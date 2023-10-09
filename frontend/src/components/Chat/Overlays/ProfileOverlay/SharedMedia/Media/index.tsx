@@ -1,14 +1,14 @@
+import { useSelector } from "react-redux";
 import { IMessage } from "../../../../../../interfaces/models";
 import { fullMonth } from "../../../../../../utils/months";
 import sortMsgsByDate from "../../../../../../utils/sortMsgsByDate";
 import Content from "./Content";
 interface Props {
   messages: IMessage[];
-  chatId: string;
 }
 
 export default function Media(props: Props) {
-  const { messages, chatId } = props;
+  const { messages} = props;
   const messagesWithDates = sortMsgsByDate(messages, "month") as {
     date: {
       year: number;
@@ -41,7 +41,7 @@ export default function Media(props: Props) {
             <ul className="mt-[1rem] grid grid-cols-3 gap-[0.2rem]">
               {messages.map((msg) => {
                 return msg.media.map((media) => {
-                  return <Content key={media.filePath} media={media} chatId={chatId} message={msg} />;
+                  return <Content key={media.filePath} media={media} message={msg} />;
                 });
               })}
             </ul>
