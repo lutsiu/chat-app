@@ -50,6 +50,7 @@ function App() {
         children: width >= 768 ? [{ index: true, element: <ChatPage /> }] : [],
         loader: async function ({ params }) {
           try {
+
             const myUserName = user?.userName;
             const { userName: interlocutorUserName } = params;
             const body = JSON.stringify({ myUserName, interlocutorUserName });

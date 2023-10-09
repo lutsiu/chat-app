@@ -127,3 +127,9 @@ export interface ActionWithSearch {
 export interface ActionWithContact {
   payload: IContact
 }
+export interface ActionChangeContactName {
+  payload: {
+    name: string,
+    id: string
+  }
+}

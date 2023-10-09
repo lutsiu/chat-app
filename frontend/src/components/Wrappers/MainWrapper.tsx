@@ -20,7 +20,7 @@ import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/P
 import {IMessage, UserModel} from "../../interfaces/models"
 import { useEffect } from "react";
 import { useSocket } from "../../context/SocketContext";
-import {setBio, setFullName, setProfilePicture, setUserName} from '../../state/user'
+import {changeContactName, setBio, setFullName, setProfilePicture, setUserName} from '../../state/user'
 import { setContact } from "../../state/user";
 import { IContact } from "../../interfaces/models";
 export default function MainWrapper() {
@@ -53,6 +53,13 @@ export default function MainWrapper() {
         dispatch(setContact(data));
       }
     });
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    socket.on('change-contact-name', (data: {contactName: string, contactId: string}) => {
+      const {contactId, contactName} = data
+      dispatch(changeContactName({id: contactId, name: contactName}))
+    })  
   }, [socket, dispatch]);
   return (
     <>

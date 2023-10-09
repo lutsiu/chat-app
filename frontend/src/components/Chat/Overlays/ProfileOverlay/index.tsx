@@ -11,9 +11,10 @@ interface Props {
   user: UserModel;
   chatHistory: IMessage[];
   chatId: string;
+  interlocutor: UserModel
 }
 export default function ProfileOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, user, chatHistory, chatId } = props;
+  const { showOverlay, setShowOverlay, user, chatHistory, chatId, interlocutor} = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -25,7 +26,7 @@ export default function ProfileOverlay(props: Props) {
       transition={{ duration: 0.25 }}
     >
       <div className="sticky top-0 z-20 py-[0.8rem] bg-slate-800 px-[2rem]">
-        <MainHeader setShowOverlay={setShowOverlay} />
+        <MainHeader interlocutor={interlocutor} setShowOverlay={setShowOverlay} />
       </div>
       <UserInfo
         bio={user.bio}

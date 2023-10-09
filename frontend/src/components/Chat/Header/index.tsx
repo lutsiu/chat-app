@@ -14,6 +14,7 @@ import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
 import { IMessage, UserModel } from "../../../interfaces/models";
+import { useSocket } from "../../../context/SocketContext";
 interface Props {
   chatId: string;
   chatMessages: IMessage[];
@@ -23,11 +24,13 @@ interface Props {
 export default function Header(props: Props) {
   const {chatMessages, chatId, interlocutor} = props
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
+  const {user} = useSelector((state: ReduxState) => state.user);
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const width = useResponsive();
+  const socket = useSocket();
   const navigate = useNavigate();
   const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
   const dispatch = useDispatch();
@@ -42,6 +45,7 @@ export default function Header(props: Props) {
       window.removeEventListener("beforeunload", resetSearch);
     };
   }, [resetSearch]);
+  const isContact = user?.contacts.find(contact => contact._id === interlocutor._id);
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -73,7 +77,7 @@ export default function Header(props: Props) {
             <div className="flex-1 flex justify-between">
               <div className="flex flex-col justify-center">
                 <span className="text-2xl font-semibold tracking-wide">
-                  {`${interlocutor.fullName}`}
+                  {!isContact ? `${interlocutor.fullName}` : isContact.name} 
                 </span>
                 <span className="text-lg font-normal text-gray-300">
                   {"Status"}
@@ -117,13 +121,14 @@ export default function Header(props: Props) {
         />
       )}
       <ProfileOverlay
+      interlocutor={interlocutor}
         setShowOverlay={setShowProfile}
         showOverlay={showProfile}
         chatHistory={chatMessages}
         user={interlocutor}
         chatId={chatId}
       />
-      <EditProfile setShowProfile={setShowProfile} />
+      <EditProfile setShowProfile={setShowProfile} interlocutor={interlocutor} />
     </>
   );
 }

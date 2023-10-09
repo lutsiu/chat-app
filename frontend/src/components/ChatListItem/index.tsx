@@ -6,7 +6,6 @@ import { useState } from "react";
 import ContextMenu from "./ContextMenu";
 import { ChatData } from "../LeftSide";
 import normalizeDateName from "../../utils/normalizeDateName";
-import { m } from "framer-motion";
 interface Props {
   chatData: ChatData
 }

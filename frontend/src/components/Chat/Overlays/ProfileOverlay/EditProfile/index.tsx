@@ -9,32 +9,44 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import useColor from "../../../../../hooks/useColor";
 import MobileStickyButton from "../../../../Widgets/Buttons/MobileStickyButton";
-import styles from './styles.module.scss'
+import styles from "./styles.module.scss";
+import { UserModel } from "../../../../../interfaces/models";
+import { useSocket } from "../../../../../context/SocketContext";
 interface Props {
   setShowProfile: (show: boolean) => void;
+  interlocutor: UserModel;
 }
 
 export default function EditProfile(props: Props) {
-  const { setShowProfile } = props;
+  const { setShowProfile, interlocutor } = props;
+  const { user } = useSelector((state: ReduxState) => state.user);
+  const contactInfo = user?.contacts.find(
+    (cont) => cont._id === interlocutor._id
+  );
   const dispatch = useDispatch();
   const { showEditContactProfile } = useSelector(
     (state: ReduxState) => state.ui
   );
-
+  const socket = useSocket();
   const initialValues = {
-    fullName: "Sasha",
+    fullName: contactInfo?.name as string,
   };
-
+  function handleCloseEdit() {
+    dispatch(setShowEditContactProfile());
+    setShowProfile(true);
+  }
   const validationSchema = Yup.object({
     fullName: Yup.string().required(),
   });
 
-  async function onSubmit(values: { fullName: string }) {
-    try {
-      console.log(values);
-    } catch (err) {
-      console.log(err);
-    }
+  function onSubmit(values: { fullName: string }) {
+    const { fullName } = values;
+    socket.emit("change-contact-name", {
+      userId: user?._id,
+      contactName: fullName,
+      contactId: contactInfo?._id,
+    });
+    handleCloseEdit();
   }
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
@@ -52,13 +64,7 @@ export default function EditProfile(props: Props) {
       transition={{ duration: 0.25 }}
     >
       <div className="flex items-center bg-gray-800 py-[0.8rem]">
-        <div
-          className="px-[2rem]"
-          onClick={() => {
-            dispatch(setShowEditContactProfile());
-            setShowProfile(true);
-          }}
-        >
+        <div className="px-[2rem]" onClick={handleCloseEdit}>
           <HiOutlineArrowLeft className="py-[0.7rem] rounded-full min-h-[3.7rem] min-w-[3.7rem] hover:bg-gray-700 duration-200 cursor-pointer text-gray-400" />
         </div>
         <h4 className="text-3xl font-semibold">Edit</h4>
@@ -66,7 +72,7 @@ export default function EditProfile(props: Props) {
       <div className="flex flex-col gap-[2rem] items-center pt-[4rem] bg-gray-800">
         <div className="w-[14rem] h-[14rem] rounded-full overflow-hidden">
           <img
-            src="https://sklepotaku.pl/userdata/public/news/images/4.jpg"
+            src={`http://localhost:3000/${interlocutor.profilePictures.at(-1)}`}
             alt="Avatar"
             className="w-full h-full object-cover"
           />
@@ -95,7 +101,9 @@ export default function EditProfile(props: Props) {
         </div>
       </div>
       <div className="p-[1rem] bg-gray-800 mt-[1rem]">
-        <div className={`${styles.delete}  flex gap-[2rem] items-center px-[2rem] py-[1rem] text-red-500 duration-300 rounded-xl cursor-pointer`}>
+        <div
+          className={`${styles.delete}  flex gap-[2rem] items-center px-[2rem] py-[1rem] text-red-500 duration-300 rounded-xl cursor-pointer`}
+        >
           <div>
             <MdOutlineDelete className="w-[3rem] h-[3rem]" />
           </div>
