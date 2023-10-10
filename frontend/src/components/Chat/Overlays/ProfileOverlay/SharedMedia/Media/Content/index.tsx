@@ -13,9 +13,9 @@ interface Props {
 }
 export default function Content(props: Props) {
   const { media, message } = props;
-  const [src, setSrc] = useState(spinner);
+  const [imageSrc, setImageSrc] = useState(spinner);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [videoSrc, setVideoSrc] = useState('');
   const dispatch = useDispatch();
 
   function handleShowOverlay() {
@@ -41,15 +41,31 @@ export default function Content(props: Props) {
     );
   };
 
+  // for image
   useEffect(() => {
     const image = new Image();
     image.src = `http://localhost:3000/${media.filePath}`;
     image.onload = () => {
       setIsLoading(false);
-      setSrc(image.src);
+      setImageSrc(image.src);
     };
   }, [media.filePath]);
 
+  // for video
+  useEffect(() => {
+    const video = document.createElement("video");
+    video.src = `http://localhost:3000/${media.filePath}`
+
+    video.onloadedmetadata = () => {
+      setIsLoading(false);
+      setVideoSrc(video.src)
+    };
+
+    return () => {
+      video.removeAttribute('src');
+      video.load();
+    }
+  }, [media.filePath]);
   return (
     <>
       <li
@@ -58,15 +74,16 @@ export default function Content(props: Props) {
         onContextMenu={handleShowContextMenu}
       >
         {media.fileType.includes("image") && !isLoading && (
-          <img src={src} alt="img" className="object-cover h-full w-full" />
+          <img src={imageSrc} alt="img" className="object-cover h-full w-full" />
         )}
-        {media.fileType.includes("image") && isLoading && (
+        {media.fileType.includes("image") || media.fileType.includes("video") && isLoading && (
           <SkeletonElement count={1} className="w-[13.3rem] h-[12rem]" />
         )}
-        {media.fileType.includes("video") && (
+        
+        {media.fileType.includes("video") && !isLoading && (
           <video className="object-cover h-full w-full">
             <source
-              src={`http://localhost:3000/${media.filePath}`}
+              src={videoSrc}
               type={media.fileType}
             />
           </video>
