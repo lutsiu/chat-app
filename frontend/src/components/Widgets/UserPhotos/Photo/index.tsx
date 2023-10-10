@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import spinner from "../../../../assets/tail-spin.svg";
-import SkeletonElement from "../../SkeletonElement";
+import SkeletonElement from "../../Skeletons/SkeletonElement";
 
 interface Props {
   photo: string;

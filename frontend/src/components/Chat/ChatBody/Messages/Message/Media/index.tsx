@@ -1,19 +1,11 @@
-import { IFile, IMessage } from "../../../../../../interfaces/models";
+import {  IMessage } from "../../../../../../interfaces/models";
 import styles from "../../../Overlays/SendMedia/stylesSendMedia.module.scss";
-
-import { createPortal } from "react-dom";
-import MediaOverlay from "../../../Overlays/MediaOverlay";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ReduxState } from "../../../../../../interfaces/redux";
-import { setShowMediaOverlay } from "../../../../../../state/chatUI";
-
+import Content from "./MediaItem/Content";
 interface Props {
   message: IMessage;
 }
 export default function Media(props: Props) {
   const { message } = props;
-  const dispatch = useDispatch();
   const { media } = message;
   const mediaAmount = media.length;
   let mediaContainerClasses = `${styles["media-container-chat"]}`;
@@ -45,32 +37,18 @@ export default function Media(props: Props) {
     mediaClasses += ` ${styles["six-imgs"]}`;
   }
 
-  function handleShowMedia(media: IFile) {
-    dispatch(setShowMediaOverlay({ file: media, message, showOverlay: true }));
-  }
   return (
     <>
       <div className={mediaContainerClasses}>
         {media.map((mediaItem, i) => {
-          if (!mediaItem.fileType.includes("video")) {
-            return (
-              <img
-                key={i}
-                src={`http://localhost:3000/${mediaItem.filePath}`}
-                className={mediaClasses}
-                loading="lazy"
-                onClick={handleShowMedia.bind(null, mediaItem)}
-              />
-            );
-          } else
-            return (
-              <video key={i} className={mediaClasses} controls autoPlay>
-                <source
-                  src={`http://localhost:3000/${mediaItem.filePath}`}
-                  type={mediaItem.fileType}
-                />
-              </video>
-            );
+          return (
+            <Content
+              key={i}
+              mediaClasses={mediaClasses}
+              mediaItem={mediaItem}
+              message={message}
+            />
+          );
         })}
       </div>
     </>

@@ -6,11 +6,16 @@ import { useState, useEffect } from "react";
 import { handleScrollToMessage } from "../../../../state/message";
 import TextTransition from "react-text-transition";
 import { getPinnedbarMessageContent } from "../../../../utils/getActionBarMessageContent";
+import spinner from "../../../../assets/tail-spin.svg";
+import SkeletonElement from "../../../Widgets/Skeletons/SkeletonElement";
 interface Props {
   pinnedMessages: IMessage[];
 }
 export default function PinnedMessages(props: Props) {
   const { pinnedMessages } = props;
+  const [imageSrc, setImageSrc] = useState(spinner);
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoSrc, setVideoSrc] = useState("");
   const { messagesContainerScrollTop } = useSelector(
     (state: ReduxState) => state.message
   );
@@ -37,7 +42,7 @@ export default function PinnedMessages(props: Props) {
       const messageDom = document.getElementById(
         activePinnedMessage._id
       ) as HTMLElement;
-      if (!messageDom) return
+      if (!messageDom) return;
       const offsetChildTop = messageDom.offsetTop;
       const parent = messageDom.parentElement as HTMLElement;
       const upperPoint = parent.offsetTop + offsetChildTop;
@@ -49,7 +54,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     const activePinnedMessages = pinnedMessages.map((msg) => {
       const dom = document.getElementById(msg._id as string) as HTMLElement;
-      if (!dom) return
+      if (!dom) return;
       const parent = dom.parentElement as HTMLElement;
       const rect = dom.getBoundingClientRect();
       const messageRectTop = rect.top;
@@ -77,26 +82,57 @@ export default function PinnedMessages(props: Props) {
         : 0
     );
   }, [messagesContainerScrollTop, pinnedMessages]);
-  const activePinnedMessageMedia = activePinnedMessage && activePinnedMessage.media.length > 0
-    ? {
-        path: activePinnedMessage.media[0].filePath,
-        type: activePinnedMessage.media[0].fileType,
-      }
-    : null;
+  const activePinnedMessageMedia =
+    activePinnedMessage && activePinnedMessage.media.length > 0
+      ? {
+          path: activePinnedMessage.media[0].filePath,
+          type: activePinnedMessage.media[0].fileType,
+        }
+      : null;
+
+  // for image
+  useEffect(() => {
+    if (!activePinnedMessageMedia?.type.includes("image")) return;
+    const image = new Image();
+    image.src = `http://localhost:3000/${activePinnedMessageMedia.path}`;
+    image.onload = () => {
+      setIsLoading(false);
+      setImageSrc(image.src);
+    };
+  }, [activePinnedMessageMedia?.path, activePinnedMessageMedia?.type]);
+
+  // for video
+  useEffect(() => {
+    if (!activePinnedMessageMedia?.type.includes("video")) return;
+    const video = document.createElement("video");
+    video.src = `http://localhost:3000/${activePinnedMessageMedia?.path}`;
+
+    video.onloadedmetadata = () => {
+      setIsLoading(false);
+      setVideoSrc(video.src);
+    };
+
+    return () => {
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [activePinnedMessageMedia?.path, activePinnedMessageMedia?.type]);
   return (
     <ul className="absolute w-full py-[.4rem] bg-slate-700 z-[2] flex justify-between px-[1rem] items-center">
       <div className="flex gap-[1rem]">
         {activePinnedMessageMedia && (
           <div className="w-[3.5rem] h-[3.5rem] object-cover rounded-lg overflow-hidden">
-            {activePinnedMessageMedia.type.includes("image") && (
-              <img className="w-full h-full object-cover"
-                src={`http://localhost:3000/${activePinnedMessageMedia.path}`}
+            {!isLoading && activePinnedMessageMedia.type.includes("image") && (
+              <img
+                className="w-full h-full object-cover"
+                src={imageSrc}
               />
             )}
-            {activePinnedMessageMedia.type.includes("video") && (
+            {isLoading  && <SkeletonElement count={1} className="w-full h-full object-cover"/>}
+            {!isLoading && activePinnedMessageMedia.type.includes("video") && (
               <video className="w-full h-full object-cover">
                 <source
-                  src={`http://localhost:3000/${activePinnedMessageMedia.path}`}
+                  src={videoSrc}
                   type={activePinnedMessageMedia.type}
                 />
               </video>
@@ -114,7 +150,7 @@ export default function PinnedMessages(props: Props) {
             }`}</TextTransition>
           </span>
           <TextTransition className="text-lg">
-           {getPinnedbarMessageContent(activePinnedMessage!)}
+            {getPinnedbarMessageContent(activePinnedMessage!)}
           </TextTransition>
         </div>
       </div>

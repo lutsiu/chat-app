@@ -11,7 +11,7 @@ import {
 } from "../../state/peopleSearch";
 import { useSocket } from "../../context/SocketContext";
 import { IMessage } from "../../interfaces/models";
-import SkeletonElement from "../Widgets/SkeletonElement";
+import SkeletonElement from "../Widgets/Skeletons/SkeletonElement";
 export interface ChatData {
   message: IMessage;
   interlocutor: {

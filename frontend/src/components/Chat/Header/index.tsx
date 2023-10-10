@@ -14,7 +14,7 @@ import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
 import { IContact } from "../../../interfaces/models";
-import SkeletonElement from "../../Widgets/SkeletonElement";
+import SkeletonElement from "../../Widgets/Skeletons/SkeletonElement";
 import loader from "../../../assets/tail-spin.svg";
 
 export default function Header() {

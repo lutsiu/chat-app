@@ -3,7 +3,7 @@ import { HiAtSymbol } from "react-icons/hi";
 import { MdInfoOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
-import SkeletonElement from "../../../SkeletonElement";
+import SkeletonElement from "../../../Skeletons/SkeletonElement";
 interface Props {
   userName: string | undefined;
   email: string | undefined;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Person from "./Person";
 import useResponsive from "../../../../hooks/useResponsive";
 import { Interlocutor } from "../index";
-import SkeletonElement from "../../../Widgets/SkeletonElement";
+import SkeletonElement from "../../../Widgets/Skeletons/SkeletonElement";
 interface Props {
   interlocutors: Interlocutor[];
   dataIsLoading: boolean

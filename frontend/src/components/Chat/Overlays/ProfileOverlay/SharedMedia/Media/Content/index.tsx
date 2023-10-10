@@ -1,7 +1,7 @@
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import { useState, useEffect } from "react";
 import spinner from "../../../../../../../assets/tail-spin.svg";
-import SkeletonElement from "../../../../../../Widgets/SkeletonElement";
+import SkeletonElement from "../../../../../../Widgets/Skeletons/SkeletonElement";
 import { useDispatch } from "react-redux";
 import {
   setShowContentContextMenu,
@@ -43,16 +43,18 @@ export default function Content(props: Props) {
 
   // for image
   useEffect(() => {
+    if (!media.fileType.includes('image')) return;
     const image = new Image();
     image.src = `http://localhost:3000/${media.filePath}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
     };
-  }, [media.filePath]);
+  }, [media.filePath, media.fileType]);
 
   // for video
   useEffect(() => {
+    if (!media.fileType.includes('video')) return;
     const video = document.createElement("video");
     video.src = `http://localhost:3000/${media.filePath}`
 
@@ -65,7 +67,7 @@ export default function Content(props: Props) {
       video.removeAttribute('src');
       video.load();
     }
-  }, [media.filePath]);
+  }, [media.filePath, media.fileType]);
   return (
     <>
       <li

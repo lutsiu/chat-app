@@ -4,7 +4,7 @@ import Person from "./Person";
 import { useEffect } from "react";
 import useResponsive from "../../../../hooks/useResponsive";
 import { FoundContact } from "..";
-import SkeletonElement from "../../../Widgets/SkeletonElement";
+import SkeletonElement from "../../../Widgets/Skeletons/SkeletonElement";
 interface Props {
   people: FoundContact[];
   dataIsLoading: boolean

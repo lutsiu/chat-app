@@ -1,6 +1,5 @@
 import { IMessage, MediaType } from "../../../../../interfaces/models";
 import { useEffect, useRef, useState } from "react";
-import MessageContextMenu from "../ContextMenu";
 import { BsPinAngleFill } from "react-icons/bs";
 import styles from "./styles.module.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +16,6 @@ interface Props {
 export default function Message(props: Props) {
   const { msg } = props;
   const myUserId = useSelector((state: ReduxState) => state.user.user?._id);
-  const { chatId } = useSelector((state: ReduxState) => state.chat);
   const { message, timeStamp, file, media, sender, isEdited, reply, pinned } =
     msg;
   const [mediaSrcForContextMenu, setMediaSrcForContextMenu] = useState("");
@@ -82,7 +80,6 @@ export default function Message(props: Props) {
       setMessageUpperPoint(upperPoint);
     }
   }, []);
-
   return (
     <>
       <li

@@ -7,11 +7,12 @@ import { ReduxState } from "../../../../interfaces/redux";
 import { setMessageContainerScrollTop } from "../../../../state/message";
 import sortMsgsByDate from "../../../../utils/sortMsgsByDate";
 import normalizeDateName from "../../../../utils/normalizeDateName";
-import SkeletonElement from "../../../Widgets/SkeletonElement";
+import MessagesSkeleton from "../../../Widgets/Skeletons/MessagesSkeleton";
 
 export default function Messages() {
-  const { chatId, chatMessages: messages } = useSelector((state: ReduxState) => state.chat);
-  const userId = useSelector((state: ReduxState) => state.user.user?._id);
+  const { chatMessages: messages } = useSelector(
+    (state: ReduxState) => state.chat
+  );
   const chatContainer = useRef<null | HTMLDivElement>(null);
   const { scrollToMessage } = useSelector((state: ReduxState) => state.message);
   const [showContent, setShowContent] = useState(false);
@@ -21,7 +22,8 @@ export default function Messages() {
     date: string;
     messages: IMessage[];
   }[];
-
+  const PINNED_MESSAGES_BAR_HEIGHT = 43;
+  const pinnedMessages = messages.filter((msg) => msg.pinned).length > 0;
   // scroll to the end while renderring for the first time
   useEffect(() => {
     setTimeout(() => {
@@ -31,8 +33,7 @@ export default function Messages() {
     }, 500);
     setShowContent(true);
   }, [messages]);
-  const PINNED_MESSAGES_BAR_HEIGHT = 43;
-  const pinnedMessages = messages.filter((msg) => msg.pinned).length > 0;
+  
   // scroll to a necessary message if scrollToMessage is triggered
   useEffect(() => {
     if (scrollToMessage && chatContainer.current) {
@@ -68,7 +69,7 @@ export default function Messages() {
       ref={chatContainer}
     >
       <ul
-        className="2xl:px-[15rem] px-[1rem]"
+        className={`2xl:${messagesWithDates.length > 0 ? 'px-[15rem]' : ''} px-[1rem]`}
         style={{
           paddingTop:
             messages.filter((msg) => msg.pinned).length > 0
@@ -76,6 +77,7 @@ export default function Messages() {
               : "",
         }}
       >
+        {messagesWithDates.length === 0 && <MessagesSkeleton/>}
         {showContent &&
           messagesWithDates.map((msg, i) => {
             const { messages, date } = msg;
@@ -93,13 +95,9 @@ export default function Messages() {
                   {dateToShow}
                 </span>
                 {messages.map((msg, i) => {
-                  return (
-                    <Message
-                      key={i}
-                      msg={msg}
-                    />
-                  );
+                  return <Message key={i} msg={msg} />;
                 })}
+           
               </div>
             );
           })}

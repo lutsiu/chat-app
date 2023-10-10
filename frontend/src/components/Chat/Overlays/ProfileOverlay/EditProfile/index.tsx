@@ -14,7 +14,7 @@ import { IContact } from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useEffect, useState } from "react";
 import spinner from "../../../../../assets/tail-spin.svg";
-import SkeletonElement from "../../../../Widgets/SkeletonElement";
+import SkeletonElement from "../../../../Widgets/Skeletons/SkeletonElement";
 interface Props {
   setShowProfile: (show: boolean) => void;
 }
