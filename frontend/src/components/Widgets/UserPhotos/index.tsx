@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import styles from "./styles.module.scss";
+
+import Photo from "./Photo";
+
 interface Props {
-  photos: string[] | undefined
-  userName: string | undefined
+  photos: string[] | undefined;
+  userName: string | undefined;
 }
+
 export default function UserPhotos(props: Props) {
-  const {photos: pictures, userName} = props;
+  const { photos: pictures, userName } = props;
   const [photos, setPhotos] = useState<string[]>([]);
-  const [photoIsLoaded, setPhotoIsLoaded] = useState(false);
+  const [activePhoto, setActivePhoto] = useState(0);
+  const [photoIsHovered, setPhotoIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (pictures && pictures.length > 0) {
+      const reversedPhotos = reverseArray(pictures);
+      setPhotos(reversedPhotos);
+    }
+  }, [pictures]);
+
   function reverseArray(arr: string[]) {
     const reversed: string[] = [];
     for (let i = arr.length - 1; i >= 0; i--) {
@@ -16,9 +29,6 @@ export default function UserPhotos(props: Props) {
     }
     return reversed;
   }
- 
-  const [activePhoto, setActivePhoto] = useState(0);
-  const [photoIsHovered, setPhotoIsHovered] = useState(false);
 
   function scrollPhotoForward() {
     if (activePhoto !== photos.length) {
@@ -38,12 +48,6 @@ export default function UserPhotos(props: Props) {
     }
   }
 
-  useEffect(() => {
-    if (pictures && pictures.length > 0) {
-      const reversedPhotos = reverseArray(pictures);
-      setPhotos(reversedPhotos);
-    }
-  }, [pictures]);
   return (
     <div
       className="w-full h-[50rem] md:h-[42rem] relative flex overflow-x-hidden"
@@ -56,37 +60,29 @@ export default function UserPhotos(props: Props) {
         className="flex w-full h-full ease-in-out duration-300"
         style={{ transform: `translateX(-${activePhoto * 100}%)` }}
       >
-        {photos.map((photo, i) => {
-          return (
-            <img
-              key={i}
-              src={`http://localhost:3000/${photo}`}
-              loading="lazy"
-              className="h-full object-cover block min-w-full max-w-full"
-            />
-          );
-        })}
+        {photos.map((photo, i) => (
+          <Photo key={i} photo={photo} />
+        ))}
       </div>
+
       <div className="absolute bottom-[1rem] left-[1rem] flex flex-col gap-[0.2rem]">
         <span className="text-3xl font-medium">{userName}</span>
         <span className="text-xl font-medium text-gray-300">{`User status`}</span>
       </div>
       <div className="absolute  flex top-[0.6rem] w-full gap-[0.4rem] px-[0.5rem]">
-        {photos.map((_, i) => {
-          return (
-            <div
-              key={i}
-              className="h-[0.25rem]  rounded-lg duration-500 origin-left"
-              style={{
-                width: `${100 / photos.length}%`,
-                backgroundColor:
-                  i === activePhoto
-                    ? "rgba(255, 255, 255,.6)"
-                    : "rgba(107, 114, 128,.3)",
-              }}
-            ></div>
-          );
-        })}
+        {photos.map((_, i) => (
+          <div
+            key={i}
+            className="h-[0.25rem]  rounded-lg duration-500 origin-left"
+            style={{
+              width: `${100 / photos.length}%`,
+              backgroundColor:
+                i === activePhoto
+                  ? "rgba(255, 255, 255,.6)"
+                  : "rgba(107, 114, 128,.3)",
+            }}
+          ></div>
+        ))}
       </div>
       {photos.length > 1 && photoIsHovered && (
         <div className="absolute  w-full h-full top-0 flex justify-between">

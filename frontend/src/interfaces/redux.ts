@@ -1,4 +1,4 @@
-import { IMessage, SearchedMessage, UserModel, MediaType, IContact } from "./models";
+import { IMessage, SearchedMessage, UserModel, MediaType, IContact, IFile } from "./models";
 export interface UserInitialState {
   user: null | UserModel;
   token: null | string;
@@ -16,7 +16,8 @@ export interface ReduxState {
   message: MessageInitialState;
   peopleSearch: SearchPeopleInitial;
   createContact: CreateContactInitial,
-  chat: ChatStateInitial
+  chat: ChatStateInitial,
+  chatUI: ChatUIState
 }
 
 export interface UiInitialState {
@@ -84,6 +85,21 @@ export interface ChatStateInitial {
   chatMessages: IMessage[]
 }
 
+export interface ChatUIState {
+  mediaOverlay: {
+    showOverlay: boolean, 
+    file: null | IFile
+    message: null | IMessage
+  },
+  contextMenu: {
+    x: number | null,
+    y: number | null,
+    showMenu: boolean,
+    message: IMessage | null,
+    file: IFile | null
+  }
+}
+
 export interface ActionWithGroup {
   payload: {
     groupName: string;
@@ -139,5 +155,23 @@ export interface ActionChangeContactName {
   payload: {
     name: string,
     id: string
+  }
+}
+
+export interface ActionWithMessageMediaOverlay {
+  payload: {
+    showOverlay: boolean, 
+    file: null | IFile
+    message: null | IMessage
+  }
+}
+
+export interface ActionWithMessageContextMenu {
+  payload: {
+    x: number | null,
+    y: number | null,
+    showMenu: boolean,
+    message: IMessage | null,
+    file: IFile | null
   }
 }

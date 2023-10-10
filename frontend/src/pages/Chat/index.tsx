@@ -10,6 +10,8 @@ import {
   setChatMessages,
   setInterlocutor,
 } from "../../state/chat";
+import MediaOverlay from "../../components/Chat/ChatBody/Overlays/MediaOverlay";
+import { createPortal } from "react-dom";
 interface ChatData {
   chatId: string;
   chatHistory: IMessage[];
@@ -48,7 +50,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     function resetData(e: any) {
-    /*   if (e.currentTarget.performance.navigation.type === 1) return */
+      if (e.currentTarget.performance.navigation.type === 1) return
       dispatch(setChatId(null));
       dispatch(setChatMessages([]));
       dispatch(setInterlocutor(null));
@@ -59,7 +61,7 @@ export default function ChatPage() {
     return () => {
       window.removeEventListener("beforeunload", resetData);
     };
-  }, []);
+  }, [dispatch]);
   return (
     <div className="bg-gray-900 min-h-screen max-h-screen relative flex flex-col">
       <>
@@ -73,6 +75,12 @@ export default function ChatPage() {
       </>
 
       {ui.showWarningPopup && <WarningPopup />}
+      {createPortal(
+        <MediaOverlay
+
+        />,
+        document.getElementById("overlay") as HTMLElement
+      )}
     </div>
   );
 }

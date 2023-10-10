@@ -7,6 +7,7 @@ import messageReducer from "./state/message.ts";
 import createGroupReducer from "./state/createGroup.ts";
 import createContactReducer from './state/createContact.ts'
 import chatReducer from './state/chat.ts'
+import chatUIReducer from "./state/chatUI.ts";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { persistReducer, persistStore } from "redux-persist";
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   message: messageReducer,
   peopleSearch: peopleSearchReducer,
   createContact: createContactReducer,
-  chat: chatReducer
+  chat: chatReducer,
+  chatUI: chatUIReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

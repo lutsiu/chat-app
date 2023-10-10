@@ -8,23 +8,20 @@ import styles from "./styles.module.scss";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useEffect, useState } from "react";
 import downloadFile from "../../../../../utils/downloadFile";
-import { IFile, IMessage } from "../../../../../interfaces/models";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
-interface Props {
-  setShowOverlay: (show: boolean) => void;
-  showOverlay: boolean;
-  file: IFile;
-  message: IMessage;
-}
+import { setShowMediaOverlay } from "../../../../../state/chatUI";
 
-export default function MediaOverlay(props: Props) {
-  const { showOverlay, setShowOverlay, file, message,  } = props;
-  const {chatId} = useSelector((state: ReduxState) => state.chat);
+export default function MediaOverlay() {
+  const { file, message, showOverlay } = useSelector(
+    (state: ReduxState) => state.chatUI.mediaOverlay
+  );
+  const { chatId } = useSelector((state: ReduxState) => state.chat);
   const [mediaScale, setMediaScale] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [progressBarWasTouched, setProgressBarWasTouched] = useState(false);
   const socket = useSocket();
+  const dispatch = useDispatch();
   function handleCloseMediaOverlay(
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) {
@@ -33,11 +30,11 @@ export default function MediaOverlay(props: Props) {
       target.classList.contains("media-overlay") ||
       target.classList.contains("close-overlay")
     ) {
-      setShowOverlay(false);
+      dispatch(setShowMediaOverlay({file: null, message: null, showOverlay: false}));
     }
   }
   function handleDeleteMessage() {
-    setShowOverlay(false);
+    if (!message || !file) return;
     if (message.media.length > 1) {
       return socket.emit("delete-media", {
         messageId: message._id,
@@ -46,8 +43,12 @@ export default function MediaOverlay(props: Props) {
       });
     }
     socket.emit("delete-message", { messageId: message._id, chatId });
+    dispatch(setShowMediaOverlay({file: null, message: null, showOverlay: false}));
   }
-
+  function handleDownloadFile() {
+    if (!file) return;
+    downloadFile(file)
+  }
   function zoomIn() {
     if (mediaScale > 80) {
       setMediaScale(100);
@@ -71,13 +72,13 @@ export default function MediaOverlay(props: Props) {
     function handleCloseOverlay(e: KeyboardEvent) {
       const event = e as KeyboardEventInit;
       if (event.key === "Escape") {
-        setShowOverlay(false);
+        dispatch(setShowMediaOverlay({file: null, message: null, showOverlay: false}));
       }
     }
     if (showOverlay) {
       document.addEventListener("keydown", handleCloseOverlay);
     }
-  }, [showOverlay, setShowOverlay]);
+  }, [dispatch, showOverlay]);
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -100,7 +101,7 @@ export default function MediaOverlay(props: Props) {
         </div>
         <div
           className={styles["icon-container"]}
-          onClick={() => downloadFile(file)}
+          onClick={handleDownloadFile}
         >
           <LiaDownloadSolid className="w-[2.8rem] h-[2.8rem] text-gray-500 duration-500" />
         </div>
@@ -137,13 +138,13 @@ export default function MediaOverlay(props: Props) {
           scale: `${100 + mediaScale * 3}%`,
         }}
       >
-        {file.fileType.includes("image") && (
+        {file && file.fileType.includes("image") && (
           <img
             className="w-full h-full object-cover"
             src={`http://localhost:3000/${file.filePath}`}
           />
         )}
-        {file.fileType.includes("video") && (
+        {file && file.fileType.includes("video") && (
           <video className="object-cover h-full w-full" controls>
             <source
               src={`http://localhost:3000/${file.filePath}`}

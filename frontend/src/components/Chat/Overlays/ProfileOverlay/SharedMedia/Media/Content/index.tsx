@@ -1,10 +1,11 @@
 import { createPortal } from "react-dom";
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
-import MediaOverlay from "../../../../../ChatBody/Overlays/MediaOverlay";
 import { useState, useEffect } from "react";
 import ContentContextMenu from "../../ContentContextMenu";
 import spinner from '../../../../../../../assets/tail-spin.svg'
 import SkeletonElement from "../../../../../../Widgets/SkeletonElement";
+import { useDispatch } from "react-redux";
+import {setShowMediaOverlay} from '../../../../../../../state/chatUI'
 interface Props {
   media: IFile;
   message: IMessage;
@@ -12,13 +13,17 @@ interface Props {
 export default function Content(props: Props) {
   const { media,  message } = props;
   const [src, setSrc] = useState(spinner);
-  const [showOverlay, setShowOverlay] = useState(false);
   const [contextMenuX, setContextMenuX] = useState(0);
   const [contextMenuY, setContextMenuY] = useState(0);
   const [showContextMenu, setShowContextMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
+
   function handleShowOverlay() {
-    setShowOverlay((prev) => !prev);
+    dispatch(setShowMediaOverlay({message, showOverlay: true, file: media}));
   }
+
   const handleShowContextMenu = (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>
   ) => {
@@ -31,11 +36,7 @@ export default function Content(props: Props) {
     setContextMenuY(y);
     setShowContextMenu(true);
   };
-  
-  const [isLoading, setIsLoading] = useState(true);
-  function handleOnLoad() {
-    setIsLoading(false);
-  }
+
   useEffect(() => {
     const image = new Image();
     image.src = `http://localhost:3000/${media.filePath}`;
@@ -44,7 +45,7 @@ export default function Content(props: Props) {
       setSrc(image.src);
     };
   }, [media.filePath]);
-  console.log(isLoading)
+
 
   return (
     <>
@@ -58,7 +59,6 @@ export default function Content(props: Props) {
             src={src}
             alt="img"
             className="object-cover h-full w-full"
-/*             onLoad={handleOnLoad} */
           />
         )}
         { media.fileType.includes("image") && isLoading && (
@@ -78,15 +78,7 @@ export default function Content(props: Props) {
         message={message}
         file={media}
       />, document.getElementById('overlay') as HTMLElement)}
-      {/* {createPortal(
-        <MediaOverlay
-          setShowOverlay={setShowOverlay}
-          showOverlay={showOverlay}
-          file={media}
-          message={message}
-        />,
-        document.getElementById("overlay") as HTMLElement
-      )} */}
+      
     </>
   );
 }
