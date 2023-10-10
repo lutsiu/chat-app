@@ -91,7 +91,7 @@ export interface ChatUIState {
     file: null | IFile
     message: null | IMessage
   },
-  contextMenu: {
+  contentContextMenu: {
     x: number | null,
     y: number | null,
     showMenu: boolean,

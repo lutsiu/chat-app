@@ -12,6 +12,7 @@ import {
 } from "../../state/chat";
 import MediaOverlay from "../../components/Chat/ChatBody/Overlays/MediaOverlay";
 import { createPortal } from "react-dom";
+import ContentContextMenu from "../../components/Chat/Overlays/ProfileOverlay/SharedMedia/ContentContextMenu";
 interface ChatData {
   chatId: string;
   chatHistory: IMessage[];
@@ -50,7 +51,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     function resetData(e: any) {
-      if (e.currentTarget.performance.navigation.type === 1) return
+      if (e.currentTarget.performance.navigation.type === 1) return;
       dispatch(setChatId(null));
       dispatch(setChatMessages([]));
       dispatch(setInterlocutor(null));
@@ -76,11 +77,11 @@ export default function ChatPage() {
 
       {ui.showWarningPopup && <WarningPopup />}
       {createPortal(
-        <MediaOverlay
-
-        />,
+        <MediaOverlay />,
         document.getElementById("overlay") as HTMLElement
       )}
+      {createPortal(<ContentContextMenu
+      />, document.getElementById('overlay') as HTMLElement)}
     </div>
   );
 }

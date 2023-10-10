@@ -2,21 +2,19 @@ import { AiFillFile } from "react-icons/ai";
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import normalizeDateName from "../../../../../../../utils/normalizeDateName";
 import getSizeOfFile from "../../../../../../../utils/getSizeOfFile";
-import { createPortal } from "react-dom";
-import ContentContextMenu from "../../ContentContextMenu";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setShowContentContextMenu } from "../../../../../../../state/chatUI";
 interface Props {
   file: IFile;
   message: IMessage;
 }
 export default function Content(props: Props) {
   const { file, message } = props;
-  const dateToShow = normalizeDateName(message.timeStamp);
-  const fileSize = getSizeOfFile(file.fileSize);
-  const [contextMenuX, setContextMenuX] = useState(0);
-  const [contextMenuY, setContextMenuY] = useState(0);
-  const [showContextMenu, setShowContextMenu] = useState(false);
+  const dispatch = useDispatch();
 
+  const fileSize = getSizeOfFile(file.fileSize);
+  const dateToShow = normalizeDateName(message.timeStamp);
   const handleShowContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -25,9 +23,7 @@ export default function Content(props: Props) {
     e.preventDefault();
     const x = e.clientX;
     const y = e.clientY;
-    setContextMenuX(x);
-    setContextMenuY(y);
-    setShowContextMenu(true);
+    dispatch((setShowContentContextMenu({file, x, y, message, showMenu: true})))
   };
   return (
     <>
@@ -47,17 +43,6 @@ export default function Content(props: Props) {
           </div>
         </div>
       </div>
-      {createPortal(
-        <ContentContextMenu
-          x={contextMenuX}
-          y={contextMenuY}
-          setShowMenu={setShowContextMenu}
-          showMenu={showContextMenu}
-          message={message}
-          file={file}
-        />,
-        document.getElementById("overlay") as HTMLElement
-      )}
     </>
   );
 }

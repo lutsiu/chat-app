@@ -16,7 +16,6 @@ export default function Media(props: Props) {
     };
     messages: IMessage[];
   }[];
-  console.log(messages)
   return (
     <div className="min-w-full flex-1">
       {messagesWithDates.map((msg, i) => {

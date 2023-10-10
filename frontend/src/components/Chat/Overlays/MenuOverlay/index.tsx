@@ -52,7 +52,6 @@ export default function MenuOverlay(props: Props) {
       setInterlocutorIsContact(isContact);
     }
   }, [interlocutor, user?.contacts]);
-  console.log(dataIsLoading)
   return (
     <>
       <motion.div

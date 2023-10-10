@@ -11,45 +11,74 @@ import styles from "./styles.module.scss";
 import downloadFile from "../../../../../../utils/downloadFile";
 import { handleScrollToMessage } from "../../../../../../state/message";
 import { ReduxState } from "../../../../../../interfaces/redux";
-interface Props {
-  x: number;
-  y: number;
-  showMenu: boolean;
-  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  message: IMessage;
-  file: IFile;
-}
-export default function ContentContextMenu(props: Props) {
-  const { x, y, showMenu, setShowMenu, message,file } = props;
-  const {chatId} = useSelector((state:ReduxState) => state.chat)
+import { setShowContentContextMenu } from "../../../../../../state/chatUI";
+
+export default function ContentContextMenu() {
+  const { x, y, showMenu, message, file } = useSelector((state: ReduxState) => {
+    return state.chatUI.contentContextMenu;
+  });
+  const { chatId } = useSelector((state: ReduxState) => state.chat);
   const [showMenuBeforeCursor, setShowMenuBeforeCursor] = useState(true);
   const [showMenuBelowCursor, setShowMenuBelowCursor] = useState(true);
-  const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    const target = e.target as HTMLDivElement;
-    if (target.classList.contains("overlay")) {
-      setShowMenu(false);
-    }
-  };
 
   const width = useResponsive();
   const socket = useSocket();
   const dispatch = useDispatch();
 
+  const handleCloseMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    const target = e.target as HTMLDivElement;
+    if (target.classList.contains("overlay")) {
+      dispatch(
+        setShowContentContextMenu({
+          file: null,
+          x: null,
+          y: null,
+          message: null,
+          showMenu: false,
+        })
+      );
+    }
+  };
+
   function deleteMessage() {
-    setShowMenu(false);
+    if (!message || !file) return;
     if (message.media.length > 1) {
-      return socket.emit('delete-media', {messageId: message._id, chatId, filePath: file.filePath});
+      return socket.emit("delete-media", {
+        messageId: message._id,
+        chatId,
+        filePath: file.filePath,
+      });
     }
     socket.emit("delete-message", { messageId: message._id, chatId });
+    dispatch(
+      setShowContentContextMenu({
+        file: null,
+        x: null,
+        y: null,
+        message: null,
+        showMenu: false,
+      })
+    );
   }
 
   function scrollToMessage() {
-    const messageDOM = document.getElementById(message._id as string) as HTMLElement;
+    if (!message) return;
+    const messageDOM = document.getElementById(
+      message._id as string
+    ) as HTMLElement;
     const messageParent = messageDOM?.parentElement as HTMLElement;
-    dispatch(handleScrollToMessage({top: messageParent?.offsetTop + messageDOM.offsetTop}));
+    dispatch(
+      handleScrollToMessage({
+        top: messageParent?.offsetTop + messageDOM.offsetTop,
+      })
+    );
   }
 
+  function handleDownloadFile() {
+    if (!file) return;
+    downloadFile(file);
+  }
   useEffect(() => {
     function preventWindowScroll(e: Event) {
       e.preventDefault();
@@ -63,6 +92,7 @@ export default function ContentContextMenu(props: Props) {
   }, [showMenu]);
 
   useEffect(() => {
+    if (!x || !y) return;
     if (width - x < 200) {
       setShowMenuBeforeCursor(false);
     } else {
@@ -85,44 +115,49 @@ export default function ContentContextMenu(props: Props) {
       className="overlay fixed top-0 z-20 right-0 bottom-0 left-0 "
       onClick={handleCloseMenu}
     >
-      <motion.div
-        style={{
-          top: showMenuBelowCursor ? y : y - 144.5,
-          left: showMenuBeforeCursor ? x : x - 154,
-        }}
-        className="absolute bg-slate-800 py-[0.7rem] px-[.3rem] rounded-xl flex flex-col gap-[.7rem]"
-      >
-        <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer">
-          <div style={{ transform: "rotateY(180deg)" }}>
-            <BsFillReplyFill className="w-[2rem] h-[2rem]" />
-          </div>
-          <p className="font-semibold text-xl">Forward</p>
-        </div>
-        <div
-          className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer"
-          onClick={() => downloadFile(file)}
+      {x && y && (
+        <motion.div
+          style={{
+            top: showMenuBelowCursor ? y : y - 144.5,
+            left: showMenuBeforeCursor ? x : x - 154,
+          }}
+          className="absolute bg-slate-800 py-[0.7rem] px-[.3rem] rounded-xl flex flex-col gap-[.7rem]"
         >
-          <div>
-            <LiaDownloadSolid className="w-[2rem] h-[2rem]" />
+          <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer">
+            <div style={{ transform: "rotateY(180deg)" }}>
+              <BsFillReplyFill className="w-[2rem] h-[2rem]" />
+            </div>
+            <p className="font-semibold text-xl">Forward</p>
           </div>
-          <p className="font-semibold text-xl">Download</p>
-        </div>
-        <div className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer" onClick={scrollToMessage}>
-          <div>
-            <BsChatLeft className="w-[1.4rem] h-[1.4rem] ml-[.4rem]" />
+          <div
+            className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer"
+            onClick={handleDownloadFile}
+          >
+            <div>
+              <LiaDownloadSolid className="w-[2rem] h-[2rem]" />
+            </div>
+            <p className="font-semibold text-xl">Download</p>
           </div>
-          <p className="font-semibold text-xl">Show in chat</p>
-        </div>
-        <div
-          className={`${styles.deleteContainer} text-red-500 flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer`}
-          onClick={deleteMessage}
-        >
-          <div>
-            <MdOutlineDeleteOutline className="w-[2rem] h-[2rem]" />
+          <div
+            className="flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer"
+            onClick={scrollToMessage}
+          >
+            <div>
+              <BsChatLeft className="w-[1.4rem] h-[1.4rem] ml-[.4rem]" />
+            </div>
+            <p className="font-semibold text-xl">Show in chat</p>
           </div>
-          <p className="font-semibold text-xl">Delete</p>
-        </div>
-      </motion.div>
+          <div
+            className={`${styles.deleteContainer} text-red-500 flex items-center gap-[1.7rem] pl-[1rem] pr-[2rem] hover:bg-slate-700 duration-150 py-[.4rem] cursor-pointer`}
+            onClick={deleteMessage}
+          >
+            <div>
+              <MdOutlineDeleteOutline className="w-[2rem] h-[2rem]" />
+            </div>
+            <p className="font-semibold text-xl">Delete</p>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

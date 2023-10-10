@@ -7,7 +7,7 @@ const initialState: ChatUIState = {
     message: null,
     showOverlay: false
   },
-  contextMenu: {
+  contentContextMenu: {
     x: null,
     y: null, 
     showMenu: false,
@@ -23,11 +23,11 @@ const chatUISlice = createSlice({
     setShowMediaOverlay(state, action: ActionWithMessageMediaOverlay) {
       state.mediaOverlay = action.payload
     },
-    setShowContextMenu(state, action: ActionWithMessageContextMenu) {
-      state.contextMenu = action.payload;
+    setShowContentContextMenu(state, action: ActionWithMessageContextMenu) {
+      state.contentContextMenu = action.payload;
     }
   }
 });
 
 export default chatUISlice.reducer;
-export const {setShowContextMenu, setShowMediaOverlay} = chatUISlice.actions;
+export const {setShowContentContextMenu, setShowMediaOverlay} = chatUISlice.actions;
