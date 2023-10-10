@@ -4,22 +4,21 @@ import styles from "../../../Overlays/SendMedia/stylesSendMedia.module.scss";
 import { createPortal } from "react-dom";
 import MediaOverlay from "../../../Overlays/MediaOverlay";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../../../interfaces/redux";
+import { setShowMediaOverlay } from "../../../../../../state/chatUI";
 
 interface Props {
- 
   message: IMessage;
 }
 export default function Media(props: Props) {
-  const {chatId} = useSelector((state: ReduxState) => state.chat);
-  const [mediaForOverlay, setMediaForOverlay] = useState<null | IFile>(null);
-  const [showMediaOverlay, setShowMediaOverlay] = useState(false);
-  const {message } = props;
+  const { message } = props;
+  const dispatch = useDispatch();
   const { media } = message;
   const mediaAmount = media.length;
   let mediaContainerClasses = `${styles["media-container-chat"]}`;
   let mediaClasses = `${styles.img}`;
+
   // styles for media container and images
   if (mediaAmount === 1) {
     mediaContainerClasses += ` ${styles["one-col"]}`;
@@ -47,8 +46,7 @@ export default function Media(props: Props) {
   }
 
   function handleShowMedia(media: IFile) {
-    setMediaForOverlay(media);
-    setShowMediaOverlay(true);
+    dispatch(setShowMediaOverlay({ file: media, message, showOverlay: true }));
   }
   return (
     <>
@@ -66,13 +64,7 @@ export default function Media(props: Props) {
             );
           } else
             return (
-              <video
-                key={i}
-                className={mediaClasses}
-                controls
-                autoPlay
-                onClick={() => setMediaForOverlay(mediaItem)}
-              >
+              <video key={i} className={mediaClasses} controls autoPlay>
                 <source
                   src={`http://localhost:3000/${mediaItem.filePath}`}
                   type={mediaItem.fileType}
@@ -81,17 +73,6 @@ export default function Media(props: Props) {
             );
         })}
       </div>
-      {mediaForOverlay &&
-        createPortal(
-          <MediaOverlay
-            message={message}
-            setShowOverlay={setShowMediaOverlay}
-            showOverlay={showMediaOverlay}
-            chatId={chatId}
-            file={mediaForOverlay}
-          />,
-          document.getElementById("overlay") as HTMLElement
-        )}
     </>
   );
 }
