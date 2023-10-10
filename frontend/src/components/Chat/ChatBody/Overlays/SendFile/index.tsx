@@ -5,16 +5,20 @@ import { useRef } from "react";
 import { useSocket } from "../../../../../context/SocketContext";
 import getSizeOfFile from "../../../../../utils/getSizeOfFile";
 import normalizeNameOfFile from "../../../../../utils/normalizeNameOfFile";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   showOverlay: boolean;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
   file: null | File;
-  chatId: string;
-  userId: string;
+
 }
 export default function SendFile(props: Props) {
   const socket = useSocket();
-  const { showOverlay, setFile, file, chatId, userId } = props;
+  const { showOverlay, setFile, file} = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
+  const {user} = useSelector((state: ReduxState) => state.user);
+  const userId = user?._id;
   const formRef = useRef<null | HTMLFormElement>(null);
   const fileName = file?.name || "";
   const size = file?.size || 0;

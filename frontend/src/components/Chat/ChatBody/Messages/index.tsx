@@ -1,5 +1,5 @@
 import { IMessage } from "../../../../interfaces/models";
-import { useRef, useEffect, useState, Suspense } from "react";
+import { useRef, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import Message from "./Message";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,13 +8,10 @@ import { setMessageContainerScrollTop } from "../../../../state/message";
 import sortMsgsByDate from "../../../../utils/sortMsgsByDate";
 import normalizeDateName from "../../../../utils/normalizeDateName";
 import SkeletonElement from "../../../Widgets/SkeletonElement";
-interface Props {
-  messages: IMessage[];
-  myUserId: string | undefined;
-  chatId: string;
-}
-export default function Messages(props: Props) {
-  const { messages, myUserId, chatId } = props;
+
+export default function Messages() {
+  const { chatId, chatMessages: messages } = useSelector((state: ReduxState) => state.chat);
+  const userId = useSelector((state: ReduxState) => state.user.user?._id);
   const chatContainer = useRef<null | HTMLDivElement>(null);
   const { scrollToMessage } = useSelector((state: ReduxState) => state.message);
   const [showContent, setShowContent] = useState(false);
@@ -99,9 +96,7 @@ export default function Messages(props: Props) {
                   return (
                     <Message
                       key={i}
-                      myUserId={myUserId}
                       msg={msg}
-                      chatId={chatId}
                     />
                   );
                 })}
@@ -112,10 +107,3 @@ export default function Messages(props: Props) {
     </div>
   );
 }
-
-/* 
-.stickyDate {
-  @apply sticky top-[0] left-[50%] z-[2] w-fit rounded-3xl p-[.6rem];
-  transform: translateX(-50%);
-  background-color: rgba(147, 51, 234, .7);
-} */

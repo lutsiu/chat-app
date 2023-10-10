@@ -3,24 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import MessageContextMenu from "../ContextMenu";
 import { BsPinAngleFill } from "react-icons/bs";
 import styles from "./styles.module.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleScrollToMessage } from "../../../../../state/message";
 import FileLoader from "./FileLoader";
 import Media from "./Media";
 import Reply from "./Reply";
+import { ReduxState } from "../../../../../interfaces/redux";
+import { setShowMessageContextMenu } from "../../../../../state/chatUI";
 interface Props {
   msg: IMessage;
-  myUserId: string | undefined;
-  chatId: string;
 }
 
 export default function Message(props: Props) {
-  const { msg, myUserId, chatId } = props;
+  const { msg } = props;
+  const myUserId = useSelector((state: ReduxState) => state.user.user?._id);
+  const { chatId } = useSelector((state: ReduxState) => state.chat);
   const { message, timeStamp, file, media, sender, isEdited, reply, pinned } =
     msg;
-  const [contextMenuX, setContextMenuX] = useState(0);
-  const [contextMenuY, setContextMenuY] = useState(0);
-  const [showContextMenu, setShowContextMenu] = useState(false);
   const [mediaSrcForContextMenu, setMediaSrcForContextMenu] = useState("");
   const [mediaTypeForContextMenu, setMediaTypeForContextMenu] =
     useState<MediaType>(null);
@@ -51,9 +50,19 @@ export default function Message(props: Props) {
     e.preventDefault();
     const x = e.clientX;
     const y = e.clientY;
-    setContextMenuX(x);
-    setContextMenuY(y);
-    setShowContextMenu(true);
+
+    dispatch(
+      setShowMessageContextMenu({
+        editable: true,
+        mediaSrc: mediaSrcForContextMenu,
+        mediaType: mediaTypeForContextMenu,
+        message: msg,
+        messageUpperPoint,
+        showMenu: true,
+        x,
+        y,
+      })
+    );
   };
 
   function handleScrollToMessageYouReplied() {
@@ -90,8 +99,8 @@ export default function Message(props: Props) {
           overflow: media.length > 0 ? "hidden" : "auto",
         }}
       >
-        {media.length > 0 && <Media chatId={chatId} message={msg} />}
-        {file && <FileLoader file={file} message={msg} chatId={chatId} />}
+        {media.length > 0 && <Media message={msg} />}
+        {file && <FileLoader file={file} message={msg} />}
         {reply && reply.isReply && (
           <Reply
             handleScrollToMessageYouReplied={handleScrollToMessageYouReplied}
@@ -136,19 +145,6 @@ export default function Message(props: Props) {
           </div>
         </div>
       </li>
-      <MessageContextMenu
-        x={contextMenuX}
-        y={contextMenuY}
-        showMenu={showContextMenu}
-        setShowMenu={setShowContextMenu}
-        editable={true}
-        msg={msg}
-        chatId={chatId}
-        messageUpperPoint={messageUpperPoint}
-        myUserId={myUserId as string}
-        mediaSrc={mediaSrcForContextMenu}
-        mediaType={mediaTypeForContextMenu}
-      />
     </>
   );
 }

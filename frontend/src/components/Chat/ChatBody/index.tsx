@@ -4,21 +4,19 @@ import SendFile from "./Overlays/SendFile";
 import SendMedia from "./Overlays/SendMedia";
 import { useSocket } from "../../../context/SocketContext";
 import MessageBar from "./MessageBar";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { IMessage } from "../../../interfaces/models";
 import Messages from "./Messages";
 import { MessageType } from "../../../interfaces/message";
 import PinnedMessages from "./PinnedMessages";
 import FoundMessagesBottomBar from "./FoundMessagesBottomBar";
-interface Props {
-  chatId: string;
-  chatMessages: IMessage[];
-  setChatMessages: React.Dispatch<React.SetStateAction<IMessage[]>>
-}
+import { setChatMessages } from "../../../state/chat";
 
-export default function ChatBody(props: Props) {
-  const { chatId, chatMessages, setChatMessages } = props;
+export default function ChatBody() {
+  const { chatId, chatMessages } = useSelector(
+    (state: ReduxState) => state.chat
+  );
   const [showFilesPopup, setShowFilesPopup] = useState(false);
   const [showFileOverlay, setShowFileOverlay] = useState(false);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
@@ -28,8 +26,9 @@ export default function ChatBody(props: Props) {
 
   const { user } = useSelector((state: ReduxState) => state.user);
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
-  const width = useResponsive();
 
+  const dispatch = useDispatch();
+  const width = useResponsive();
   const socket = useSocket();
   const pinnedMessages = chatMessages.filter((msg) => msg.pinned).length > 0;
   async function sendMessage(
@@ -55,14 +54,15 @@ export default function ChatBody(props: Props) {
           });
         }
         if (action.reply) {
-          const { messageToReplyId, senderId, mediaPath, mediaType } = action.reply;
+          const { messageToReplyId, senderId, mediaPath, mediaType } =
+            action.reply;
           socket.emit("reply-to-message", {
             message: inputValue,
             messageToReplyId,
             senderId,
             chatId,
-            mediaPath, 
-            mediaType
+            mediaPath,
+            mediaType,
           });
         }
         setInputValue("");
@@ -75,27 +75,30 @@ export default function ChatBody(props: Props) {
   // fetch sended message
   useEffect(() => {
     socket.on("send-message", (message: IMessage) => {
-      setChatMessages((prev) => [...prev, message]);
+      dispatch(setChatMessages([...chatMessages, message]));
     });
     return () => {
       socket.off("send-message");
     };
-  }, [socket, setChatMessages]);
+  }, [socket, dispatch, chatMessages]);
 
   useEffect(() => {
     socket.on("send-message-with-file", (message: IMessage) => {
-      setChatMessages((prev) => [...prev, message]);
+      dispatch(setChatMessages([...chatMessages, message]));
     });
-  }, [socket, setChatMessages]);
+  }, [socket, dispatch, chatMessages]);
   // update messages if one of them was deleted
   useEffect(() => {
     socket.on("delete-message", (messageId: string) => {
-      setChatMessages((prev) => prev.filter((msg) => msg._id !== messageId));
+      const updatedMessages = chatMessages.filter(
+        (msg) => msg._id !== messageId
+      );
+      dispatch(setChatMessages(updatedMessages));
     });
     return () => {
       socket.off("delete-message");
     };
-  }, [socket, setChatMessages]);
+  }, [socket, chatMessages, dispatch]);
 
   // update messages if one of them was edited
   useEffect(() => {
@@ -103,24 +106,22 @@ export default function ChatBody(props: Props) {
       "edit-message",
       (data: { messageId: string; message: string }) => {
         const { message, messageId } = data;
-
-        setChatMessages((prev) => {
-          return prev.map((msg) => {
-            if (msg._id !== messageId) {
-              return msg;
-            } else {
-              // Create a new message object with the updated content
-              return {
-                ...msg,
-                message: message,
-                isEdited: true,
-              };
-            }
-          });
+        const updatedMessages = chatMessages.map((msg) => {
+          if (msg._id !== messageId) {
+            return msg;
+          } else {
+            // Create a new message object with the updated content
+            return {
+              ...msg,
+              message: message,
+              isEdited: true,
+            };
+          }
         });
+        dispatch(setChatMessages(updatedMessages));
       }
     );
-  }, [setChatMessages, socket]);
+  }, [chatMessages, dispatch, socket]);
 
   // update message if media was deleted
   useEffect(() => {
@@ -128,43 +129,46 @@ export default function ChatBody(props: Props) {
       "delete-media",
       (data: { messageId: string; message: IMessage }) => {
         const { message, messageId } = data;
-        setChatMessages((prev) => {
-          return prev.map((msg) => {
-            if (msg._id !== messageId) {
-              return msg;
-            } else {
-              console.log(message.media);
-              return { ...msg, media: message.media };
-            }
-          });
-        });
-      }
-    );
-  }, [setChatMessages, socket]);
-  // update messages if one of them was pinned/unpinned
-  useEffect(() => {
-    socket.on("pin-or-unpin-message", (messageId: string) => {
-      setChatMessages((prev) => {
-        return prev.map((msg) => {
+        const updatedMessages = chatMessages.map((msg) => {
           if (msg._id !== messageId) {
             return msg;
           } else {
-            return {
-              ...msg,
-              pinned: !msg.pinned,
-            };
+            console.log(message.media);
+            return { ...msg, media: message.media };
           }
         });
+        dispatch(setChatMessages(updatedMessages));
+      }
+    );
+  }, [chatMessages, dispatch, socket]);
+  // update messages if one of them was pinned/unpinned
+  useEffect(() => {
+    socket.on("pin-or-unpin-message", (messageId: string) => {
+      const updatedMessages = chatMessages.map((msg) => {
+        if (msg._id !== messageId) {
+          return msg;
+        } else {
+          return {
+            ...msg,
+            pinned: !msg.pinned,
+          };
+        }
       });
+      dispatch(setChatMessages(updatedMessages));
     });
-  }, [socket, setChatMessages]);
+  }, [socket, chatMessages, dispatch]);
   // fetch replies
   useEffect(() => {
     socket.on("reply-to-message", (reply: IMessage) => {
-      setChatMessages((prev) => [...prev, reply]);
+      dispatch(setChatMessages([...chatMessages, reply]));
     });
-  }, [socket, setChatMessages]);
+  }, [socket, dispatch, chatMessages]);
 
+  useEffect(() => {
+    socket.on("send-message-with-media", (message: IMessage) => {
+      dispatch(setChatMessages([...chatMessages, message]));
+    });
+  }, [socket, dispatch, chatMessages]);
   // provide socket with id of group in order to create group
   useEffect(() => {
     socket.emit("joinRoom", chatId);
@@ -199,11 +203,7 @@ export default function ChatBody(props: Props) {
       document.removeEventListener("click", handleCloseSendFiles);
     };
   }, []);
-  useEffect(() => {
-    socket.on("send-message-with-media", (message: IMessage) => {
-      setChatMessages((prev) => [...prev, message]);
-    });
-  }, [socket, setChatMessages]);
+
   return (
     <>
       <div className="flex-1 w-full overflow-y-hidden relative">
@@ -212,11 +212,7 @@ export default function ChatBody(props: Props) {
             pinnedMessages={chatMessages.filter((msg) => msg.pinned)}
           />
         )}
-        <Messages
-          messages={chatMessages}
-          chatId={chatId}
-          myUserId={user?._id}
-        />
+        <Messages />
         {!(showSearchBar && width < 768) && (
           <MessageBar
             sendMessage={sendMessage}
@@ -228,23 +224,13 @@ export default function ChatBody(props: Props) {
             showFilesPopup={showFilesPopup}
           />
         )}
-        {showSearchBar && width < 768 && (
-          <FoundMessagesBottomBar chatId={chatId} />
-        )}
+        {showSearchBar && width < 768 && <FoundMessagesBottomBar />}
       </div>
-      <SendFile
-        showOverlay={showFileOverlay}
-        setFile={setFile}
-        file={file}
-        chatId={chatId}
-        userId={user?._id as string}
-      />
+      <SendFile showOverlay={showFileOverlay} setFile={setFile} file={file} />
       <SendMedia
         showOverlay={showMediaOverlay}
         media={media}
         setMedia={setMedia}
-        chatId={chatId}
-        userId={user?._id as string}
       />
     </>
   );

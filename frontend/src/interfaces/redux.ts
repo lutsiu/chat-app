@@ -85,19 +85,34 @@ export interface ChatStateInitial {
   chatMessages: IMessage[]
 }
 
+interface IMediaOverlay {
+  showOverlay: boolean, 
+  file: null | IFile
+  message: null | IMessage
+}
+interface IContentContextMenu {
+  x: number | null,
+  y: number | null,
+  showMenu: boolean,
+  message: IMessage | null,
+  file: IFile | null
+}
+
+interface IMessageContextMenu {
+  x: number | null,
+  y: number | null,
+  showMenu: boolean,
+  message: IMessage | null,
+  editable: boolean,
+  messageUpperPoint: number | undefined,
+  mediaSrc: string,
+  mediaType: MediaType
+}
+
 export interface ChatUIState {
-  mediaOverlay: {
-    showOverlay: boolean, 
-    file: null | IFile
-    message: null | IMessage
-  },
-  contentContextMenu: {
-    x: number | null,
-    y: number | null,
-    showMenu: boolean,
-    message: IMessage | null,
-    file: IFile | null
-  }
+  mediaOverlay: IMediaOverlay,
+  contentContextMenu: IContentContextMenu
+  messageContextMenu: IMessageContextMenu
 }
 
 export interface ActionWithGroup {
@@ -159,19 +174,12 @@ export interface ActionChangeContactName {
 }
 
 export interface ActionWithMessageMediaOverlay {
-  payload: {
-    showOverlay: boolean, 
-    file: null | IFile
-    message: null | IMessage
-  }
+  payload: IMediaOverlay
 }
 
+export interface ActionWithContentContextMenu {
+  payload: IContentContextMenu
+}
 export interface ActionWithMessageContextMenu {
-  payload: {
-    x: number | null,
-    y: number | null,
-    showMenu: boolean,
-    message: IMessage | null,
-    file: IFile | null
-  }
+  payload: IMessageContextMenu
 }

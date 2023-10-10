@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import WarningPopup from "../../components/Chat/ChatBody/Popups/WarningPopup";
 import Header from "../../components/Chat/Header";
+import ChatBody from "../../components/Chat/ChatBody";
 import { ReduxState } from "../../interfaces/redux";
 import { IMessage, UserModel } from "../../interfaces/models";
 import { useEffect } from "react";
@@ -13,6 +14,7 @@ import {
 import MediaOverlay from "../../components/Chat/ChatBody/Overlays/MediaOverlay";
 import { createPortal } from "react-dom";
 import ContentContextMenu from "../../components/Chat/Overlays/ProfileOverlay/SharedMedia/ContentContextMenu";
+import MessageContextMenu from "../../components/Chat/ChatBody/Messages/ContextMenu";
 interface ChatData {
   chatId: string;
   chatHistory: IMessage[];
@@ -68,11 +70,7 @@ export default function ChatPage() {
       <>
         <Header />
 
-        {/* <ChatBody
-          chatId={width >= 768 ? data.chatId : loaderData.chatId}
-          chatMessages={chatMessages}
-          setChatMessages={setChatMessages}
-        /> */}
+        <ChatBody />
       </>
 
       {ui.showWarningPopup && <WarningPopup />}
@@ -80,8 +78,14 @@ export default function ChatPage() {
         <MediaOverlay />,
         document.getElementById("overlay") as HTMLElement
       )}
-      {createPortal(<ContentContextMenu
-      />, document.getElementById('overlay') as HTMLElement)}
+      {createPortal(
+        <ContentContextMenu />,
+        document.getElementById("overlay") as HTMLElement
+      )}
+      {createPortal(
+        <MessageContextMenu />,
+        document.getElementById("overlay") as HTMLElement
+      )}
     </div>
   );
 }

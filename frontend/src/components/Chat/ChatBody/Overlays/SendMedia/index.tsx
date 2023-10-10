@@ -3,16 +3,19 @@ import { useEffect, useRef } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import styles from "./stylesSendMedia.module.scss";
 import { useSocket } from "../../../../../context/SocketContext";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
   media: Blob[] | null;
   showOverlay: boolean,
   setMedia: React.Dispatch<React.SetStateAction<Blob[] | null>>;
-  chatId: string;
-  userId: string;
 }
 export default function SendMedia(props: Props) {
-  const { media, showOverlay, setMedia, userId, chatId } =
+  const { media, showOverlay, setMedia} =
     props;
+    const {chatId} = useSelector((state: ReduxState) => state.chat);
+  const {user} = useSelector((state: ReduxState) => state.user);
+  const userId = user?._id;
   const formRef = useRef<null | HTMLFormElement>(null);
   const socket = useSocket();
   let headerTitle = "files";

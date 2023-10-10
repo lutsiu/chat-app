@@ -13,12 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
-import { IContact, IMessage, UserModel } from "../../../interfaces/models";
+import { IContact } from "../../../interfaces/models";
 import SkeletonElement from "../../Widgets/SkeletonElement";
 import loader from "../../../assets/tail-spin.svg";
 
 export default function Header() {
-  const { interlocutor, chatId, chatMessages } = useSelector(
+  const { interlocutor} = useSelector(
     (state: ReduxState) => state.chat
   );
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);

@@ -5,14 +5,17 @@ import MediaOverlay from "../../../Overlays/MediaOverlay";
 import { useState } from "react";
 import {AiFillFile} from 'react-icons/ai';
 import downloadFile from "../../../../../../utils/downloadFile";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../../interfaces/redux";
 interface Props {
   file: IFile;
   message: IMessage;
-  chatId: string
+
 }
 
 export default function FileLoader(props: Props) {
-  const { file, message, chatId} = props;
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
+  const { file, message} = props;
   const { fileName, filePath, fileSize, fileType } = file;
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
   const sizeToShow = getSizeOfFile(fileSize);

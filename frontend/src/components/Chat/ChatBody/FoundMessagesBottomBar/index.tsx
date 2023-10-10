@@ -8,12 +8,7 @@ import styles from "./style.module.scss";
 import { createPortal } from "react-dom";
 import { handleScrollToMessage } from "../../../../state/message";
 import { SearchedMessage } from "../../../../interfaces/models";
-interface Props {
-  chatId: string;
-}
-export default function FoundMessagesBottomBar(props: Props) {
-  const { chatId } = props;
-
+export default function FoundMessagesBottomBar() {
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
   const { searchMessages } = useSelector((state: ReduxState) => state.message);
   const [selectedDate, setSelectedDate] = useState<null | Date>(null);
@@ -117,7 +112,6 @@ export default function FoundMessagesBottomBar(props: Props) {
             setSelectedDate={setSelectedDate}
             showCalendar={showCalendar}
             setShowCalendar={setShowCalendar}
-            chatId={chatId}
           />,
           document.getElementById("overlay") as HTMLElement
         )}

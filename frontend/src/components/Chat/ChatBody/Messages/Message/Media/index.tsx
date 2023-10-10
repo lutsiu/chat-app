@@ -4,15 +4,18 @@ import styles from "../../../Overlays/SendMedia/stylesSendMedia.module.scss";
 import { createPortal } from "react-dom";
 import MediaOverlay from "../../../Overlays/MediaOverlay";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../../../../../interfaces/redux";
 
 interface Props {
-  chatId: string;
+ 
   message: IMessage;
 }
 export default function Media(props: Props) {
+  const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [mediaForOverlay, setMediaForOverlay] = useState<null | IFile>(null);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
-  const { chatId, message } = props;
+  const {message } = props;
   const { media } = message;
   const mediaAmount = media.length;
   let mediaContainerClasses = `${styles["media-container-chat"]}`;
