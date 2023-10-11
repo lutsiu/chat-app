@@ -4,13 +4,13 @@ import { UserModel } from "../interfaces/models.ts";
 const userSchema = new mongoose.Schema<UserModel>({
   fullName: {
     type: String,
-    required: false, 
-    default: ''
+    required: false,
+    default: "",
   },
   userName: {
-    type: String, 
+    type: String,
     required: false,
-    default: ''
+    default: "",
   },
   email: {
     type: String,
@@ -22,29 +22,28 @@ const userSchema = new mongoose.Schema<UserModel>({
   },
   profilePictures: {
     type: [String],
-    default: []
+    default: [],
   },
   bio: {
     type: String,
     required: false,
-    default: ''
+    default: "",
   },
   status: {
-    type: String,
-    default: ''
+    type: { isActive: Boolean, lastTimeSeen: Date },
   },
   contacts: {
-    type: [{name: String, _id: String, email: String}],
-    default: []
+    type: [{ name: String, _id: String, email: String }],
+    default: [],
   },
-  chats: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chat', default: []}],
-  confirmationCode: Number, 
+  chats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat", default: [] }],
+  confirmationCode: Number,
   userIsVerified: {
     type: Boolean,
-    default: false
-  }
-}); 
+    default: false,
+  },
+});
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

@@ -5,6 +5,7 @@ import { IMessage } from "../interfaces/models.ts";
 import { deleteFileFromDevice } from "../utils/manageDirs.ts";
 import getMessageToReplyMessage from "../utils/getMessageToReplyMessage.ts";
 import path from "path";
+import e from "connect-flash";
 export const deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
@@ -291,5 +292,44 @@ export const downloadFile = async (req, res) => {
     })
   } catch (err) {
     console.log(err);
+  }
+}
+
+export const getChats =async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json("User wasn't found");
+    }
+    const chatsPromises = user.chats.map((chat) => {
+      return Chat.findById(chat).select([]);
+    });
+    const chats = await Promise.all(chatsPromises);
+ 
+    const dataToReturnPromise = chats.map(async (chat) => {
+      const interlocutor = chat.participants.find(
+        (part) => part.toString() !== userId.toString()
+      );  
+      const isContact = user.contacts.find((cont) => cont._id.toString() === interlocutor.toString());
+      const interlocutorInfo = await User.findById(interlocutor);
+      let interlocutorName = interlocutorInfo.fullName;
+      if (isContact) {
+        interlocutorName = isContact.name
+      }
+      const data = {
+        message: chat.messages.at(-1),
+        interlocutor: {
+          profilePicture: interlocutorInfo.profilePictures.at(-1),
+          name: interlocutorName,
+          userName: interlocutorInfo.userName
+        },
+      };  
+      return data
+    });
+    const dataToReturn = await Promise.all(dataToReturnPromise);
+    res.status(200).json(dataToReturn);
+  } catch (err) {
+    res.status(409).json("Internal error occured");
   }
 }

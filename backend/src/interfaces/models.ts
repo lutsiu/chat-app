@@ -13,7 +13,10 @@ export interface UserModel {
   password: string;
   profilePictures: string[];
   bio: string;
-  status: string;
+  status: {
+    isActive: boolean,
+    lastTimeSeen?: Date
+  };
   contacts: Contact[];
   chats: string[];
   confirmationCode: number | null;

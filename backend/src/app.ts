@@ -32,6 +32,7 @@ import {
   createUserDir,
   deleteFileFromDevice,
 } from "./utils/manageDirs.ts";
+import getContactInfo from "./utils/getContacts.ts";
 /* CONFIG */
 
 dotenv.config();
@@ -547,49 +548,82 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on("get-contacts-info", async (data) => {
+      const { userId, contacts } = data;
+      const contactsToReturn = await getContactInfo(userId, contacts);
+      socket.emit("get-contacts-info", contactsToReturn);
+    });
+    
+    socket.on("get-contacts-with-query", async (data) => {
+      const { userId, query } = data;
+      const contactsToReturn = await getContactInfo(userId, [], query);
+      socket.emit("get-contacts-with-query", contactsToReturn);
+    });
+    socket.on("get-chats", async (userId: string) => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/chat/get-chats/${userId}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          socket.emit("get-chats", data);
+        } else [socket.emit("get-chats", [])];
+      } catch (err) {
+        console.log(err);
+      }
+    });
     socket.on(
-      "get-contacts-info",
-      async (data: { userId: string; contacts: Contact[] }) => {
+      "change-contact-name",
+      async (data: {
+        userId: string;
+        contactName: string;
+        contactId: string;
+      }) => {
         try {
-          const { userId, contacts } = data;
-          const user = await User.findById(userId);
-          if (!user) {
-            socket.emit("get-contacts-info", null);
+          const { contactId, contactName } = data;
+
+          const body = JSON.stringify(data);
+          const res = await fetch(
+            `http://localhost:3000/contact/change-contact-name`,
+            {
+              headers: { "Content-Type": "application/json" },
+              body,
+              method: "PUT",
+            }
+          );
+          if (res.ok) {
+            socket.emit("change-contact-name", { contactName, contactId });
           }
-          const contactsInfoPromise = contacts.map((contact) => {
-            return User.findById(contact._id);
-          });
-          const contactsInfo = await Promise.all(contactsInfoPromise);
-          const contactsToReturn = contactsInfo.map((contact) => {
-            const contactToReturn = contacts.find(
-              (con) => con._id.toString() === contact._id.toString()
-            );
-            const { _id, name, email } = contactToReturn;
-            return {
-              _id,
-              name,
-              email,
-              profilePicture: contact.profilePictures.at(-1),
-              status: contact.status,
-              userName: contact.userName,
-            };
-          });
-          socket.emit("get-contacts-info", contactsToReturn);
         } catch (err) {
           console.log(err);
         }
       }
     );
-    socket.on('get-chats', async (userId: string) => {
+    socket.on('set-status', async (data: {userId: string, isActive: boolean}) => {
+      try { 
+        const {userId, isActive} = data;
+        const user = await User.findById(userId);
+        if (!user) return
+        user.status = {
+          isActive,
+          lastTimeSeen: new Date()
+        }
+        await user.save();
+        socket.emit('set-status', user.status);
+      } catch (err) { 
+        console.log(err);
+      }
+    });
+    socket.on("update-status-in-chat", async (data: {userId: string, isActive: boolean, chatId: string}) => {
       try {
-        const res = await fetch(`http://localhost:3000/chat/get-chats/${userId}`)
-        if (res.ok) {
-          const data = await res.json();
-          console.log(data);
-          socket.emit('get-chats', data)
-        } else [
-          socket.emit('get-chats', [])
-        ]
+        const {isActive, chatId, userId} = data;
+        socket.join(chatId);
+        const statusToReturn = {
+           userId,
+          isActive,
+          lastTimeSeen: new Date()
+        }
+        io.in(chatId).emit("update-status-in-chat", statusToReturn);
       } catch (err) {
         console.log(err);
       }
