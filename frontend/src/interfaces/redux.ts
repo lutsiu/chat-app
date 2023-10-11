@@ -32,7 +32,7 @@ export interface UiInitialState {
   showEditContactProfile: boolean;
   showWarningPopup: boolean;
   showSearchBar: boolean;
-  dataIsLoading: boolean
+  dataIsLoading: boolean,
 }
 
 export interface MessageInitialState {

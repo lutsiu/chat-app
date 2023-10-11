@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-import styles from "./styles.module.scss";
+
 
 import Photo from "./Photo";
+import Chevrons from "./Chevrons";
 
 interface Props {
   photos: string[] | undefined;
@@ -13,15 +13,9 @@ export default function UserPhotos(props: Props) {
   const { photos: pictures, userName } = props;
   const [photos, setPhotos] = useState<string[]>([]);
   const [activePhoto, setActivePhoto] = useState(0);
-  const [photoIsHovered, setPhotoIsHovered] = useState(false);
+/*   const [photoIsHovered, setPhotoIsHovered] = useState(false); */
 
-  useEffect(() => {
-    if (pictures && pictures.length > 0) {
-      const reversedPhotos = reverseArray(pictures);
-      setPhotos(reversedPhotos);
-    }
-  }, [pictures]);
-
+ 
   function reverseArray(arr: string[]) {
     const reversed: string[] = [];
     for (let i = arr.length - 1; i >= 0; i--) {
@@ -48,13 +42,20 @@ export default function UserPhotos(props: Props) {
     }
   }
 
+  useEffect(() => {
+    if (pictures && pictures.length > 0) {
+      const reversedPhotos = reverseArray(pictures);
+      setPhotos(reversedPhotos);
+    }
+  }, [pictures]);
+
   return (
     <div
       className="w-full h-[50rem] md:h-[42rem] relative flex overflow-x-hidden"
-      onMouseEnter={() => setPhotoIsHovered(true)}
+/*       onMouseEnter={() => setPhotoIsHovered(true)}
       onMouseLeave={() => setPhotoIsHovered(false)}
       onTouchStart={() => setPhotoIsHovered(true)}
-      onTouchEnd={() => setPhotoIsHovered(false)}
+      onTouchEnd={() => setPhotoIsHovered(false)} */
     >
       <div
         className="flex w-full h-full ease-in-out duration-300"
@@ -84,26 +85,7 @@ export default function UserPhotos(props: Props) {
           ></div>
         ))}
       </div>
-      {photos.length > 1 && photoIsHovered && (
-        <div className="absolute  w-full h-full top-0 flex justify-between">
-          <div
-            className={`${styles.chevronParent} h-full w-[20%] flex items-center pl-[1rem] cursor-pointer`}
-            onClick={scrollPhotoBackwards}
-          >
-            <BsChevronLeft
-              className={`${styles.chevron} w-[4rem] h-[4rem] duration-300`}
-            />
-          </div>
-          <div
-            className={`${styles.chevronParent} h-full w-[20%] flex items-center justify-end pr-[1rem] cursor-pointer`}
-            onClick={scrollPhotoForward}
-          >
-            <BsChevronRight
-              className={`${styles.chevron} w-[4rem] h-[4rem] duration-300`}
-            />
-          </div>
-        </div>
-      )}
+      <Chevrons photos={photos} scrollPhotoBackwards={scrollPhotoBackwards} scrollPhotoForward={scrollPhotoForward}/>
     </div>
   );
 }

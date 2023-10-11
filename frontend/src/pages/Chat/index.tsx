@@ -53,7 +53,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     function resetData(e: any) {
-      /* if (e.currentTarget.performance.navigation.type === 1) return; */
+      if (e.currentTarget.performance.navigation.type === 1) return;
       dispatch(setChatId(null));
       dispatch(setChatMessages([]));
       dispatch(setInterlocutor(null));
