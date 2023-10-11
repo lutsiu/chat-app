@@ -107,7 +107,7 @@ export default function MessageBar(props: Props) {
 
   return (
     <form
-      className="fixed bottom-[0] flex flex-col px-[1rem] md:w-[65%] w-full "
+      className="fixed bottom-[0] flex flex-col px-[1rem] md:w-[65%] 2xl:pl-[15rem] 2xl:px-[0] w-full "
       id="message-bar"
       onSubmit={handleSubmitForm}
       ref={formRef}

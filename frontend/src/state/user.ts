@@ -4,6 +4,7 @@ import {
   LoginState,
   ActionWithContact,
   ActionChangeContactName,
+  ActionWithStatus
 } from "../interfaces/redux";
 
 const initialState: UserInitialState = {
@@ -62,6 +63,11 @@ const userSlice = createSlice({
         });
       }
     },
+    setStatus(state, action: ActionWithStatus) {
+      if (state.user) {
+        state.user.status = action.payload
+      }
+    }
   },
 });
 
@@ -74,5 +80,6 @@ export const {
   setUserName,
   setProfilePicture,
   setContact,
-  changeContactName
+  changeContactName,
+  setStatus
 } = userSlice.actions;

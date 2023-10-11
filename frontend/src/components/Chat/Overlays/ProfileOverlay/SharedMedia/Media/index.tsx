@@ -9,7 +9,9 @@ interface Props {
 
 export default function Media(props: Props) {
   const { messages} = props;
-  const messagesWithDates = sortMsgsByDate(messages, "month") as {
+  const messagesClone = messages;
+  const reversedClone = messagesClone.reverse()
+  const messagesWithDates = sortMsgsByDate(reversedClone, "month") as {
     date: {
       year: number;
       month: number;

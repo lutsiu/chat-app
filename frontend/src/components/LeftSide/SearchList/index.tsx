@@ -44,7 +44,7 @@ export default function SearchList(props: Props) {
     // set searched contacts
     if (user?.contacts && searchBarValue) {
       setContactsDataIsLoading(true);
-      socket.emit("get-contacts-info", {
+      socket.emit("get-contacts-with-query", {
         userId: user._id,
         query: searchBarValue,
       });
@@ -68,7 +68,7 @@ export default function SearchList(props: Props) {
   }, [searchBarValue, chatData, user?.contacts, user?._id, socket]);
 
   useEffect(() => {
-    socket.on("get-contacts-info", (data: FoundContact[]) => {
+    socket.on("get-contacts-with-query", (data: FoundContact[]) => {
       setSearchedContacts(data);
       setContactsDataIsLoading(false);
     });

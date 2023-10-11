@@ -13,16 +13,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../interfaces/redux";
 import { setShowSearchBar } from "../../../state/ui";
 import { setSearchedMessages } from "../../../state/message";
-import { IContact } from "../../../interfaces/models";
+import { IContact, IStatus } from "../../../interfaces/models";
 import SkeletonElement from "../../Widgets/Skeletons/SkeletonElement";
 import loader from "../../../assets/tail-spin.svg";
+import { useSocket } from "../../../context/SocketContext";
+import normalizeDateOfStatus from "../../../utils/normalizeDateOfStatus";
 
 export default function Header() {
-  const { interlocutor} = useSelector(
-    (state: ReduxState) => state.chat
-  );
+  const { interlocutor } = useSelector((state: ReduxState) => state.chat);
+  const socket = useSocket();
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
   const { user } = useSelector((state: ReduxState) => state.user);
+  const [interlocutorStatus, setInterlocutorStatus] = useState<IStatus | null>(
+    interlocutor?.status ? interlocutor.status : null
+  );
+  const [interlocutorStatusString, setInterlocutorStatusString] = useState("");
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [isContact, setIsContact] = useState<undefined | IContact>(undefined);
@@ -30,8 +35,10 @@ export default function Header() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const width = useResponsive();
   const navigate = useNavigate();
-  const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
   const dispatch = useDispatch();
+
+  const showNavContent = (width < 768 && !showSearchBar) || width >= 768;
+
   const resetSearch = useCallback(() => {
     dispatch(setShowSearchBar());
     dispatch(setSearchedMessages(null));
@@ -51,6 +58,45 @@ export default function Header() {
       setIsContact(contact);
     }
   }, [interlocutor, user?.contacts]);
+
+  useEffect(() => {
+    socket.on(
+      "update-status-in-chat",
+      (data: { userId: string; isActive: boolean; lastTimeSeen: Date }) => {
+        if (data && interlocutor?._id) {
+          const { userId, isActive, lastTimeSeen } = data;
+          if (userId !== interlocutor._id) return;
+
+          setInterlocutorStatus({ lastTimeSeen, isActive });
+        }
+      }
+    );
+  }, [interlocutor?._id, socket]);
+
+  useEffect(() => {
+    if (!interlocutor?.status.lastTimeSeen) return;
+    const interlocutorStatusAsString = normalizeDateOfStatus(
+      interlocutorStatus?.lastTimeSeen as Date
+    );
+
+    setInterlocutorStatusString(interlocutorStatusAsString);
+    function updateInterlocutorDate() {
+      if (interlocutor?.status.isActive || interlocutorStatus?.isActive) return;
+      if (!interlocutorStatus?.lastTimeSeen) return;
+      const updatedDate = normalizeDateOfStatus(
+        interlocutorStatus?.lastTimeSeen as Date
+      );
+      setInterlocutorStatusString(updatedDate);
+    }
+    setInterval(() => {
+      updateInterlocutorDate();
+    }, 60 * 1000);
+  }, [
+    interlocutor,
+    interlocutorStatus?.isActive,
+    interlocutorStatus?.lastTimeSeen,
+  ]);
+  console.log(interlocutorStatus)
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -100,7 +146,9 @@ export default function Header() {
                   </span>
                 )}
                 <span className="text-lg font-normal text-gray-300">
-                  {"Status"}
+                  {interlocutorStatus?.isActive
+                    ? "active"
+                    : `last seen: ${interlocutorStatusString}`}
                 </span>
               </div>
               <div className="flex items-center gap-[2rem] text-gray-400">
@@ -141,7 +189,7 @@ export default function Header() {
         setShowOverlay={setShowProfile}
         showOverlay={showProfile}
       />
-      <EditProfile setShowProfile={setShowProfile}  />
+      <EditProfile setShowProfile={setShowProfile} />
     </>
   );
 }

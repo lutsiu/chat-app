@@ -15,6 +15,7 @@ import MediaOverlay from "../../components/Chat/ChatBody/Overlays/MediaOverlay";
 import { createPortal } from "react-dom";
 import ContentContextMenu from "../../components/Chat/Overlays/ProfileOverlay/SharedMedia/ContentContextMenu";
 import MessageContextMenu from "../../components/Chat/ChatBody/Messages/ContextMenu";
+import { useSocket } from "../../context/SocketContext";
 interface ChatData {
   chatId: string;
   chatHistory: IMessage[];
@@ -23,7 +24,11 @@ interface ChatData {
 export default function ChatPage() {
   const { ui } = useSelector((state: ReduxState) => state);
   const { user } = useSelector((state: ReduxState) => state.user);
+  const { chatId } = useSelector((state: ReduxState) => state.chat);
+  
   const dispatch = useDispatch();
+  const socket = useSocket();
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -65,6 +70,37 @@ export default function ChatPage() {
       window.removeEventListener("beforeunload", resetData);
     };
   }, [dispatch]);
+
+  // send status to backend
+  useEffect(() => {
+    socket.emit("update-status-in-chat", {userId: user?._id, isActive: true, chatId });
+  }, [socket, chatId, user?._id]); 
+
+  useEffect(() => {
+    function windowClosed() {
+      socket.emit("update-status-in-chat", {userId: user?._id, isActive: false, chatId });
+    }
+    window.addEventListener("beforeunload", windowClosed);
+
+  }, [chatId, socket, user?._id]);
+  // set status to non active, if page is not active  
+  useEffect(() => {
+    function checkTabVisibility() {
+      if (!document.hidden) {
+        // active
+        socket.emit("update-status-in-chat", {userId: user?._id, isActive: true, chatId });
+      } else {
+        // not active
+        socket.emit("update-status-in-chat", {userId: user?._id, isActive: false, chatId });
+      }
+    }
+    checkTabVisibility();
+    document.addEventListener("visibilitychange", checkTabVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", checkTabVisibility);
+    }
+  }, [socket, chatId, user?._id]);
+
   return (
     <div className="bg-gray-900 min-h-screen max-h-screen relative flex flex-col">
       <>

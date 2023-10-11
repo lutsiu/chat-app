@@ -8,6 +8,7 @@ import { setMessageContainerScrollTop } from "../../../../state/message";
 import sortMsgsByDate from "../../../../utils/sortMsgsByDate";
 import normalizeDateName from "../../../../utils/normalizeDateName";
 import MessagesSkeleton from "../../../Widgets/Skeletons/MessagesSkeleton";
+import useResponsive from "../../../../hooks/useResponsive";
 
 export default function Messages() {
   const { chatMessages: messages } = useSelector(
@@ -17,6 +18,7 @@ export default function Messages() {
   const { scrollToMessage } = useSelector((state: ReduxState) => state.message);
   const [showContent, setShowContent] = useState(false);
   const dispatch = useDispatch();
+  const width = useResponsive()
   // create array of objects with date and message of the same date
   const messagesWithDates = sortMsgsByDate(messages, "day") as {
     date: string;
@@ -69,12 +71,14 @@ export default function Messages() {
       ref={chatContainer}
     >
       <ul
-        className={`2xl:${messagesWithDates.length > 0 ? 'px-[15rem]' : ''} px-[1rem]`}
+        className={``}
         style={{
           paddingTop:
             messages.filter((msg) => msg.pinned).length > 0
               ? `${PINNED_MESSAGES_BAR_HEIGHT + 3}px `
               : "",
+            paddingLeft: width >=1400 && messagesWithDates.length > 0 ? '15rem' : '1rem',
+            paddingRight: width >=1400 && messagesWithDates.length > 0 ? '15rem' : '1rem'
         }}
       >
         {messagesWithDates.length === 0 && <MessagesSkeleton/>}

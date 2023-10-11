@@ -32,7 +32,7 @@ export default function ProfileOverlay(props: Props) {
         bio={interlocutor?.bio}
         email={interlocutor?.email}
         userName={interlocutor?.userName}
-        userImages={user?.profilePictures}
+        userImages={interlocutor?.profilePictures}
       />
       <BottomNavigationBar
         setShowFiles={setShowFiles}

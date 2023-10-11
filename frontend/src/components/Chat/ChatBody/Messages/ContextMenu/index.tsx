@@ -121,6 +121,7 @@ export default function MessageContextMenu() {
         mediaType: mediaType,
       })
     );
+    closeContextMenu()
   }
   function replyToMessage() {
     if (!myUserId) return;

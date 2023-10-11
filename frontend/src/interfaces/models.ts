@@ -6,7 +6,7 @@ export interface UserModel {
   password: string;
   profilePictures: string[];
   bio: string;
-  status: string;
+  status: IStatus;
   contacts: IContact[];
   chats: string[];
   confirmationCode: number | null;
@@ -49,4 +49,9 @@ export type MediaType = null | 'video' | 'image';
 export interface SearchedMessage {
   message: IMessage;
   user: { _id: string; fullName: string; profilePicture: string };
+}
+
+export interface IStatus {
+  isActive: boolean, 
+  lastTimeSeen: Date
 }

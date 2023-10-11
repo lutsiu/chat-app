@@ -17,11 +17,11 @@ import { SocketProvider } from "./context/SocketContext";
 
 function App() {
   const dispatch = useDispatch();
+
   const isAuthenticated = useSelector(
     (state: ReduxState) => Boolean(state.user.token)
   );
   
-  const {user} = useSelector((state: ReduxState) => state.user);
 
   const width = useResponsive();
 
@@ -46,7 +46,7 @@ function App() {
       },
       {
         path: "/:userName",
-        element: chatElement,
+        element: isAuthenticated ? chatElement : <Navigate to="/"/>,
         children: width >= 768 ? [{ index: true, element: <ChatPage /> }] : [],
       
       },
@@ -57,6 +57,7 @@ function App() {
     dispatch(hideEverything());
   }, [dispatch]);
 
+  
   return (
     <SocketProvider serverUrl="http://localhost:3000">
       <RouterProvider router={router} />

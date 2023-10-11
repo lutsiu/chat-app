@@ -1,6 +1,12 @@
+import { useEffect } from "react";
 import LoginForm from "../../components/auth/Login";
 import {Link} from 'react-router-dom';
 export default function LoginPage() {
+  useEffect(() => {
+    setTimeout(() => {
+      localStorage.clear()
+    }, 10);
+  }, []);
   return (
     <main className="pt-[4rem]">
       <div className="w-fit mx-auto">

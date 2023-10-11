@@ -16,7 +16,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import thunk from "redux-thunk";
 import peopleSearchReducer from "./state/peopleSearch.ts";
 
-const persistConfig = { key: "root", storage, version: 1 };
+const persistConfig = { key: "root", storage, version: 1, };
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -33,7 +33,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: [thunk],
+  middleware: [thunk]
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

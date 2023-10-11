@@ -20,11 +20,12 @@ import PersonalResponsiveSettings from "../Widgets/Settings/ResponsiveSettings/P
 import {IMessage, UserModel} from "../../interfaces/models"
 import { useEffect } from "react";
 import { useSocket } from "../../context/SocketContext";
-import {changeContactName, setBio, setFullName, setProfilePicture, setUserName} from '../../state/user'
+import {changeContactName, setBio, setFullName, setProfilePicture, setStatus, setUserName} from '../../state/user'
 import { setContact } from "../../state/user";
 import { IContact } from "../../interfaces/models";
 export default function MainWrapper() {
   const { ui } = useSelector((state: ReduxState) => state);
+  const userId = useSelector((state: ReduxState) => state.user.user?._id);
   const dispatch = useDispatch();
   const socket = useSocket();
   const width = useResponsive();
@@ -60,6 +61,46 @@ export default function MainWrapper() {
       dispatch(changeContactName({id: contactId, name: contactName}))
     })  
   }, [socket, dispatch]);
+
+  // set status to active 
+  useEffect(() => {
+    socket.emit("set-status", {userId: userId, isActive: true});
+    
+
+  }, [socket, userId]); 
+  useEffect(() => {
+    function windowClosed() {
+      socket.emit("set-status", {userId: userId, isActive: false});
+    }
+    window.addEventListener("beforeunload", windowClosed);
+  }, [socket, userId])  
+  // set status to non active, if page is not active  
+  useEffect(() => {
+    function checkTabVisibility() {
+      if (!document.hidden) {
+        // active
+          socket.emit("set-status", {userId: userId, isActive: true});
+      } else {
+        // not active
+          socket.emit("set-status", {userId: userId, isActive: false});
+      }
+    }
+    checkTabVisibility();
+    document.addEventListener("visibilitychange", checkTabVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", checkTabVisibility);
+    }
+  }, [socket, userId]);
+
+  useEffect(() => {
+    socket.on("set-status", (data: {isActive: boolean, lastTimeSeen: Date}) => {
+      if (data) {
+        const {isActive, lastTimeSeen} = data;
+        dispatch(setStatus({isActive, lastTimeSeen}));
+      }
+    })
+  }, [socket, dispatch]);
+
   return (
     <>
       <main className="flex h-full ">

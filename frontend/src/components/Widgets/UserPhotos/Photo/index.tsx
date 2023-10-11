@@ -29,7 +29,7 @@ export default function Photo(props: Props) {
         <img
           src={src}
           loading="lazy"
-          className="h-full object-cover block w-full"
+          className="h-full object-cover block min-w-full max-w-full"
           onLoad={handleOnLoad}
         />
       )}

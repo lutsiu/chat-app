@@ -1,4 +1,4 @@
-import { IMessage, SearchedMessage, UserModel, MediaType, IContact, IFile } from "./models";
+import { IMessage, SearchedMessage, UserModel, MediaType, IContact, IFile, IStatus } from "./models";
 export interface UserInitialState {
   user: null | UserModel;
   token: null | string;
@@ -173,6 +173,13 @@ export interface ActionChangeContactName {
   }
 }
 
+export interface ActionWithStatus {
+  payload: {
+    isActive: boolean, 
+    lastTimeSeen: Date
+  }
+}
+
 export interface ActionWithMessageMediaOverlay {
   payload: IMediaOverlay
 }
@@ -182,4 +189,8 @@ export interface ActionWithContentContextMenu {
 }
 export interface ActionWithMessageContextMenu {
   payload: IMessageContextMenu
+}
+
+export interface ActionWithStatus {
+  payload: IStatus
 }
