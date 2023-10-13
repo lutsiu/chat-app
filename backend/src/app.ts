@@ -553,7 +553,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       const contactsToReturn = await getContactInfo(userId, contacts);
       socket.emit("get-contacts-info", contactsToReturn);
     });
-    
+
     socket.on("get-contacts-with-query", async (data) => {
       const { userId, query } = data;
       const contactsToReturn = await getContactInfo(userId, [], query);
@@ -568,6 +568,47 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           const data = await res.json();
           socket.emit("get-chats", data);
         } else [socket.emit("get-chats", [])];
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    socket.on("search-user", async (data: { query: string; userId }) => {
+      try {
+        const { query, userId } = data;
+        const users = await User.find({
+          userName: { $regex: query, $options: "i" },
+        });
+        if (users.length > 0) {
+          const usersToMap = users.filter(
+            (contact) => contact._id.toString() !== userId
+          );
+          if (usersToMap.length === 0) {
+            socket.emit("search-user", []);
+          } else {
+            const usersToReturn = usersToMap.map((user) => {
+              const {
+                userName,
+                fullName,
+                profilePictures,
+                status,
+                _id,
+                email,
+              } = user;
+              return {
+                _id,
+                name: fullName,
+                email,
+                profilePicture: profilePictures.at(-1),
+                status,
+                userName,
+              };
+            });
+            socket.emit("search-user", usersToReturn);
+          }
+          
+        } else {
+          socket.emit("search-user", []);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -599,35 +640,41 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
-    socket.on('set-status', async (data: {userId: string, isActive: boolean}) => {
-      try { 
-        const {userId, isActive} = data;
-        const user = await User.findById(userId);
-        if (!user) return
-        user.status = {
-          isActive,
-          lastTimeSeen: new Date()
+    socket.on(
+      "set-status",
+      async (data: { userId: string; isActive: boolean }) => {
+        try {
+          const { userId, isActive } = data;
+          const user = await User.findById(userId);
+          if (!user) return;
+          user.status = {
+            isActive,
+            lastTimeSeen: new Date(),
+          };
+          await user.save();
+          socket.emit("set-status", user.status);
+        } catch (err) {
+          console.log(err);
         }
-        await user.save();
-        socket.emit('set-status', user.status);
-      } catch (err) { 
-        console.log(err);
       }
-    });
-    socket.on("update-status-in-chat", async (data: {userId: string, isActive: boolean, chatId: string}) => {
-      try {
-        const {isActive, chatId, userId} = data;
-        socket.join(chatId);
-        const statusToReturn = {
-           userId,
-          isActive,
-          lastTimeSeen: new Date()
+    );
+    socket.on(
+      "update-status-in-chat",
+      async (data: { userId: string; isActive: boolean; chatId: string }) => {
+        try {
+          const { isActive, chatId, userId } = data;
+          socket.join(chatId);
+          const statusToReturn = {
+            userId,
+            isActive,
+            lastTimeSeen: new Date(),
+          };
+          io.in(chatId).emit("update-status-in-chat", statusToReturn);
+        } catch (err) {
+          console.log(err);
         }
-        io.in(chatId).emit("update-status-in-chat", statusToReturn);
-      } catch (err) {
-        console.log(err);
       }
-    })
+    );
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });
