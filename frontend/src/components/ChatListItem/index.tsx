@@ -1,7 +1,6 @@
 import {  NavLink } from "react-router-dom";
-import { IoCheckmarkOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
-import {mediumPurple, white } from "../../utils/colors";
+import { white } from "../../utils/colors";
 import { useState } from "react";
 import ContextMenu from "./ContextMenu";
 import { ChatData } from "../LeftSide";
@@ -72,10 +71,7 @@ export default function ChatListItem(props: Props) {
                 {name}
               </h2>
               <div className="flex gap-[0.2rem] items-center">
-                <IoCheckmarkOutline
-                  className="text-2xl"
-                  style={{ color: isActive ? white : mediumPurple }}
-                />
+               
                 <span
                   className="text-xl"
                   style={{ color: isActive ? white : "lightgray" }}

@@ -96,7 +96,6 @@ export default function Header() {
     interlocutorStatus?.isActive,
     interlocutorStatus?.lastTimeSeen,
   ]);
-  console.log(interlocutorStatus)
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">

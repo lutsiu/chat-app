@@ -13,10 +13,7 @@ export interface Interlocutor {
   name: string;
   userName: string;
 }
-export interface FoundChat {
-  message: IMessage;
-  interlocutor: Interlocutor;
-}
+
 export interface FoundContact {
   _id: string;
   name: string;
@@ -38,7 +35,7 @@ export default function SearchList(props: Props) {
   );
   const [contactsDataIsLoading, setContactsDataIsLoading] = useState(true);
   const socket = useSocket();
-  const [searchedChats, setSearchedChats] = useState<FoundChat[]>([]);
+  const [searchedChats, setSearchedChats] = useState<Interlocutor[]>([]);
   const [searchedContacts, setSearchedContacts] = useState<FoundContact[]>([]);
   useEffect(() => {
     // set searched contacts
@@ -52,12 +49,16 @@ export default function SearchList(props: Props) {
     // set searched chats
     if (searchBarValue) {
       const matchingChats = chatData.filter((chat) => {
-        return chat.interlocutor.name
+        return chat.interlocutor.userName
           .toLowerCase()
+          .includes(searchBarValue.toLowerCase()) || chat.interlocutor.name.toLowerCase()
           .includes(searchBarValue.toLowerCase());
       });
-      if (matchingChats) {
-        setSearchedChats(matchingChats);
+      if (matchingChats.length > 0) {
+        const chats = matchingChats.map((chat) => chat.interlocutor);
+        setSearchedChats(chats);
+      } else {
+        socket.emit('search-user', {query: searchBarValue, userId: user?._id});
       }
     }
     if (searchBarValue === "") {
@@ -72,6 +73,15 @@ export default function SearchList(props: Props) {
       setSearchedContacts(data);
       setContactsDataIsLoading(false);
     });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on('search-user', (data: Interlocutor[]) => {
+      if (data.length>  0) {
+        setSearchedChats(data);
+        console.log(data)
+      }
+    })
   }, [socket]);
   return (
     <div className="flex-1 max-w-full bg-slate-800 origin-bottom  ">

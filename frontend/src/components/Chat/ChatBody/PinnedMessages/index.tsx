@@ -118,31 +118,30 @@ export default function PinnedMessages(props: Props) {
     };
   }, [activePinnedMessageMedia?.path, activePinnedMessageMedia?.type]);
   return (
-    <ul className="absolute w-full py-[.4rem] bg-slate-700 z-[2] flex justify-between px-[1rem] items-center">
+    <ul
+      className="absolute w-full py-[.4rem] bg-slate-700 z-[2] flex justify-between px-[1rem] items-center  cursor-pointer"
+      onClick={handleScrollToPinnedMessage}
+    >
       <div className="flex gap-[1rem]">
         {activePinnedMessageMedia && (
           <div className="w-[3.5rem] h-[3.5rem] object-cover rounded-lg overflow-hidden">
             {!isLoading && activePinnedMessageMedia.type.includes("image") && (
-              <img
+              <img className="w-full h-full object-cover" src={imageSrc} />
+            )}
+            {isLoading && (
+              <SkeletonElement
+                count={1}
                 className="w-full h-full object-cover"
-                src={imageSrc}
               />
             )}
-            {isLoading  && <SkeletonElement count={1} className="w-full h-full object-cover"/>}
             {!isLoading && activePinnedMessageMedia.type.includes("video") && (
               <video className="w-full h-full object-cover">
-                <source
-                  src={videoSrc}
-                  type={activePinnedMessageMedia.type}
-                />
+                <source src={videoSrc} type={activePinnedMessageMedia.type} />
               </video>
             )}
           </div>
         )}
-        <div
-          onClick={handleScrollToPinnedMessage}
-          className="flex-1 cursor-pointer"
-        >
+        <div className="flex-1 ">
           <span className="text-purple-400 font-medium text-lg flex items-center">
             Pinned message
             <TextTransition className="ml-[0.3rem]">{`#${
