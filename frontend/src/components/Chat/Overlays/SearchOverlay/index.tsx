@@ -25,7 +25,7 @@ export default function SearchOverlay(props: Props) {
   const {searchMessages} = useSelector((state: ReduxState) => state.message);
   const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [selectedDate, setSelectedDate] = useState<null | Date>(null);
-  const [timer, setTimer] = useState<NodeJS.Timeout  | null>(null);
+  const [timer, setTimer] = useState<any  | null>(null);
   const socket = useSocket();
 
   const dispatch = useDispatch();
