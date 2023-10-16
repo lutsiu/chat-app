@@ -8,6 +8,7 @@ import TextTransition from "react-text-transition";
 import { getPinnedbarMessageContent } from "../../../../utils/getActionBarMessageContent";
 import spinner from "../../../../assets/tail-spin.svg";
 import SkeletonElement from "../../../Widgets/Skeletons/SkeletonElement";
+import BACKEND_SERVER from "../../../../utils/VARIABLES";
 interface Props {
   pinnedMessages: IMessage[];
 }
@@ -94,7 +95,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     if (!activePinnedMessageMedia?.type.includes("image")) return;
     const image = new Image();
-    image.src = `http://lutsiu-chat-app-api/${activePinnedMessageMedia.path}`;
+    image.src = `${BACKEND_SERVER}/${activePinnedMessageMedia.path}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
@@ -105,7 +106,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     if (!activePinnedMessageMedia?.type.includes("video")) return;
     const video = document.createElement("video");
-    video.src = `http://lutsiu-chat-app-api/${activePinnedMessageMedia?.path}`;
+    video.src = `${BACKEND_SERVER}/${activePinnedMessageMedia?.path}`;
 
     video.onloadedmetadata = () => {
       setIsLoading(false);

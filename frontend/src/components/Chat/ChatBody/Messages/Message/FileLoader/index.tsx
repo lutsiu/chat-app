@@ -4,6 +4,7 @@ import { AiFillFile } from "react-icons/ai";
 import downloadFile from "../../../../../../utils/downloadFile";
 import { useDispatch } from "react-redux";
 import { setShowMediaOverlay } from "../../../../../../state/chatUI";
+import BACKEND_SERVER from "../../../../../../utils/VARIABLES";
 interface Props {
   file: IFile;
   message: IMessage;
@@ -19,7 +20,7 @@ export default function FileLoader(props: Props) {
     thumbNail = (
       <img
         className="w-full h-full object-cover object-top"
-        src={`http://lutsiu-chat-app-api/${filePath}`}
+        src={`${BACKEND_SERVER}/${filePath}`}
       />
     );
   }

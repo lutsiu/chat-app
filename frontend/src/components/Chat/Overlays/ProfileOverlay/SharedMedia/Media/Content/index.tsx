@@ -7,6 +7,7 @@ import {
   setShowContentContextMenu,
   setShowMediaOverlay,
 } from "../../../../../../../state/chatUI";
+import BACKEND_SERVER from "../../../../../../../utils/VARIABLES";
 interface Props {
   media: IFile;
   message: IMessage;
@@ -45,7 +46,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (!media.fileType.includes('image')) return;
     const image = new Image();
-    image.src = `http://lutsiu-chat-app-api/${media.filePath}`;
+    image.src = `${BACKEND_SERVER}/${media.filePath}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
@@ -56,7 +57,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (!media.fileType.includes('video')) return;
     const video = document.createElement("video");
-    video.src = `http://lutsiu-chat-app-api/${media.filePath}`
+    video.src = `${BACKEND_SERVER}/${media.filePath}`
 
     video.onloadedmetadata = () => {
       setIsLoading(false);

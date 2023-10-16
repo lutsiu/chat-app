@@ -7,6 +7,7 @@ import { UserModel } from "../../../interfaces/models";
 import { useDispatch } from "react-redux/";
 import { setLogin } from "../../../state/user";
 import { useNavigate } from "react-router-dom";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 export default function LoginForm() {
   const [initialDisabled, setInitialDisabled] = useState(true);
   const [formError, setFormError] = useState(false);
@@ -36,7 +37,7 @@ export default function LoginForm() {
   }): Promise<void> {
     try {
       const body = JSON.stringify(values);
-      const res = await fetch(`http://lutsiu-chat-app-api/auth/login`, {
+      const res = await fetch(`${BACKEND_SERVER}/auth/login`, {
         headers: { "Content-Type": "application/json" },
         body,
         method: "POST",

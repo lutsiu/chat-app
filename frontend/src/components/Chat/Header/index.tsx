@@ -18,6 +18,7 @@ import SkeletonElement from "../../Widgets/Skeletons/SkeletonElement";
 import loader from "../../../assets/tail-spin.svg";
 import { useSocket } from "../../../context/SocketContext";
 import normalizeDateOfStatus from "../../../utils/normalizeDateOfStatus";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 
 export default function Header() {
   const { interlocutor } = useSelector((state: ReduxState) => state.chat);
@@ -120,7 +121,7 @@ export default function Header() {
               <img
                 src={
                   interlocutor
-                    ? `http://lutsiu-chat-app-api/${interlocutor.profilePictures.at(
+                    ? `${BACKEND_SERVER}/${interlocutor.profilePictures.at(
                         -1
                       )}`
                     : loader

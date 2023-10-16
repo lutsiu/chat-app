@@ -14,6 +14,7 @@ import { hideEverything,  } from "./state/ui";
 import ChatPage from "./pages/Chat";
 import useResponsive from "./hooks/useResponsive";
 import { SocketProvider } from "./context/SocketContext";
+import BACKEND_SERVER from "./utils/VARIABLES";
 
 function App() {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ function App() {
 
   
   return (
-    <SocketProvider serverUrl="http://lutsiu-chat-app-api">
+    <SocketProvider serverUrl={BACKEND_SERVER}>
       <RouterProvider router={router} />
     </SocketProvider>
   );

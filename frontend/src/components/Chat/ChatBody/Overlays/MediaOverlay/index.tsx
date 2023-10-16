@@ -11,6 +11,7 @@ import downloadFile from "../../../../../utils/downloadFile";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
 import { setShowMediaOverlay } from "../../../../../state/chatUI";
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 
 export default function MediaOverlay() {
   const { file, message, showOverlay } = useSelector(
@@ -141,13 +142,13 @@ export default function MediaOverlay() {
         {file && file.fileType.includes("image") && (
           <img
             className="w-full h-full object-cover"
-            src={`http://lutsiu-chat-app-api/${file.filePath}`}
+            src={`${BACKEND_SERVER}/${file.filePath}`}
           />
         )}
         {file && file.fileType.includes("video") && (
           <video className="object-cover h-full w-full" controls>
             <source
-              src={`http://lutsiu-chat-app-api/${file.filePath}`}
+              src={`${BACKEND_SERVER}/${file.filePath}`}
               type={file.fileType}
             />
           </video>

@@ -15,6 +15,7 @@ import { useSocket } from "../../../../../context/SocketContext";
 import { useEffect, useState } from "react";
 import spinner from "../../../../../assets/tail-spin.svg";
 import SkeletonElement from "../../../../Widgets/Skeletons/SkeletonElement";
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 interface Props {
   setShowProfile: (show: boolean) => void;
 }
@@ -90,7 +91,7 @@ export default function EditProfile(props: Props) {
           <img
             src={
               interlocutor
-                ? `http://lutsiu-chat-app-api/${interlocutor.profilePictures.at(-1)}`
+                ? `${BACKEND_SERVER}/${interlocutor.profilePictures.at(-1)}`
                 : spinner
             }
             alt="Avatar"

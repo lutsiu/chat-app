@@ -4,6 +4,7 @@ import { setShowMediaOverlay } from "../../../../../../../../state/chatUI";
 import { useState, useEffect} from "react";
 import spinner from '../../../../../../../../assets/tail-spin.svg'
 import SkeletonElement from "../../../../../../../Widgets/Skeletons/SkeletonElement";
+import BACKEND_SERVER from "../../../../../../../../utils/VARIABLES";
 interface Props {
   mediaItem: IFile;
   mediaClasses: string;
@@ -25,7 +26,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (mediaItem.fileType.includes('video')) return;
     const image = new Image();
-    image.src = `http://lutsiu-chat-app-api/${mediaItem.filePath}`;
+    image.src = `${BACKEND_SERVER}/${mediaItem.filePath}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
@@ -36,7 +37,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (!mediaItem.fileType.includes('video')) return;
     const video = document.createElement("video");
-    video.src = `http://lutsiu-chat-app-api/${mediaItem.filePath}`
+    video.src = `${BACKEND_SERVER}/${mediaItem.filePath}`
 
     video.onloadedmetadata = () => {
       setIsLoading(false);
