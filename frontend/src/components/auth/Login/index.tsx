@@ -36,7 +36,7 @@ export default function LoginForm() {
   }): Promise<void> {
     try {
       const body = JSON.stringify(values);
-      const res = await fetch(`http://localhost:3000/auth/login`, {
+      const res = await fetch(`http://lutsiu-chat-app-api/auth/login`, {
         headers: { "Content-Type": "application/json" },
         body,
         method: "POST",

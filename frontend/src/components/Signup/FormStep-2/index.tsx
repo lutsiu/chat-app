@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import SubmitButton from "../../Widgets/Buttons/Submit";
 import { useState, useEffect, FormEvent } from "react";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 
 interface Props {
   setStep: (step: number) => void;
@@ -30,7 +31,7 @@ export default function FormStep2(props: Props) {
   async function onSubmit(values: { code: string }): Promise<void> {
     try {
       const body = JSON.stringify({ code: values.code, userId });
-      const res = await fetch(`http://localhost:3000/auth/sign-up/step-2`, {
+      const res = await fetch(`${BACKEND_SERVER}/auth/sign-up/step-2`, {
         headers: { "Content-Type": "application/json" },
         body,
         method: "POST",
@@ -69,7 +70,7 @@ export default function FormStep2(props: Props) {
       e.preventDefault();
       const body = JSON.stringify({ userId });
       console.log(body);
-      const res = await fetch(`http://localhost:3000/auth/resend-code`, {
+      const res = await fetch(`${BACKEND_SERVER}/auth/resend-code`, {
         headers: { "Content-Type": "application/json" },
         body,
         method: "POST",
@@ -114,7 +115,7 @@ export default function FormStep2(props: Props) {
     function deleteUserData(e: BeforeUnloadEvent) {
       e.preventDefault();
       e.returnValue = '';
-      fetch(`http://localhost:3000/auth/delete-account?userId=${userId}`, {
+      fetch(`${BACKEND_SERVER}/auth/delete-account?userId=${userId}`, {
         headers: { "Content-Type": "application/json" },
         method: "DELETE",
       });

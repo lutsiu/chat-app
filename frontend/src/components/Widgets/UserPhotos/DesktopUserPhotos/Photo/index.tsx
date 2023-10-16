@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import spinner from '../../../../../assets/tail-spin.svg'
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 interface Props {
   photo: string
 }
@@ -9,7 +10,7 @@ export default function Photo(props: Props) {
 
   useEffect(() => {
     const image = new Image();
-    image.src = `http://localhost:3000/${photo}`;
+    image.src = `${BACKEND_SERVER}/${photo}`;
 
     image.onload = () => {
       setSrc(image.src);

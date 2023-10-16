@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./styles.module.scss";
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 
 interface Props {
   userName: string;
@@ -15,7 +16,7 @@ export default function Person(props: Props) {
     >
       <div className="person w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full">
         <img
-          src={`http://localhost:3000/${profilePicture}`}
+          src={`${BACKEND_SERVER}/${profilePicture}`}
           alt="avatar"
           className="w-full h-full"
         />

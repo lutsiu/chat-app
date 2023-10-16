@@ -90,7 +90,7 @@ export default function EditProfile(props: Props) {
           <img
             src={
               interlocutor
-                ? `http://localhost:3000/${interlocutor.profilePictures.at(-1)}`
+                ? `http://lutsiu-chat-app-api/${interlocutor.profilePictures.at(-1)}`
                 : spinner
             }
             alt="Avatar"

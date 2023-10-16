@@ -7,6 +7,7 @@ import PhotoUpload from "../../Widgets/PhotoUpload";
 import Popup from "../../Widgets/Popup";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 interface Props {
   setStep: (step: number) => void;
   userId: string;
@@ -51,7 +52,7 @@ export default function FormStep3(props: Props) {
       formData.append("fullName", fullName);
       formData.append("bio", bio);
       formData.append("profilePicture", image as Blob);
-      const res = await fetch(`http://localhost:3000/auth/sign-up/step-3`, {
+      const res = await fetch(`${BACKEND_SERVER}/auth/sign-up/step-3`, {
         body: formData,
         method: "POST",
       });
@@ -109,7 +110,7 @@ export default function FormStep3(props: Props) {
     async function checkUsernameUniqueness() {
       try {
         const body = JSON.stringify({ query: formik.values.userName });
-        const res = await fetch(`http://localhost:3000/auth/check-username`, {
+        const res = await fetch(`${BACKEND_SERVER}/auth/check-username`, {
           headers: { "Content-Type": "application/json" },
           body,
           method: "POST",

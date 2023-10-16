@@ -5,6 +5,7 @@ import SubmitButton from "../../Widgets/Buttons/Submit";
 import { useState, useEffect } from "react";
 import Popup from "../../Widgets/Popup";
 import { createPortal } from "react-dom";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 
 interface Props {
   setStep: (step: number) => void;
@@ -39,7 +40,7 @@ export default function FormStep1(props: Props) {
   }): Promise<void> {
     try {
       const body = JSON.stringify(values);
-      const res = await fetch(`http://localhost:3000/auth/sign-up/step-1`, {
+      const res = await fetch(`${BACKEND_SERVER}/auth/sign-up/step-1`, {
         headers: { "Content-Type": "application/json" },
         body,
         method: "POST",
@@ -89,7 +90,7 @@ export default function FormStep1(props: Props) {
     async function checkEmailUniqueness() {
       try {
         const body = JSON.stringify({ query: formik.values.email });
-        const res = await fetch(`http://localhost:3000/auth/check-email`, {
+        const res = await fetch(`${BACKEND_SERVER}/auth/check-email`, {
           headers: { "Content-Type": "application/json" },
           body,
           method: "POST",

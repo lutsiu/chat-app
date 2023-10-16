@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import ContentContextMenu from "../../components/Chat/Overlays/ProfileOverlay/SharedMedia/ContentContextMenu";
 import MessageContextMenu from "../../components/Chat/ChatBody/Messages/ContextMenu";
 import { useSocket } from "../../context/SocketContext";
+import BACKEND_SERVER from "../../utils/VARIABLES";
 interface ChatData {
   chatId: string;
   chatHistory: IMessage[];
@@ -35,7 +36,7 @@ export default function ChatPage() {
         const myUserName = user?.userName;
         const interlocutorUserName = location.pathname.slice(1);
         const body = JSON.stringify({ myUserName, interlocutorUserName });
-        const res = await fetch("http://localhost:3000/chat/findOrCreateChat", {
+        const res = await fetch(`${BACKEND_SERVER}/chat/findOrCreateChat`, {
           method: "POST",
           body,
           headers: { "Content-Type": "application/json" },

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
 import ImagePreview from "../../MainSettings/UserInfo/ImagePreview";
 import { useState } from "react";
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 interface Props {
   profileImage: null | Blob;
   setProfileImage: React.Dispatch<React.SetStateAction<Blob | null>>;
@@ -33,7 +34,7 @@ export default function PhotoUpload(props: Props) {
           src={
             profileImage
               ? URL.createObjectURL(profileImage)
-              : `http://localhost:3000/${user?.profilePictures.at(-1)}`
+              : `${BACKEND_SERVER}/${user?.profilePictures.at(-1)}`
           }
           alt="avatar"
           className="w-full h-full object-cover rounded-full"

@@ -19,7 +19,7 @@ export default function FileLoader(props: Props) {
     thumbNail = (
       <img
         className="w-full h-full object-cover object-top"
-        src={`http://localhost:3000/${filePath}`}
+        src={`http://lutsiu-chat-app-api/${filePath}`}
       />
     );
   }

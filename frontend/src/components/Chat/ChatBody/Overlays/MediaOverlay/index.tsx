@@ -141,13 +141,13 @@ export default function MediaOverlay() {
         {file && file.fileType.includes("image") && (
           <img
             className="w-full h-full object-cover"
-            src={`http://localhost:3000/${file.filePath}`}
+            src={`http://lutsiu-chat-app-api/${file.filePath}`}
           />
         )}
         {file && file.fileType.includes("video") && (
           <video className="object-cover h-full w-full" controls>
             <source
-              src={`http://localhost:3000/${file.filePath}`}
+              src={`http://lutsiu-chat-app-api/${file.filePath}`}
               type={file.fileType}
             />
           </video>

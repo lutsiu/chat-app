@@ -94,7 +94,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     if (!activePinnedMessageMedia?.type.includes("image")) return;
     const image = new Image();
-    image.src = `http://localhost:3000/${activePinnedMessageMedia.path}`;
+    image.src = `http://lutsiu-chat-app-api/${activePinnedMessageMedia.path}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
@@ -105,7 +105,7 @@ export default function PinnedMessages(props: Props) {
   useEffect(() => {
     if (!activePinnedMessageMedia?.type.includes("video")) return;
     const video = document.createElement("video");
-    video.src = `http://localhost:3000/${activePinnedMessageMedia?.path}`;
+    video.src = `http://lutsiu-chat-app-api/${activePinnedMessageMedia?.path}`;
 
     video.onloadedmetadata = () => {
       setIsLoading(false);

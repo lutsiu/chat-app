@@ -15,6 +15,7 @@ import {
 } from "../../../state/ui";
 import DesktopUserPhotos from "../UserPhotos/DesktopUserPhotos";
 import { useState } from "react";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 export default function DesktopMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
   const { user } = useSelector((state: ReduxState) => state.user);
@@ -39,7 +40,7 @@ export default function DesktopMenu() {
               onClick={handleShowUserPhotos}
             >
               <img
-                src={`http://localhost:3000/${user?.profilePictures.at(-1)}`}
+                src={`${BACKEND_SERVER}/${user?.profilePictures.at(-1)}`}
                 className="w-full h-full rounded-full object-cover"
                 alt="User avatar"
               />

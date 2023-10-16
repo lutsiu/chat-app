@@ -59,10 +59,13 @@ function App() {
 
   
   return (
-    <SocketProvider serverUrl="http://localhost:3000">
+    <SocketProvider serverUrl="http://lutsiu-chat-app-api">
       <RouterProvider router={router} />
     </SocketProvider>
   );
 }
 
 export default App;
+
+// http://lutsiu-chat-app.onrender.com
+// http://lutsiu-chat-app-api.onrender.com

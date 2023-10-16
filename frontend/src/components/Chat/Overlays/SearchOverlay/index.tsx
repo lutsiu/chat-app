@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleScrollToMessage, setSearchedMessages } from "../../../../state/message";
 import { ReduxState } from "../../../../interfaces/redux";
 import getDate from "../../../../utils/getDate";
+import BACKEND_SERVER from "../../../../utils/VARIABLES";
 interface Props {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -113,7 +114,7 @@ export default function SearchOverlay(props: Props) {
                 >
                   <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
                     <img
-                      src={`http://localhost:3000/${msg.user.profilePicture}`}
+                      src={`${BACKEND_SERVER}/${msg.user.profilePicture}`}
                       alt="avatar"
                       className="w-full h-full object-cover"
                     />

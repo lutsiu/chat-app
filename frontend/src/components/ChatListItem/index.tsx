@@ -5,6 +5,7 @@ import { useState } from "react";
 import ContextMenu from "./ContextMenu";
 import { ChatData } from "../LeftSide";
 import normalizeDateName from "../../utils/normalizeDateName";
+import BACKEND_SERVER from "../../utils/VARIABLES";
 interface Props {
   chatData: ChatData
 }
@@ -59,7 +60,7 @@ export default function ChatListItem(props: Props) {
           <div>
             <div className="w-[5rem] h-[5rem]">
               <img
-                src={`http://localhost:3000/${profilePicture}`}
+                src={`${BACKEND_SERVER}/${profilePicture}`}
                 alt="User's avatar"
                 className="w-full h-full rounded-full object-cover"
               />

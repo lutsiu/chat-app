@@ -14,6 +14,7 @@ import {
   setShowLeftMenu,
   setShowSettings,
 } from "../../../state/ui";
+import BACKEND_SERVER from "../../../utils/VARIABLES";
 export default function DeviceMenu() {
   const { ui } = useSelector((state: ReduxState) => state);
   const {user} = useSelector((state: ReduxState) => state.user);
@@ -31,7 +32,7 @@ export default function DeviceMenu() {
           <div className=" w-[5.5rem] h-[5.5rem]">
             <img
               src={
-                `http://localhost:3000/${user?.profilePictures.at(-1)}`
+                `${BACKEND_SERVER}/${user?.profilePictures.at(-1)}`
               }
               className="w-full h-full rounded-full object-cover"
               alt="User avatar"

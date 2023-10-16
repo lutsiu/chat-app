@@ -2,6 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { ContactSocketData } from "../ContactsMainElement";
+import BACKEND_SERVER from "../../../../utils/VARIABLES";
 interface Props {
   contact: ContactSocketData
 }
@@ -35,7 +36,7 @@ export default function ContactListItem(props: Props) {
         <div>
           <div className="w-[4rem] h-[4rem] rounded-full relative">
             <img
-              src={`http://localhost:3000/${contact.profilePicture}`}
+              src={`${BACKEND_SERVER}/${contact.profilePicture}`}
               alt="avatar"
               className="w-full h-full rounded-full object-cover"
             />

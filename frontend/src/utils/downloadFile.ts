@@ -1,7 +1,8 @@
 import { IFile } from "../interfaces/models";
+import BACKEND_SERVER from "./VARIABLES";
 export default async function downloadFile(file: IFile) {
   const res = await fetch(
-    `http://localhost:3000/chat/download-file?filePath=${file?.filePath}&fileName=${file?.fileName}`
+    `${BACKEND_SERVER}/chat/download-file?filePath=${file?.filePath}&fileName=${file?.fileName}`
   );
   const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);

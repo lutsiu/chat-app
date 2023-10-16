@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { BiSolidCamera } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../../interfaces/redux";
+import BACKEND_SERVER from "../../../../../../utils/VARIABLES";
 interface Props {
   image: null | Blob;
   setImage: (img: null | Blob) => void;
@@ -42,7 +43,7 @@ export default function PhotoUpload(props: Props) {
       >
         <>
           <img
-            src={image ? URL.createObjectURL(image) : `http://localhost:3000/${user?.profilePictures.at(-1) as string}`}
+            src={image ? URL.createObjectURL(image) : `${BACKEND_SERVER}/${user?.profilePictures.at(-1) as string}`}
             className="w-full h-full rounded-full object-cover"
           />
           <div

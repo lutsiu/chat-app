@@ -120,7 +120,7 @@ export default function Header() {
               <img
                 src={
                   interlocutor
-                    ? `http://localhost:3000/${interlocutor.profilePictures.at(
+                    ? `http://lutsiu-chat-app-api/${interlocutor.profilePictures.at(
                         -1
                       )}`
                     : loader

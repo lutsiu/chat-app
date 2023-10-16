@@ -10,6 +10,7 @@ import { hideEverything } from "../../../../../state/ui";
 import InfoPopup from "./Popup";
 import { ReduxState } from "../../../../../interfaces/redux";
 import ImagePreview from "./ImagePreview";
+import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 export default function UserInfo() {
   const { user } = useSelector((state: ReduxState) => state.user);
   const dispatch = useDispatch();
@@ -100,7 +101,7 @@ export default function UserInfo() {
               src={
                 profileImage
                   ? URL.createObjectURL(profileImage)
-                  : `http://localhost:3000/${user?.profilePictures.at(-1)}`
+                  : `${BACKEND_SERVER}/${user?.profilePictures.at(-1)}`
               }
               alt="User's avatar"
               className="w-full h-full rounded-full object-cover"

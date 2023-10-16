@@ -45,7 +45,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (!media.fileType.includes('image')) return;
     const image = new Image();
-    image.src = `http://localhost:3000/${media.filePath}`;
+    image.src = `http://lutsiu-chat-app-api/${media.filePath}`;
     image.onload = () => {
       setIsLoading(false);
       setImageSrc(image.src);
@@ -56,7 +56,7 @@ export default function Content(props: Props) {
   useEffect(() => {
     if (!media.fileType.includes('video')) return;
     const video = document.createElement("video");
-    video.src = `http://localhost:3000/${media.filePath}`
+    video.src = `http://lutsiu-chat-app-api/${media.filePath}`
 
     video.onloadedmetadata = () => {
       setIsLoading(false);
