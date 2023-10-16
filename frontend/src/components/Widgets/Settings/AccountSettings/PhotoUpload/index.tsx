@@ -6,15 +6,15 @@ import ImagePreview from "../../MainSettings/UserInfo/ImagePreview";
 import { useState } from "react";
 import BACKEND_SERVER from "../../../../../utils/VARIABLES";
 interface Props {
-  profileImage: null | Blob;
-  setProfileImage: React.Dispatch<React.SetStateAction<Blob | null>>;
+  profileImage: null | File;
+  setProfileImage: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 export default function PhotoUpload(props: Props) {
   const { profileImage, setProfileImage } = props;
   const { user } = useSelector((state: ReduxState) => state.user);
   const [showPreview, setShowPreview] = useState(false);
-  const onDrop = (acceptedFiles: Blob[]) => {
+  const onDrop = (acceptedFiles: File[]) => {
     setProfileImage(acceptedFiles[0]);
     setShowPreview(true);
   };

@@ -21,7 +21,7 @@ export default function AccountSettings() {
   const [bioBeingChanged, setBioBeingChanged] = useState(false);
   const [showChangeFullnamePopup, setShowChangeFullnamePopup] = useState(false);
   const [showChangeUsernamePopup, setShowChangeUsernamePopup] = useState(false);
-  const [profileImage, setProfileImage] = useState<null | Blob>(null);
+  const [profileImage, setProfileImage] = useState<null | File>(null);
 
   function handleChangeBio(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setBio(e.target.value);
