@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { BsChatLeft, BsFillReplyFill } from "react-icons/bs";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { IFile, IMessage } from "../../../../../../interfaces/models";
 import useResponsive from "../../../../../../hooks/useResponsive";
 import { useSocket } from "../../../../../../context/SocketContext";
 import { useState, useEffect } from "react";

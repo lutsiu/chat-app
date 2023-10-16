@@ -15,7 +15,6 @@ export default function DesktopUserPhotos(props: Props) {
   const { user } = useSelector((state: ReduxState) => state.user);
   const [photos, setPhotos] = useState<string[]>([]);
   const [activePhoto, setActivePhoto] = useState(0);
-  const [photoIsHovered, setPhotoIsHovered] = useState(false);
 
   function reverseArray(arr: string[]) {
     const reversed: string[] = [];

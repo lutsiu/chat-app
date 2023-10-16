@@ -4,7 +4,6 @@ import MainHeader from "./Headers/MainHeader";
 import UserInfo from "./UserInfo";
 import BottomNavigationBar from "./BottomNavigationBar";
 import SharedMedia from "./SharedMedia";
-import { IMessage, UserModel } from "../../../../interfaces/models";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 interface Props {
@@ -13,7 +12,6 @@ interface Props {
 }
 export default function ProfileOverlay(props: Props) {
   const {interlocutor} = useSelector((state: ReduxState) => state.chat);
-  const {user} = useSelector((state: ReduxState) => state.user)
   const { showOverlay, setShowOverlay} = props;
   const [showMedia, setShowMedia] = useState(true);
   const [showFiles, setShowFiles] = useState(false);

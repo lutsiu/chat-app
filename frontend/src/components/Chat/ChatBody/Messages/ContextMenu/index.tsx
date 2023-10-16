@@ -7,7 +7,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import useResponsive from "../../../../../hooks/useResponsive";
-import { IFile, IMessage, MediaType } from "../../../../../interfaces/models";
+import { IFile} from "../../../../../interfaces/models";
 import { useSocket } from "../../../../../context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { LiaDownloadSolid } from "react-icons/lia";

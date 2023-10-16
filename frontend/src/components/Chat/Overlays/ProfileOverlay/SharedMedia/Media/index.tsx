@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { IMessage } from "../../../../../../interfaces/models";
 import { fullMonth } from "../../../../../../utils/months";
 import sortMsgsByDate from "../../../../../../utils/sortMsgsByDate";

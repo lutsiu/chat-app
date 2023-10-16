@@ -6,7 +6,6 @@ import FoundChats from "./FoundChats";
 import { useState, useEffect } from "react";
 import { ChatData } from "..";
 import { useSocket } from "../../../context/SocketContext";
-import { IMessage } from "../../../interfaces/models";
 
 export interface Interlocutor {
   profilePicture: string;

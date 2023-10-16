@@ -25,7 +25,7 @@ export default function LeftSide() {
     (state: ReduxState) => state.peopleSearch
   );
   const [chatData, setChatData] = useState<ChatData[]>([]);
-  const [dataIsLoading, setDataIsLoading] = useState(true);
+  const [dataIsLoading] = useState(true);
   const { user } = useSelector((state: ReduxState) => state.user);
   const socket = useSocket();
   const dispatch = useDispatch();

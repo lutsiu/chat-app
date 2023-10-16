@@ -12,7 +12,6 @@ import {
   setShowCreateContact,
   setShowSearchBar,
 } from "../../../../state/ui";
-import { UserModel } from "../../../../interfaces/models";
 import { ReduxState } from "../../../../interfaces/redux";
 import { setShowOverlay as showMainOverlay } from "../../../../state/ui";
 import { addContactEmail } from "../../../../state/createContact";
@@ -27,7 +26,6 @@ export default function MenuOverlay(props: Props) {
   const { showOverlay, setShowOverlay } = props;
   const {interlocutor} = useSelector((state: ReduxState) => state.chat);
   const { user } = useSelector((state: ReduxState) => state.user);
-  const {dataIsLoading} = useSelector((state: ReduxState) => state.chat);
   const [deleteIsActive, setDeleteIsActive] = useState(false);
   const [interlocutorIsContact, setInterlocutorIsContact] = useState(false)
   const width = useResponsive();

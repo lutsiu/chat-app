@@ -13,7 +13,7 @@ interface Props {
 
 export default function SharedMedia(props: Props) {
   const [translateX, setTranslateX] = useState(0);
-  const {chatMessages, chatId} = useSelector((state: ReduxState) => state.chat);
+  const {chatMessages, } = useSelector((state: ReduxState) => state.chat);
   const { showMedia, showFiles, showGroups } = props;
   const messagesWithMedia = chatMessages.filter((msg) => {
     if (msg.media.length > 0) {

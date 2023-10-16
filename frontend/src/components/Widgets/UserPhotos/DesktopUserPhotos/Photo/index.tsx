@@ -4,7 +4,6 @@ interface Props {
   photo: string
 }
 export default function Photo(props: Props) {
-  const [isLoading, setIsLoading] = useState(true);
   const { photo } = props;
   const [src, setSrc] = useState(spinner);
 
@@ -13,7 +12,6 @@ export default function Photo(props: Props) {
     image.src = `http://localhost:3000/${photo}`;
 
     image.onload = () => {
-      setIsLoading(false);
       setSrc(image.src);
     };
   }, [photo]);

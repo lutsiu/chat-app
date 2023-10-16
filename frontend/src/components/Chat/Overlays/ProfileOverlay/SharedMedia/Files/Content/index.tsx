@@ -2,7 +2,6 @@ import { AiFillFile } from "react-icons/ai";
 import { IFile, IMessage } from "../../../../../../../interfaces/models";
 import normalizeDateName from "../../../../../../../utils/normalizeDateName";
 import getSizeOfFile from "../../../../../../../utils/getSizeOfFile";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setShowContentContextMenu } from "../../../../../../../state/chatUI";
 interface Props {
