@@ -18,7 +18,8 @@ export default function ImagePreview(props: Props) {
     setProfileImage(null);
   }
   function saveImage() {
-    socket.emit('change-profile-picture', {userId: user?._id, picture: {file: picture, fileName: picture!.name}})
+    if (!picture) return
+    socket.emit('change-profile-picture', {userId: user?._id, picture: {file: picture, fileName: picture.name}})
     closePopup()
   }
   return (

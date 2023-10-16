@@ -22,7 +22,7 @@ export default function ResponsiveSearch(props: Props) {
   const {chatId} = useSelector((state: ReduxState) => state.chat);
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const { searchMessages } = useSelector((state: ReduxState) => state.message);
-  const [timer, setTimer] = useState<NodeJS.Timer | null>(null);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const socket = useSocket();
   const dispatch = useDispatch();
   useEffect(() => {

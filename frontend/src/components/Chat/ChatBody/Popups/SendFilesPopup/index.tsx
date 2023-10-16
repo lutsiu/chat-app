@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { setShowWarningPopup } from "../../../../../state/ui";
 interface Props {
   setFile: (file: File) => void;
-  setMedia: (media: Blob[]) => void;
+  setMedia: (media: File[]) => void;
   showPopup: boolean;
 }
 export default function SendFilesPopup(props: Props) {
@@ -16,7 +16,7 @@ export default function SendFilesPopup(props: Props) {
   const MAX_SIZE = 10000000; // 10 mb
   // media
 
-  const onDropMedia = (acceptedFiles: Blob[]) => {
+  const onDropMedia = (acceptedFiles: File[]) => {
     console.log(acceptedFiles);
     setMedia(acceptedFiles);
   };

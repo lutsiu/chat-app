@@ -6,9 +6,9 @@ import { useSocket } from "../../../../../context/SocketContext";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../interfaces/redux";
 interface Props {
-  media: Blob[] | null;
+  media: File[] | null;
   showOverlay: boolean,
-  setMedia: React.Dispatch<React.SetStateAction<Blob[] | null>>;
+  setMedia: React.Dispatch<React.SetStateAction<File[] | null>>;
 }
 export default function SendMedia(props: Props) {
   const { media, showOverlay, setMedia} =

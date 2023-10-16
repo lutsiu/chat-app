@@ -22,7 +22,7 @@ interface Props {
   inputValue: string;
   setShowFilesPopup: React.Dispatch<React.SetStateAction<boolean>>;
   setFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setMedia: React.Dispatch<React.SetStateAction<Blob[] | null>>;
+  setMedia: React.Dispatch<React.SetStateAction<File[] | null>>;
   showFilesPopup: boolean;
 }
 export default function MessageBar(props: Props) {

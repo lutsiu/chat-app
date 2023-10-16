@@ -20,7 +20,7 @@ export default function ChatBody() {
   const [showFilesPopup, setShowFilesPopup] = useState(false);
   const [showFileOverlay, setShowFileOverlay] = useState(false);
   const [showMediaOverlay, setShowMediaOverlay] = useState(false);
-  const [media, setMedia] = useState<null | Blob[]>(null);
+  const [media, setMedia] = useState<null | File[]>(null);
   const [inputValue, setInputValue] = useState("");
   const [file, setFile] = useState<null | File>(null);
 
