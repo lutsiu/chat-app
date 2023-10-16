@@ -16,11 +16,11 @@ export default function UserInfo() {
   const dispatch = useDispatch();
 
   const [setNewPhoto, setSetNewPhoto] = useState(false);
-  const [profileImage, setProfileImage] = useState<null | Blob>(null);
+  const [profileImage, setProfileImage] = useState<null | File>(null);
 
   const [showPopup, setShowPopup] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const onDrop = (acceptedFiles: Blob[]) => {
+  const onDrop = (acceptedFiles: File[]) => {
     setProfileImage(acceptedFiles[0]);
     setShowPreview(true);
   };

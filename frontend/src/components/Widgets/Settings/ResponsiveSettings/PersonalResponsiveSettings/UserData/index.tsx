@@ -15,7 +15,7 @@ import {
 } from "../../../../../../state/ui";
 import { useEffect } from "react";
 export default function UserData() {
-  const [image, setImage] = useState<null | Blob>(null);
+  const [image, setImage] = useState<null | File>(null);
   const [userNameIsTaken, setUserNameIsTaken] = useState(false);
   const { user } = useSelector((state: ReduxState) => state.user);
   const { ui } = useSelector((state: ReduxState) => state);

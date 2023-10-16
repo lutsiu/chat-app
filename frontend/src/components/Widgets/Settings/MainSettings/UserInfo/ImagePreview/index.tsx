@@ -4,10 +4,10 @@ import { useSocket } from "../../../../../../context/SocketContext";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../../interfaces/redux";
 interface Props {
-  picture: Blob | null;
+  picture: File | null;
   showPreview: boolean;
   setShowPreview: (show: boolean) => void;
-  setProfileImage: React.Dispatch<React.SetStateAction<Blob | null>>
+  setProfileImage: React.Dispatch<React.SetStateAction<File | null>>
 }
 export default function ImagePreview(props: Props) {
   const { picture, setShowPreview, showPreview, setProfileImage } = props;

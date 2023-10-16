@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../../../interfaces/redux";
 import BACKEND_SERVER from "../../../../../../utils/VARIABLES";
 interface Props {
-  image: null | Blob;
-  setImage: (img: null | Blob) => void;
+  image: null | File;
+  setImage: (img: null | File) => void;
 }
 
 export default function PhotoUpload(props: Props) {
@@ -14,7 +14,7 @@ export default function PhotoUpload(props: Props) {
   const {user} = useSelector((state: ReduxState) => state.user);
   const [isActive, setIsActive] = useState(false);
   const onDrop = useCallback(
-    (acceptedImage: Blob[]) => {
+    (acceptedImage: File[]) => {
       const img = acceptedImage[0];
       setImage(img);
       // set image
