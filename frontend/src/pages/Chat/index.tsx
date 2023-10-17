@@ -5,7 +5,7 @@ import ChatBody from "../../components/Chat/ChatBody";
 import { ReduxState } from "../../interfaces/redux";
 import { IMessage, UserModel } from "../../interfaces/models";
 import { useEffect } from "react";
-import {
+import chat, {
   setChatDataIsLoading,
   setChatId,
   setChatMessages,
@@ -25,8 +25,10 @@ interface ChatData {
 export default function ChatPage() {
   const { ui } = useSelector((state: ReduxState) => state);
   const { user } = useSelector((state: ReduxState) => state.user);
-  const { chatId } = useSelector((state: ReduxState) => state.chat);
-  
+  const { chatId, chatMessages } = useSelector(
+    (state: ReduxState) => state.chat
+  );
+
   const dispatch = useDispatch();
   const socket = useSocket();
 
@@ -74,32 +76,47 @@ export default function ChatPage() {
 
   // send status to backend
   useEffect(() => {
-    socket.emit("update-status-in-chat", {userId: user?._id, isActive: true, chatId });
-  }, [socket, chatId, user?._id]); 
+    socket.emit("update-status-in-chat", {
+      userId: user?._id,
+      isActive: true,
+      chatId,
+    });
+  }, [socket, chatId, user?._id]);
 
   useEffect(() => {
     function windowClosed() {
-      socket.emit("update-status-in-chat", {userId: user?._id, isActive: false, chatId });
+      socket.emit("update-status-in-chat", {
+        userId: user?._id,
+        isActive: false,
+        chatId,
+      });
     }
     window.addEventListener("beforeunload", windowClosed);
-
   }, [chatId, socket, user?._id]);
-  // set status to non active, if page is not active  
+  // set status to non active, if page is not active
   useEffect(() => {
     function checkTabVisibility() {
       if (!document.hidden) {
         // active
-        socket.emit("update-status-in-chat", {userId: user?._id, isActive: true, chatId });
+        socket.emit("update-status-in-chat", {
+          userId: user?._id,
+          isActive: true,
+          chatId,
+        });
       } else {
         // not active
-        socket.emit("update-status-in-chat", {userId: user?._id, isActive: false, chatId });
+        socket.emit("update-status-in-chat", {
+          userId: user?._id,
+          isActive: false,
+          chatId,
+        });
       }
     }
     checkTabVisibility();
     document.addEventListener("visibilitychange", checkTabVisibility);
     return () => {
       document.removeEventListener("visibilitychange", checkTabVisibility);
-    }
+    };
   }, [socket, chatId, user?._id]);
 
   return (

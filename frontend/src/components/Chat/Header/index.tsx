@@ -21,14 +21,18 @@ import normalizeDateOfStatus from "../../../utils/normalizeDateOfStatus";
 import BACKEND_SERVER from "../../../utils/VARIABLES";
 
 export default function Header() {
-  const { interlocutor } = useSelector((state: ReduxState) => state.chat);
+  const { interlocutor, dataIsLoading } = useSelector((state: ReduxState) => {
+    return state.chat;
+  });
   const socket = useSocket();
   const { showSearchBar } = useSelector((state: ReduxState) => state.ui);
   const { user } = useSelector((state: ReduxState) => state.user);
   const [interlocutorStatus, setInterlocutorStatus] = useState<IStatus | null>(
     interlocutor?.status ? interlocutor.status : null
   );
-  const [interlocutorStatusString, setInterlocutorStatusString] = useState("");
+  const [interlocutorStatusString, setInterlocutorStatusString] = useState<
+    string | undefined
+  >("");
   const [showMenuOverlay, setShowMenuOverlay] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [isContact, setIsContact] = useState<undefined | IContact>(undefined);
@@ -75,28 +79,31 @@ export default function Header() {
   }, [interlocutor?._id, socket]);
 
   useEffect(() => {
-    if (!interlocutor?.status.lastTimeSeen) return;
+    if (!interlocutorStatus || !interlocutorStatus.lastTimeSeen) {
+      setInterlocutorStatusString('recently');
+      return
+    }
     const interlocutorStatusAsString = normalizeDateOfStatus(
       interlocutorStatus?.lastTimeSeen as Date
     );
 
     setInterlocutorStatusString(interlocutorStatusAsString);
+  }, [interlocutorStatus]);
+
+  useEffect(() => {
     function updateInterlocutorDate() {
       if (interlocutor?.status.isActive || interlocutorStatus?.isActive) return;
-      if (!interlocutorStatus?.lastTimeSeen) return;
+      if (!interlocutorStatus || !interlocutorStatus.lastTimeSeen) return;
       const updatedDate = normalizeDateOfStatus(
-        interlocutorStatus?.lastTimeSeen as Date
+        interlocutorStatus.lastTimeSeen as Date
       );
       setInterlocutorStatusString(updatedDate);
     }
     setInterval(() => {
       updateInterlocutorDate();
     }, 60 * 1000);
-  }, [
-    interlocutor,
-    interlocutorStatus?.isActive,
-    interlocutorStatus?.lastTimeSeen,
-  ]);
+  }, [interlocutor?.status.isActive, interlocutorStatus]);
+  
   return (
     <>
       <nav className="flex items-center sticky w-full bg-slate-800 top-0 py-[0.6rem] px-[1rem] md:px-[2rem] gap-[1.4rem]">
@@ -121,9 +128,7 @@ export default function Header() {
               <img
                 src={
                   interlocutor
-                    ? `${BACKEND_SERVER}/${interlocutor.profilePictures.at(
-                        -1
-                      )}`
+                    ? `${BACKEND_SERVER}/${interlocutor.profilePictures.at(-1)}`
                     : loader
                 }
                 alt="Avatar"
@@ -137,7 +142,7 @@ export default function Header() {
             </div>
             <div className="flex-1 flex justify-between">
               <div className="flex flex-col justify-center">
-                {!interlocutor && (
+                {!interlocutor && dataIsLoading && (
                   <SkeletonElement count={1} className="w-[10rem] h-[1rem]" />
                 )}
                 {interlocutor && (

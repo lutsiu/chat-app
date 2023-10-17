@@ -4,6 +4,7 @@ export default function sortMsgsByDate(
   messages: IMessage[],
   sortBy: "day" | "month"
 ) {
+  if (!messages || messages.length === 0) return []
   if (sortBy === "day") {
     const dates = messages.map((msg) => {
       const date = new Date(msg.timeStamp).toISOString().split("T")[0];

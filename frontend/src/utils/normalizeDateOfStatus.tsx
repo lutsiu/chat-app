@@ -1,6 +1,7 @@
 
 export default function normalizeDateOfStatus(date: string | Date) {
   const now = new Date();
+  if (!date) return;
   const dateObj = typeof date === 'string' ? new Date(date) : date;
 
   const diffInMilliseconds = now.getTime() - dateObj.getTime();

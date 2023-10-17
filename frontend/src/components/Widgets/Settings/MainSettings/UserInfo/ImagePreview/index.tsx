@@ -29,7 +29,7 @@ export default function ImagePreview(props: Props) {
         opacity: showPreview ? 1 : 0,
         pointerEvents: showPreview ? "auto" : "none",
       }}
-      className="fixed top-0 bottom-0 right-0 left-0 flex items-center justify-center"
+      className="fixed top-0 bottom-0 right-0 left-0 flex items-center justify-center z-20"
       style={{ background: "rgba(0,0,0,.8)" }}
       onClick={closePopup}
     >

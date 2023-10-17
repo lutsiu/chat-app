@@ -1,4 +1,4 @@
-import { IMessage, SearchedMessage, UserModel, MediaType, IContact, IFile, IStatus } from "./models";
+import { IMessage, SearchedMessage, UserModel, MediaType, IContact, IFile, IStatus, SearchedMessageChat } from "./models";
 export interface UserInitialState {
   user: null | UserModel;
   token: null | string;
@@ -55,7 +55,7 @@ export interface MessageInitialState {
     show: boolean;
     message: IMessage | null;
   };
-  searchMessages: SearchedMessage[] | null
+  searchMessages: SearchedMessageChat[] | null
   scrollToMessage: {
     top: number;
   } | null;

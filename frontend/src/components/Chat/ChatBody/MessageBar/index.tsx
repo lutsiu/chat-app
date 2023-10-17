@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../../../interfaces/redux";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
 import MessageActionBar from "./MessageActionBar";
 import { MessageType } from "../../../../interfaces/message";
 import {
@@ -35,7 +37,7 @@ export default function MessageBar(props: Props) {
     setMedia,
     showFilesPopup,
   } = props;
-
+  const textAreaRef = useRef<any>(null);
   const formRef = useRef<null | HTMLFormElement>(null);
   const submitForm = () => {
     const syntheticEvent = new Event("submit", {
@@ -105,6 +107,13 @@ export default function MessageBar(props: Props) {
     }
   }, [editMessage.message, setInputValue]);
 
+  useEffect(() => {
+    if (textAreaRef.current) {
+      if (replyToMessage.show || editMessage.show) {
+        textAreaRef.current.focus();
+      }
+    }
+  }, [editMessage.show, replyToMessage.show]);
   return (
     <form
       className="fixed bottom-[0] flex flex-col px-[1rem] md:w-[65%] 2xl:pl-[15rem] 2xl:px-[0] w-full "
@@ -131,6 +140,7 @@ export default function MessageBar(props: Props) {
         </div>
         <div className="flex-1">
           <TextareaAutosize
+            ref={textAreaRef}
             maxRows={15}
             placeholder="Message"
             onChange={(e) => setInputValue(e.target.value)}

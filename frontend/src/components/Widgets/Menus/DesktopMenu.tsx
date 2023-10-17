@@ -34,7 +34,7 @@ export default function DesktopMenu() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="w-[20%] bg-slate-900 h-full flex flex-col gap-[0.07rem]"
         >
-          <div className="h-[15%] bg-slate-800 pt-[2rem] pl-[1.7rem]">
+          <div className="bg-slate-800 pt-[2rem] pl-[1.7rem]">
             <div
               className="w-[5.5rem] h-[5.5rem] cursor-pointer"
               onClick={handleShowUserPhotos}
@@ -44,10 +44,10 @@ export default function DesktopMenu() {
                 className="w-full h-full rounded-full object-cover"
                 alt="User avatar"
               />
-              <p className="mt-[1rem] text-xl font-normal">{user?.fullName}</p>
             </div>
+            <p className="my-[1rem] text-xl font-normal">{user?.fullName}</p>
           </div>
-          <ul className="h-[85%] bg-slate-800 pt-[0.4rem]">
+          <ul className="flex-1 bg-slate-800 pt-[0.4rem]">
             <li
               className="w-full flex items-center gap-[1.3rem] text-zinc-200 hover:bg-slate-700 py-[0.8rem] pl-[1.7rem] cursor-pointer"
               onClick={() => {

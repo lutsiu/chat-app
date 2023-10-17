@@ -26,30 +26,41 @@ export default function ChangeUsername(props: Props) {
   });
 
   function onSubmit(values: { userName: string }) {
-    if (error) return
-    socket.emit('change-user-name', {userId: user?._id, userName: values.userName.trim()});
+    if (error) return;
+    socket.emit("change-user-name", {
+      userId: user?._id,
+      userName: values.userName.trim(),
+    });
+    setShowPopup(false);
+    setError(false);
   }
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
-  
-  useEffect(() => {
-    socket.emit('check-user-name-uniqueness', formik.values.userName.trim())
-  }, [formik, socket]);
-  
 
   useEffect(() => {
-    socket.on('check-user-name-uniqueness', (data: {userName: string, status: 200 | 404}) => {
-      const {userName, status} = data
-      if (status === 200) {
-        if (userName.trim() === formik.values.userName.trim()) return
-        if (userName.trim() !== formik.values.userName.trim()) {
-          formik.setErrors({'userName': 'Username is used'})
-          setError(true)
+    socket.emit("check-user-name-uniqueness", formik.values.userName.trim());
+  }, [formik.values.userName, socket]);
+
+  useEffect(() => {
+    socket.on(
+      "check-user-name-uniqueness",
+      (data: { userName: string; status: 200 | 404 }) => {
+        const { userName, status } = data;
+       
+        if (status === 200) {
+          if (userName.trim() === formik.values.userName.trim()) {
+            formik.setErrors({ userName: undefined });
+            setError(false);
+          }
+          if (userName.trim() !== formik.values.userName.trim()) {
+            formik.setErrors({ userName: "Username is used" });
+            setError(true);
+          }
+        } else {
+          setError(false);
         }
-      } else {
-        setError(false)
       }
-    })
-  }, [formik, socket]); 
+    );
+  }, [formik, socket]);
   return (
     <motion.div
       initial={{ opacity: 0, pointerEvents: "none" }}
@@ -91,7 +102,6 @@ export default function ChangeUsername(props: Props) {
               }}
               className="outline-none bg-transparent border-b-[0.1rem] pb-[0.6rem] text-xl "
             />
-
           </div>
           <div className="mt-[1.5rem] bg-gray-800 flex flex-col gap-[1rem] text-xl text-gray-400 px-[2rem] py-[1rem]">
             <p>
@@ -108,6 +118,7 @@ export default function ChangeUsername(props: Props) {
             <div className="flex gap-[1rem] text-purple-500 text-xl font-medium">
               <button
                 className={`${styles.button} py-[0.5rem] px-[1rem] duration-200 rounded-lg`}
+                type="reset"
                 onClick={() => {
                   setShowPopup(false);
                   setTimeout(() => {

@@ -68,7 +68,6 @@ export default function UserPhotos(props: Props) {
 
       <div className="absolute bottom-[1rem] left-[1rem] flex flex-col gap-[0.2rem]">
         <span className="text-3xl font-medium">{userName}</span>
-        <span className="text-xl font-medium text-gray-300">{`User status`}</span>
       </div>
       <div className="absolute  flex top-[0.6rem] w-full gap-[0.4rem] px-[0.5rem]">
         {photos.map((_, i) => (

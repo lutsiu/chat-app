@@ -11,7 +11,7 @@ import MessagesSkeleton from "../../../Widgets/Skeletons/MessagesSkeleton";
 import useResponsive from "../../../../hooks/useResponsive";
 
 export default function Messages() {
-  const { chatMessages: messages } = useSelector(
+  const { chatMessages: messages, dataIsLoading } = useSelector(
     (state: ReduxState) => state.chat
   );
   const chatContainer = useRef<null | HTMLDivElement>(null);
@@ -34,7 +34,7 @@ export default function Messages() {
       }
     }, 500);
     setShowContent(true);
-  }, [messages]);
+  }, []);
   
   // scroll to a necessary message if scrollToMessage is triggered
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function Messages() {
             paddingRight: width >=1400 && messagesWithDates.length > 0 ? '15rem' : '1rem'
         }}
       >
-        {messagesWithDates.length === 0 && <MessagesSkeleton/>}
+        {messagesWithDates.length === 0 && dataIsLoading && <MessagesSkeleton/>}
         {showContent &&
           messagesWithDates.map((msg, i) => {
             const { messages, date } = msg;

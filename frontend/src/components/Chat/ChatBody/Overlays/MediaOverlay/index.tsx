@@ -36,6 +36,7 @@ export default function MediaOverlay() {
   }
   function handleDeleteMessage() {
     if (!message || !file) return;
+    dispatch(setShowMediaOverlay({file: null, message: null, showOverlay: false}));
     if (message.media.length > 1) {
       return socket.emit("delete-media", {
         messageId: message._id,
@@ -44,7 +45,7 @@ export default function MediaOverlay() {
       });
     }
     socket.emit("delete-message", { messageId: message._id, chatId });
-    dispatch(setShowMediaOverlay({file: null, message: null, showOverlay: false}));
+    
   }
   function handleDownloadFile() {
     if (!file) return;

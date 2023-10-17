@@ -71,7 +71,7 @@ export default function SearchOverlay(props: Props) {
       }
     );
   }, [socket, dispatch]);
-
+  console.log(searchMessages)
   return (
     <motion.div
       className="md:w-[60%] xl:w-[40%] h-full overflow-y-scroll bg-slate-800 absolute top-0 right-0 z-10"
@@ -114,7 +114,7 @@ export default function SearchOverlay(props: Props) {
                 >
                   <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
                     <img
-                      src={`${BACKEND_SERVER}/${msg.user.profilePicture}`}
+                      src={`${BACKEND_SERVER}/${msg.user.profilePictures.at(-1)}`}
                       alt="avatar"
                       className="w-full h-full object-cover"
                     />

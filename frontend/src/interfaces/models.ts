@@ -50,7 +50,10 @@ export interface SearchedMessage {
   message: IMessage;
   user: { _id: string; fullName: string; profilePicture: string };
 }
-
+export interface SearchedMessageChat {
+  message: IMessage;
+  user: { _id: string; fullName: string; profilePictures: string[] };
+}
 export interface IStatus {
   isActive: boolean, 
   lastTimeSeen: Date

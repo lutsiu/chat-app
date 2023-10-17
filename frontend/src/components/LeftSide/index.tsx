@@ -25,7 +25,7 @@ export default function LeftSide() {
     (state: ReduxState) => state.peopleSearch
   );
   const [chatData, setChatData] = useState<ChatData[]>([]);
-  const [dataIsLoading] = useState(true);
+  const [dataIsLoading, setDataIsLoading] = useState(true);
   const { user } = useSelector((state: ReduxState) => state.user);
   const socket = useSocket();
   const dispatch = useDispatch();
@@ -46,6 +46,7 @@ export default function LeftSide() {
   }, []);
   useEffect(() => {
     socket.on("get-chats", (data: ChatData[]) => {
+      setDataIsLoading(false);
       if (data.length > 0) {
         setChatData(data);
       }
@@ -56,17 +57,29 @@ export default function LeftSide() {
       <Header />
       {!searchBarIsActive && (
         <ul
-          className={`${styles.chatsList} bg-slate-800 h-full  flex flex-col overflow-y-scroll `}
+          className={`${styles.chatsList} bg-slate-800 h-full  flex flex-col overflow-y-scroll relative`}
         >
           {chatData.map((chat, i) => {
-            return <ChatListItem key={i} chatData={chat} />;
+            if (chat.message) {
+              return <ChatListItem key={i} chatData={chat} />
+            }
           })}
           {chatData.length === 0 && dataIsLoading && (
-            <SkeletonElement count={12} className="h-[5.8rem] rounded-xl"/>
+            <SkeletonElement count={12} className="h-[5.8rem] rounded-xl" />
+          )}
+          {chatData.length === 0 && !dataIsLoading && (
+            <p
+              className="text-xl absolute top-[30%] left-[50%]"
+              style={{ transform: "translate(-50%, -50%)" }}
+            >
+              You don't have any chats.
+            </p>
           )}
         </ul>
       )}
-      {searchBarIsActive && <SearchList chatData={chatData} chatDataIsLoading={dataIsLoading} />}
+      {searchBarIsActive && (
+        <SearchList chatData={chatData} chatDataIsLoading={dataIsLoading} />
+      )}
     </div>
   );
 }
