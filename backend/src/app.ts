@@ -76,13 +76,13 @@ app.use("/contact", contactRouter);
 /* MONGO */
 
 const PORT = process.env.PORT;
-
+const FRONTEND_URL = process.env.FRONTEND_URL;
 mongoose.connect(process.env.MONGO_URL).then(() => {
   const server = app.listen(PORT);
   const io = new socket.Server(server, {
     maxHttpBufferSize: 1e8,
     cors: {
-      origin: ["http://127.0.0.1:5173", "http://lutsiu-chat-app.onrender.com"],
+      origin: "http://127.0.0.1:5173",
       methods: ["GET", "POST", "PATCH", "DELETE"],
     },
   });
@@ -110,7 +110,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             senderId: userId,
             chatId,
           });
-          const res = await fetch(`http://lutsiu-chat-app-api/chat/chat/${chatId}`, {
+          const res = await fetch(`${FRONTEND_URL}/chat/chat/${chatId}`, {
             method: "PUT",
             body,
             headers: { "Content-Type": "application/json" },
@@ -132,7 +132,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             messageId,
             chatId,
           });
-          const res = await fetch(`http://lutsiu-chat-app-api/chat/delete-message`, {
+          const res = await fetch(`${FRONTEND_URL}/chat/delete-message`, {
             method: "DELETE",
             body,
             headers: { "Content-Type": "application/json" },
@@ -156,7 +156,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
             messageId,
             chatId,
           });
-          const res = await fetch("http://lutsiu-chat-app-api/chat/edit-message", {
+          const res = await fetch(`${FRONTEND_URL}/chat/edit-message`, {
             headers: { "Content-Type": "application/json" },
             body,
             method: "PATCH",
@@ -183,7 +183,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           socket.join(data.chatId);
           const body = JSON.stringify(data);
           const res = await fetch(
-            "http://lutsiu-chat-app-api/chat/reply-to-message",
+            `${FRONTEND_URL}/chat/reply-to-message`,
             {
               headers: { "Content-Type": "application/json" },
               body,
@@ -207,7 +207,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           socket.join(data.chatId);
           const body = JSON.stringify(data);
           const res = await fetch(
-            "http://lutsiu-chat-app-api/chat/pin-or-unpin-message",
+            `${FRONTEND_URL}/chat/pin-or-unpin-message`,
             {
               headers: { "Content-Type": "application/json" },
               body,
@@ -228,7 +228,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         try {
           const { chatId, message } = data;
           const res = await fetch(
-            `http://lutsiu-chat-app-api/chat/find-message?chatId=${chatId}&message=${message}`
+            `${FRONTEND_URL}/chat/find-message?chatId=${chatId}&message=${message}`
           );
           if (res.ok) {
             const data = await res.json();
@@ -246,7 +246,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           const { chatId, date } = data;
           const time = new Date(date).getTime();
           const res = await fetch(
-            `http://lutsiu-chat-app-api/chat/find-message-by-date?chatId=${chatId}&date=${time}`
+            `${FRONTEND_URL}/chat/find-message-by-date?chatId=${chatId}&date=${time}`
           );
           if (res.ok) {
             const foundedMessage = await res.json();
@@ -375,7 +375,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
       async (data: { filePath: string; fileName: string }) => {
         const { fileName, filePath } = data;
         const res = await fetch(
-          `http://lutsiu-chat-app-api/chat/download-file?filePath=${filePath}&fileName=${fileName}`
+          `${FRONTEND_URL}/chat/download-file?filePath=${filePath}&fileName=${fileName}`
         );
         socket.emit("download-file", res);
       }
@@ -423,7 +423,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     socket.on("change-bio", async (data: { userId: string; bio: string }) => {
       try {
         const body = JSON.stringify(data);
-        const res = await fetch(`http://lutsiu-chat-app-api/settings/change-bio`, {
+        const res = await fetch(`${FRONTEND_URL}/settings/change-bio`, {
           headers: { "Content-Type": "application/json" },
           body,
           method: "PUT",
@@ -443,7 +443,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
           const body = JSON.stringify(data);
           console.log(body);
           const res = await fetch(
-            `http://lutsiu-chat-app-api/settings/change-full-name`,
+            `${FRONTEND_URL}/settings/change-full-name`,
             {
               headers: { "Content-Type": "application/json" },
               body,
@@ -462,7 +462,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     socket.on("check-user-name-uniqueness", async (userName: string) => {
       try {
         const res = await fetch(
-          `http://lutsiu-chat-app-api/settings/check-user-name-uniqueness?userName=${userName}`
+          `${FRONTEND_URL}/settings/check-user-name-uniqueness?userName=${userName}`
         );
         const status = res.status;
         socket.emit("check-user-name-uniqueness", { userName, status });
@@ -476,7 +476,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         try {
           const body = JSON.stringify(data);
           const res = await fetch(
-            `http://lutsiu-chat-app-api/settings/change-user-name`,
+            `${FRONTEND_URL}/settings/change-user-name`,
             {
               headers: { "Content-Type": "application/json" },
               body,
@@ -530,7 +530,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         try {
           const { name, email } = data;
           const body = JSON.stringify(data);
-          const res = await fetch(`http://lutsiu-chat-app-api/contact/add-contact`, {
+          const res = await fetch(`${FRONTEND_URL}/contact/add-contact`, {
             headers: { "Content-Type": "application/json" },
             body,
             method: "PUT",
@@ -562,7 +562,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
     socket.on("get-chats", async (userId: string) => {
       try {
         const res = await fetch(
-          `http://lutsiu-chat-app-api/chat/get-chats/${userId}`
+          `${FRONTEND_URL}/chat/get-chats/${userId}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -625,7 +625,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
 
           const body = JSON.stringify(data);
           const res = await fetch(
-            `http://lutsiu-chat-app-api/contact/change-contact-name`,
+            `${FRONTEND_URL}/contact/change-contact-name`,
             {
               headers: { "Content-Type": "application/json" },
               body,
@@ -675,6 +675,21 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
         }
       }
     );
+    socket.on('delete-chat', async (chatId: string) => {
+      try {
+        const chat = await Chat.findById(chatId);
+        if (!chat) return
+        const participantsPromise = chat.participants.map((user) => User.findById(user));
+        const participants = await Promise.all(participantsPromise);
+        participants.map( async user => {
+          user.chats = user.chats.filter(userChat => userChat.toString() !== chat._id.toString())
+          await user.save();
+        });
+        await Chat.findByIdAndDelete(chatId);
+      } catch (err) {
+        console.log(err);
+      }
+    } )
     socket.on("disconnect", () => {
       console.log("USER IS DISCONNECTED");
     });

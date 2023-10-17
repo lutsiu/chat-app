@@ -119,6 +119,8 @@ export const signUpStep3 = async (req: Request, res: Response) => {
     user.userName = userName;
     user.bio = bio;
     user.profilePictures.push( path);
+    user.status = {isActive: false, lastTimeSeen: new Date()};
+    user.chats = [];
     await user.save();
     return res.status(201).json("Sign up is done");
   } catch (err) {

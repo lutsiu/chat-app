@@ -75,9 +75,11 @@ export const findOrCreateChat = async (req, res) => {
       const newChat = new Chat({
         participants: [myUser._id, interlocutor._id],
       });
+      const id = newChat._id + "";
+
+      myUser.chats.push(id);
+      interlocutor.chats = interlocutor.chats ? [...interlocutor.chats, id] : [id];
       await newChat.save();
-      myUser.chats.push(newChat.id);
-      interlocutor.chats.push(newChat.id);
       await myUser.save();
       await interlocutor.save();
       return res.status(201).json({
