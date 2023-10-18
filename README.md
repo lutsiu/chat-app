@@ -2,7 +2,7 @@
 
 Chat Application
 
-Welcome to the README for Chat Application built using the Typescript MERN stack, Socket.io, Redux, and other powerful libraries.
+Welcome to the README for Chat Application built using the Typescript, MERN stack, Socket.io, Redux, and other powerful libraries.
 This application allows users to sign up, log in, and engage in real-time communication with a wide range of features.
 
 Table of Contents
