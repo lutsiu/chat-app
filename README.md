@@ -12,7 +12,7 @@ Table of Contents
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Screenshots and videos](#screenshots)
+- [Video demostrantions](#videos)
 
 ## Overview
 This Chat Application is a versatile platform for real-time communication 1 by 1.
@@ -47,6 +47,7 @@ Chat Application is built on following tech stack:
   - React;
   - Tailwind and SCSS;
   - Redux-Persist for global state management;
+  - React-router-dom for routing;
   - Socket.io-client for real-time communication;
   - useContext for socket management;
   - Formik and Yup for form validation;
@@ -98,3 +99,8 @@ To set up both the backend and frontend of our Chat Application, install necessa
   - Communicate with your contacts in real time.
   - Manage your messages and media.
   - Keep track of your contacts' status.
+
+## Videos: 
+ To watch demontrations of project follow next steps: 
+ - Open issues -> video demonstrations of application
+ - Or just follow the [link](https://github.com/lutsiu/chat-app/issues/1)
