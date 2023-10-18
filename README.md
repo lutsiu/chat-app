@@ -15,7 +15,7 @@ Table of Contents
 - [Video demostrantions](#videos)
 
 ## Overview
-This Chat Application is a versatile platform for real-time communication 1 by 1.
+This Chat Application is a versatile platform for real-time communication between two users.
 Whether you want to connect with your friends, colleagues or family,
 this application provides set of features to enhance your messaging experience.
 
